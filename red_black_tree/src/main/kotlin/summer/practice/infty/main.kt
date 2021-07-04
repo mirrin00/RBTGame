@@ -1,4 +1,4 @@
-package com.practice.rbt
+package summer.practice.infty
 
 import tornadofx.launch
 

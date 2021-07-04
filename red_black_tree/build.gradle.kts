@@ -21,7 +21,7 @@ javafx {
 }
 
 application {
-    mainClassName = "com.practice.rbt.MainKt"
+    mainClassName = "summer.practice.infty.MainKt"
 }
 
 dependencies {

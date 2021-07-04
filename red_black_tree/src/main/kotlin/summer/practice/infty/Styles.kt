@@ -1,4 +1,4 @@
-package com.practice.rbt
+package summer.practice.infty
 
 import javafx.scene.text.FontWeight
 import tornadofx.Stylesheet

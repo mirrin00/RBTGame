@@ -1,6 +1,6 @@
-package com.practice.rbt.view
+package summer.practice.infty.view
 
-import com.practice.rbt.Styles
+import summer.practice.infty.Styles
 import tornadofx.*
 
 class MainView : View("Hello TornadoFX") {
