@@ -1,8 +1,10 @@
 package summer.practice.infty.rbt
 
+import kotlin.math.pow
+
 class RedBlackTree<T: Comparable<T>, V> {
     private var root: Node<T, V>? = null // root of the tree
-    var size: Int = 0 // FIXME: Is it needed
+    var height: Int = 0 // Height of the tree, not black!!!
         private set
 
     // True - if node is red, otherwise - false
@@ -34,7 +36,7 @@ class RedBlackTree<T: Comparable<T>, V> {
     // Insert the new value with key
     fun insert(key: T, value: V?){
         if(root == null){
-            size++
+            height = 1
             root = Node(key, value)
             insertBalance(root)
             return
@@ -48,21 +50,31 @@ class RedBlackTree<T: Comparable<T>, V> {
             if(key < cur.key){
                 if(cur.left == null){
                     cur.left = Node(key, value, cur, true)
-                    size++
                     insertBalance(cur.left)
-                    return
+                    break
                 }
                 else cur = cur.left
             }else{
                 if(cur.right == null){
                     cur.right = Node(key, value, cur, false)
-                    size++
                     insertBalance(cur.right)
-                    return
+                    break
                 }
                 else cur = cur.right
             }
         }
+        updateHeight()
+    }
+
+    private fun updateHeight(){
+        height = 0
+        fun heightUpdate(node: Node<T, V>?, height: Int) {
+            if (node == null) return
+            if(height > this.height) this.height = height
+            heightUpdate(node.left, height + 1)
+            heightUpdate(node.right, height + 1)
+        }
+        heightUpdate(root, 1)
     }
 
     // Return ArrayList of values in-order
@@ -76,6 +88,19 @@ class RedBlackTree<T: Comparable<T>, V> {
         }
         inOrder(root)
         return values
+    }
+
+    fun getNodes(): Array<Node<T, V>?>{
+        val nodes = Array<Node<T, V>?>(2.0.pow(height).toInt() - 1){null}
+        println("GETNODES: Size is ${nodes.size}")
+        fun inOrder(node: Node<T, V>?, index: Int) {
+            if (node == null) return
+            inOrder(node.left, index * 2 + 1)
+            nodes[index] = node
+            inOrder(node.right, index * 2 + 2)
+        }
+        inOrder(root, 0)
+        return nodes
     }
 
     // Balance the tree after insert
@@ -110,8 +135,8 @@ class RedBlackTree<T: Comparable<T>, V> {
         if(isRedNode(parent) && isBlackNode(uncle)){
             if(node.is_left != parent.is_left){
                 smallRotate(node)
-                bigRotate(parent)
-            }else bigRotate(node)
+                bigRotate(node, grandparent)
+            }else bigRotate(parent, grandparent)
         }
     }
 
@@ -142,30 +167,26 @@ class RedBlackTree<T: Comparable<T>, V> {
     }
 
     // Performs big rotation for node
-    private fun bigRotate(node: Node<T, V>) {
-        println("BigRotate")
-        val parent = node.parent ?: return
-        val grandparent = parent.parent ?: return
-        val uncle = grandparent.getSon(!parent.is_left)
-        parent.swapKeyAndData(grandparent)
-        node.parent = grandparent
-        grandparent.changeSon(node, parent.is_left)
-        grandparent.changeSon(parent, !parent.is_left)
-        uncle?.parent = parent
-        if(parent.is_left){
-            parent.left = parent.right
-            parent.right = uncle
-        }else{
-            parent.right = parent.left
-            parent.left = uncle
-        }
-        parent.invertLeft()
+    private fun bigRotate(node: Node<T, V>, parent: Node<T, V>){
+        node.swapKeyAndData(parent)
+        val son_same_dir = node.getSon(node.is_left)
+        val son_other_dir = node.getSon(!node.is_left)
+        val son = parent.getSon(!node.is_left)
+        parent.changeSon(son_same_dir, node.is_left)
+        son_same_dir?.parent = parent
+        node.changeSon(son_other_dir, node.is_left)
+        son_other_dir?.invertLeft()
+        node.changeSon(son, !node.is_left)
+        son?.parent = node
+        parent.changeSon(node, !node.is_left)
+        node.invertLeft()
     }
 
     // Deletes value by key and returns it, or null, if the key does not exist
     fun delete(key: T): V?{
         val node = findNode(key)
         deleteNode(node)
+        updateHeight()
         return node?.data
     }
 
@@ -223,7 +244,7 @@ class RedBlackTree<T: Comparable<T>, V> {
         var sibling = parent.getSon(!(node?.is_left ?: is_left))
         // sibling not null, because red node can not be null
         if(isRedNode(sibling)){
-            deletionRotate(sibling!!, parent)
+            bigRotate(sibling!!, parent)
             sibling = sibling.getSon(!sibling.is_left)
         }
         /*
@@ -250,25 +271,9 @@ class RedBlackTree<T: Comparable<T>, V> {
              * of two black sons is above
              */
             if(isBlackNode(son_same_dir))
-                deletionRotate(son_other_dir!!, sibling!!)
-            deletionRotate(sibling!!, parent)
+                bigRotate(son_other_dir!!, sibling!!)
+            bigRotate(sibling!!, parent)
             parent.getSon(!sibling.is_left)!!.is_red = false
         }
-    }
-
-    // Big rotate in balance of deletion by sibling and parent
-    private fun deletionRotate(sibling: Node<T, V>, parent: Node<T, V>){
-        sibling.swapKeyAndData(parent)
-        val son_same_dir = sibling.getSon(sibling.is_left)
-        val son_other_dir = sibling.getSon(!sibling.is_left)
-        val node = parent.getSon(!sibling.is_left)
-        parent.changeSon(son_same_dir, sibling.is_left)
-        son_same_dir?.parent = parent
-        sibling.changeSon(son_other_dir, sibling.is_left)
-        son_other_dir?.invertLeft()
-        sibling.changeSon(node, !sibling.is_left)
-        node?.parent = sibling
-        parent.changeSon(sibling, !sibling.is_left)
-        sibling.invertLeft()
     }
 }
