@@ -2,7 +2,7 @@ package summer.practice.infty.rbt
 
 import kotlin.math.pow
 
-class RedBlackTree<T: Comparable<T>, V> {
+class RedBlackTree<T: Comparable<T>, V>: Iterable<V?> {
     private var root: Node<T, V>? = null // root of the tree
     var height: Int = 0 // Height of the tree, not black!!!
         private set
@@ -90,19 +90,6 @@ class RedBlackTree<T: Comparable<T>, V> {
         return values
     }
 
-    fun getNodes(): Array<Node<T, V>?>{
-        val nodes = Array<Node<T, V>?>(2.0.pow(height).toInt() - 1){null}
-        println("GETNODES: Size is ${nodes.size}")
-        fun inOrder(node: Node<T, V>?, index: Int) {
-            if (node == null) return
-            inOrder(node.left, index * 2 + 1)
-            nodes[index] = node
-            inOrder(node.right, index * 2 + 2)
-        }
-        inOrder(root, 0)
-        return nodes
-    }
-
     // Balance the tree after insert
     private fun insertBalance(node: Node<T, V>?){
         if(node == null) return
@@ -134,40 +121,14 @@ class RedBlackTree<T: Comparable<T>, V> {
                     else grandparent.left
         if(isRedNode(parent) && isBlackNode(uncle)){
             if(node.is_left != parent.is_left){
-                smallRotate(node)
-                bigRotate(node, grandparent)
-            }else bigRotate(parent, grandparent)
+                rotate(node, parent)
+                rotate(parent, grandparent)
+            }else rotate(parent, grandparent)
         }
     }
 
-    // Performs small rotation for node
-    private fun smallRotate(node: Node<T, V>){
-        println("SmallRotate")
-        val parent = node.parent ?: return
-        val grandparent = parent.parent ?: return
-        node.parent = grandparent
-        parent.parent = node
-        if(parent.is_left){
-            grandparent.left = node
-            node.is_left = true
-            parent.right = node.left
-            node.left?.is_left = false
-            node.left?.parent = parent
-            parent.parent = node
-            node.left = parent
-        }else{
-            grandparent.right = node
-            node.is_left = false
-            parent.left = node.right
-            node.right?.is_left = true
-            node.right?.parent = parent
-            parent.parent = node
-            node.right = parent
-        }
-    }
-
-    // Performs big rotation for node
-    private fun bigRotate(node: Node<T, V>, parent: Node<T, V>){
+    // Performs rotation for node
+    private fun rotate(node: Node<T, V>, parent: Node<T, V>){
         node.swapKeyAndData(parent)
         val son_same_dir = node.getSon(node.is_left)
         val son_other_dir = node.getSon(!node.is_left)
@@ -244,7 +205,7 @@ class RedBlackTree<T: Comparable<T>, V> {
         var sibling = parent.getSon(!(node?.is_left ?: is_left))
         // sibling not null, because red node can not be null
         if(isRedNode(sibling)){
-            bigRotate(sibling!!, parent)
+            rotate(sibling!!, parent)
             sibling = sibling.getSon(!sibling.is_left)
         }
         /*
@@ -271,9 +232,14 @@ class RedBlackTree<T: Comparable<T>, V> {
              * of two black sons is above
              */
             if(isBlackNode(son_same_dir))
-                bigRotate(son_other_dir!!, sibling!!)
-            bigRotate(sibling!!, parent)
+                rotate(son_other_dir!!, sibling!!)
+            rotate(sibling!!, parent)
             parent.getSon(!sibling.is_left)!!.is_red = false
         }
+    }
+
+    // Return the Iterator
+    override fun iterator(): RedBlackTreeIterator<T, V> {
+        return RedBlackTreeIterator<T, V>(root)
     }
 }
