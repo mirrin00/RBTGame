@@ -1,6 +1,3 @@
-package summer.practice.infty
+import tornadofx.*
 
-import summer.practice.infty.view.MainView
-import tornadofx.App
-
-class MyApp: App(MainView::class, Styles::class)
+class MyApp: App(MyView::class)
