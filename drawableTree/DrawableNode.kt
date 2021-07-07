@@ -1,3 +1,5 @@
+package summer.practice.infty.drawable
+
 import javafx.scene.Group
 import javafx.scene.image.Image
 import javafx.scene.paint.Color

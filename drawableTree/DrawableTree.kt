@@ -1,3 +1,5 @@
+package summer.practice.infty.drawable
+
 import javafx.scene.Group
 import tornadofx.add
 import kotlin.math.pow

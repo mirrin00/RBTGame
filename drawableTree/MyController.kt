@@ -1,3 +1,4 @@
+package summer.practice.infty.controllers
 import javafx.scene.Group
 import tornadofx.*
 
