@@ -1,1 +1,0 @@
-/home/ilya/IdeaProjects/untitled1/build/classes/kotlin/main/MyApp.class:/home/ilya/IdeaProjects/untitled1/build/classes/kotlin/main/MyView$root$1.class:/home/ilya/IdeaProjects/untitled1/build/classes/kotlin/main/MyView.class
