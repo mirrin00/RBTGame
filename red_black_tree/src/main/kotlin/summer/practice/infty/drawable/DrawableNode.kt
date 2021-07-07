@@ -7,6 +7,7 @@ import javafx.scene.shape.Circle
 import javafx.scene.text.Font
 import javafx.scene.paint.ImagePattern
 import javafx.scene.text.TextAlignment
+import summer.practice.infty.rbt.RedBlackTreeIterator
 import tornadofx.*
 
 class DrawableNode<T, V>(var nodeX:Double = 0.0, var nodeY:Double = 0.0, private val iter: RedBlackTreeIterator<T, V>,

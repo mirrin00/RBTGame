@@ -1,9 +1,12 @@
+package summer.practice.infty.view
+
 import javafx.scene.Group
 import javafx.scene.layout.StackPane
+import summer.practice.infty.controllers.MyController
 import tornadofx.*
 
 
-class MyView: View() {
+class TreeView: View() {
 
     override val root = vbox {
         val myController = MyController()

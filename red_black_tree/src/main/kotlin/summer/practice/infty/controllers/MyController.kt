@@ -1,5 +1,8 @@
 package summer.practice.infty.controllers
+
 import javafx.scene.Group
+import summer.practice.infty.drawable.DrawableTree
+import summer.practice.infty.rbt.RedBlackTree
 import tornadofx.*
 
 class MyController: Controller(){
