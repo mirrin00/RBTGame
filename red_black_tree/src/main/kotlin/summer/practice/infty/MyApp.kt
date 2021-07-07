@@ -1,6 +1,6 @@
 package summer.practice.infty
 
-import summer.practice.infty.view.MainView
-import tornadofx.App
+import summer.practice.infty.view.TreeView
+import tornadofx.*
 
-class MyApp: App(MainView::class, Styles::class)
+class MyApp: App(TreeView::class, Styles::class)
