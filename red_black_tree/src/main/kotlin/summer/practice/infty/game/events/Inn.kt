@@ -1,18 +1,26 @@
 package summer.practice.infty.game.events
 
 import summer.practice.infty.game.Player
+import kotlin.math.max
+import kotlin.math.min
 
 class Inn(override val k_count: Int,
-          private val cost: Int): RoomEvent {
-    override val description: String = "" // TODO("Imagine description")
+          private val cost: Int,
+          private val max_regain: Int): RoomEvent {
+    override val description: String = "There is an inn for travelers. You " +
+            "can rest and regain health and magics up to $max_regain points." +
+            " The cost of rest is $cost"
 
     override fun actWithPlayer(player: Player) {
-        TODO("Not yet implemented")
+        player.health = max(max_regain, player.max_health)
+        player.magic = max(max_regain, player.max_magic)
     }
 
-    override fun canAct(player: Player) = player.coins > cost
+    override fun canAct(player: Player) = (player.coins > cost) &&
+                                          (min(player.magic, player.health) < max_regain) &&
+                                          (min(player.max_magic, player.max_health) >= max_regain)
 
-    override fun getRequirements(): String {
-        TODO("Not yet implemented")
-    }
+    override fun getUseDescription(): String = "You can regain your health and magic for $cost coins"
+
+    override fun getRequirements(): String = "You don't have a $cost coins or your health and magic is max for Inn"
 }

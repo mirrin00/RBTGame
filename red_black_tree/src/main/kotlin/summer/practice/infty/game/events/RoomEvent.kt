@@ -10,6 +10,8 @@ interface RoomEvent{
 
     fun getRequirements(): String
 
+    fun getUseDescription(): String
+
     fun canAct(player: Player): Boolean
 
     fun isVisible(player_perception: Int) = player_perception > k_count

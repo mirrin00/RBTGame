@@ -1,25 +1,24 @@
-package summer.practice.infty.game
+package summer.practice.infty.game.rooms
 
+import summer.practice.infty.game.creatures.Creature
+import summer.practice.infty.game.Element
+import summer.practice.infty.game.creatures.EmptyCreature
+import summer.practice.infty.game.events.EmptyEvent
 import summer.practice.infty.game.events.RoomEvent
 import summer.practice.infty.game.generators.Generator
 import java.lang.RuntimeException
 
-class UsualRoom: Room{
-    override lateinit var element: Element
+class UsualRoom(override val deep_level: Int): Room {
+    override var element: Element = Element.USUAL
         private set
-    override lateinit var creature: Creature
+    override var creature: Creature = EmptyCreature()
         private set
-    override lateinit var event: RoomEvent
+    override var event: RoomEvent = EmptyEvent()
         private set
+    override val type: RoomType = RoomType.USUAL_ROOM
 
     init{
         regenerateRoom(null)
-        if(!this::element.isInitialized)
-            throw RuntimeException("UsualRoom: element is not initialized")
-        if(!this::creature.isInitialized)
-            throw RuntimeException("UsualRoom: creature is not initialized")
-        if(!this::event.isInitialized)
-            throw RuntimeException("UsualRoom: creature is not initialized")
     }
 
     override fun regenerateRoom(red: Boolean?) {
@@ -48,7 +47,7 @@ class UsualRoom: Room{
                 else -> Element.USUAL
             }
         }
-        creature = Generator.generateCreature(element)
-        event = Generator.generateRoomEvent()
+        creature = Generator.generateCreature(deep_level, element)
+        event = Generator.generateRoomEvent(deep_level)
     }
 }

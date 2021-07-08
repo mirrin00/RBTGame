@@ -4,7 +4,7 @@ import summer.practice.infty.game.Player
 
 class Treasure(override val k_count: Int,
                private val coins_count: Int): RoomEvent{
-    override val description: String = "" // TODO("Imagine description")
+    override val description: String = "You find a treasure with $coins_count coins"
 
     override fun actWithPlayer(player: Player) {
         player.changeCoins(coins_count)
@@ -12,7 +12,7 @@ class Treasure(override val k_count: Int,
 
     override fun canAct(player: Player): Boolean = true
 
-    override fun getRequirements(): String {
-        TODO("Not yet implemented")
-    }
+    override fun getUseDescription(): String = getRequirements()
+
+    override fun getRequirements(): String = "You can take the treasure"
 }
