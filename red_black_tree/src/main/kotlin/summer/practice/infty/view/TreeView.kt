@@ -1,25 +1,39 @@
+package summer.practice.infty.view
+
+import javafx.beans.property.SimpleStringProperty
 import javafx.scene.Group
+import javafx.scene.control.ScrollPane
 import javafx.scene.layout.StackPane
 import tornadofx.*
 
+import summer.practice.infty.controllers.DrawingController
 
-class MyView: View() {
+
+class TreeView: View() {
 
     override val root = vbox {
-        val myController = MyController()
+        val myController = DrawingController()
+        val input = SimpleStringProperty()
 
         var mainPane = StackPane()
         var treeGroup: Group
 
         val scroll = scrollpane {
 
-            setMaxSize(600.0, 750.0)
             setMinSize(600.0, 750.0)
 
             hvalue = 0.5
             vvalue = 0.5
 
             mainPane = stackpane {
+
+                treeGroup = Group()
+
+                setMinSize(1000000.0, 1000000.0) //TODO: add resize
+                isPannable = true
+                hbarPolicy = ScrollPane.ScrollBarPolicy.NEVER
+                vbarPolicy = ScrollPane.ScrollBarPolicy.NEVER
+
 
                 setOnScroll {
                     val movement = it.deltaY
@@ -34,19 +48,17 @@ class MyView: View() {
 
                     it.consume()
                 }
-
-                treeGroup = Group()
-
-                setMinSize(1000000.0, 1000000.0) //TODO: add resize
-                isPannable = true
             }
 
         }
 
+        textfield(input)
+
         button {
-            label("Draw+")
+            label("Add random node")
             action {
-                myController.addNode()
+
+                myController.addNodeAction()
                 treeGroup = myController.drawTree()
 
                 mainPane.clear()
@@ -58,9 +70,30 @@ class MyView: View() {
         }
 
         button {
-            label("Draw-")
+            label("Remove node")
             action {
-                myController.removeNodeAction()
+                try{
+                    myController.removeNodeAction(input.value.toInt())
+                    input.value = ""
+                    treeGroup = myController.drawTree()
+
+                    mainPane.clear()
+                    mainPane.add(treeGroup)
+
+                    scroll.hvalue = 0.5
+                    scroll.vvalue = 0.5
+                }
+                catch (e: Exception){
+
+                }
+            }
+        }
+
+        button {
+            label("Reset tree")
+            action {
+                myController.resetTree()
+
                 treeGroup = myController.drawTree()
 
                 mainPane.clear()
@@ -70,7 +103,6 @@ class MyView: View() {
                 scroll.vvalue = 0.5
             }
         }
-
 
     }
 }
