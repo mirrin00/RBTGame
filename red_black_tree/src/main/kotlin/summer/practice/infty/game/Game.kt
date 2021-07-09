@@ -3,6 +3,8 @@ package summer.practice.infty.game
 import kotlin.math.pow
 
 class Game {
+    val player = Player()
+
     companion object{
         var deep: Int = 0
             private set

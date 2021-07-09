@@ -8,4 +8,5 @@ enum class Element(val red: Boolean) {
     UNDERGROUND(true),
     HEAVENLY(false),
     USUAL(false),
+    NONE(false),
 }
