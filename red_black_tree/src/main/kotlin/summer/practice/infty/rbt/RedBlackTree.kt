@@ -2,8 +2,8 @@ package summer.practice.infty.rbt
 
 import kotlin.math.pow
 
-class RedBlackTree<T: Comparable<T>, V>: Iterable<V?> {
-    private var root: Node<T, V>? = null // root of the tree
+open class RedBlackTree<T: Comparable<T>, V>: Iterable<V?> {
+    protected var root: Node<T, V>? = null // root of the tree
     var height: Int = 0 // Height of the tree, not black!!!
         private set
 
@@ -34,7 +34,7 @@ class RedBlackTree<T: Comparable<T>, V>: Iterable<V?> {
     }
 
     // Insert the new value with key
-    fun insert(key: T, value: V?){
+    open fun insert(key: T, value: V?){
         if(root == null){
             height = 1
             root = Node(key, value)
@@ -144,7 +144,7 @@ class RedBlackTree<T: Comparable<T>, V>: Iterable<V?> {
     }
 
     // Deletes value by key and returns it, or null, if the key does not exist
-    fun delete(key: T): V?{
+    open fun delete(key: T): V?{
         val node = findNode(key)
         deleteNode(node)
         updateHeight()
