@@ -1,7 +1,6 @@
 package summer.practice.infty.view
 
 import javafx.beans.property.SimpleStringProperty
-import summer.practice.infty.controllers.MyController
 import javafx.scene.Group
 import javafx.scene.layout.BorderPane
 import javafx.scene.layout.StackPane

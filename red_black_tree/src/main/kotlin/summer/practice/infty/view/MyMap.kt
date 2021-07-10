@@ -1,6 +1,5 @@
 package summer.practice.infty.view
 
-import summer.practice.infty.controllers.MyController
 import javafx.scene.Group
 import javafx.scene.control.ScrollPane
 import javafx.scene.control.TextField
