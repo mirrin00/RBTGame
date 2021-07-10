@@ -1,22 +1,25 @@
 package summer.practice.infty.view
 
+import javafx.beans.property.SimpleStringProperty
 import javafx.scene.Group
+import javafx.scene.control.ScrollPane
 import javafx.scene.layout.StackPane
-import summer.practice.infty.controllers.MyController
 import tornadofx.*
+
+import summer.practice.infty.controllers.DrawingController
 
 
 class TreeView: View() {
 
     override val root = vbox {
-        val myController = MyController()
+        val myController = DrawingController()
+        val input = SimpleStringProperty()
 
         var mainPane = StackPane()
         var treeGroup: Group
 
         val scroll = scrollpane {
 
-            setMaxSize(600.0, 750.0)
             setMinSize(600.0, 750.0)
 
             hvalue = 0.5
@@ -24,32 +27,42 @@ class TreeView: View() {
 
             mainPane = stackpane {
 
-                setOnScroll {
-                    val movement = it.deltaY
-                    var zoomFactor = 1.05
-
-                    if (movement < 0){
-                        zoomFactor = 0.90
-                    }
-
-                    mainPane.scaleX = mainPane.scaleX * zoomFactor
-                    mainPane.scaleY = mainPane.scaleY * zoomFactor
-
-                    it.consume()
-                }
-
                 treeGroup = Group()
 
                 setMinSize(1000000.0, 1000000.0) //TODO: add resize
                 isPannable = true
+                hbarPolicy = ScrollPane.ScrollBarPolicy.NEVER
+                vbarPolicy = ScrollPane.ScrollBarPolicy.NEVER
+
+
+                setOnScroll {
+
+                    //limit x10 zoomIn
+                    if(mainPane.scaleX < 10 && it.deltaY > 0 || it.deltaY < 0) {
+                        val movement = it.deltaY
+                        var zoomFactor = 1.05
+
+                        if (movement < 0) {
+                            zoomFactor = 0.90
+                        }
+
+                        mainPane.scaleX = mainPane.scaleX * zoomFactor
+                        mainPane.scaleY = mainPane.scaleY * zoomFactor
+                    }
+
+                    it.consume()
+                }
             }
 
         }
 
+        textfield(input)
+
         button {
-            label("Draw+")
+            label("Add random node")
             action {
-                myController.addNode()
+
+                myController.addNodeAction()
                 treeGroup = myController.drawTree()
 
                 mainPane.clear()
@@ -61,9 +74,30 @@ class TreeView: View() {
         }
 
         button {
-            label("Draw-")
+            label("Remove node")
             action {
-                myController.removeNodeAction()
+                try{
+                    myController.removeNodeAction(input.value.toInt())
+                    input.value = ""
+                    treeGroup = myController.drawTree()
+
+                    mainPane.clear()
+                    mainPane.add(treeGroup)
+
+                    scroll.hvalue = 0.5
+                    scroll.vvalue = 0.5
+                }
+                catch (e: Exception){
+
+                }
+            }
+        }
+
+        button {
+            label("Reset tree")
+            action {
+                myController.resetTree()
+
                 treeGroup = myController.drawTree()
 
                 mainPane.clear()
@@ -73,7 +107,6 @@ class TreeView: View() {
                 scroll.vvalue = 0.5
             }
         }
-
 
     }
 }
