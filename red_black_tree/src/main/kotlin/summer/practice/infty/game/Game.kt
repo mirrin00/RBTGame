@@ -1,17 +1,27 @@
 package summer.practice.infty.game
 
-import kotlin.math.pow
-
 class Game {
     val player = Player()
+    private var cur_stage = Stages.WAY
 
-    companion object{
-        var deep: Int = 0
-            private set
-        fun getRatioFromDeep(local_deep: Int = deep): Double{
-            val base = 1.5
-            val ratio = 2.75
-            return ratio * base.pow(local_deep.toDouble())
+    fun next(){
+        cur_stage = when(cur_stage){
+            Stages.CREATURE -> Stages.EVENT
+            Stages.EVENT -> Stages.WAY
+            Stages.WAY -> Stages.CREATURE
         }
     }
+
+    // Debug method
+    fun debugStageDescription() = when(cur_stage){
+        Stages.CREATURE -> "It's description of creature stage"
+        Stages.EVENT -> "It's description of event"
+        Stages.WAY -> "It's description of ways"
+    }
+}
+
+private enum class Stages{
+    CREATURE,
+    EVENT,
+    WAY
 }
