@@ -10,7 +10,7 @@ import summer.practice.infty.rbt.RedBlackTree
 class DrawingController: Controller(){
     var numberOfElements = 0
     var tree = RedBlackTree<Int, Int>()
-    var drawableTree = DrawableTree<Int, Int>(tree)
+    var drawableTree = DrawableTree<Int, Int>(tree, draggableNodes = true)
 
     fun addNodeAction(){
 
@@ -26,13 +26,13 @@ class DrawingController: Controller(){
         tree.insert(key, (Math.random()*100).toInt())
         numberOfElements += 1
 
-        drawableTree.changeTree(DrawableTree(tree))
+        drawableTree.changeTree(DrawableTree(tree, draggableNodes = true))
     }
 
     fun removeNodeAction(key: Int){
         tree.delete(key)
 
-        drawableTree.changeTree(DrawableTree(tree))
+        drawableTree.changeTree(DrawableTree(tree, draggableNodes = true))
     }
 
     fun drawTree(): Group{
@@ -41,7 +41,7 @@ class DrawingController: Controller(){
 
     fun resetTree(){
         tree = RedBlackTree()
-        drawableTree = DrawableTree(tree)
+        drawableTree = DrawableTree(tree, draggableNodes = true)
         numberOfElements = 0
     }
 

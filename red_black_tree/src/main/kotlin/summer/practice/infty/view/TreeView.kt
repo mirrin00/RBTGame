@@ -36,15 +36,19 @@ class TreeView: View() {
 
 
                 setOnScroll {
-                    val movement = it.deltaY
-                    var zoomFactor = 1.05
 
-                    if (movement < 0){
-                        zoomFactor = 0.90
+                    //limit x10 zoomIn
+                    if(mainPane.scaleX < 10 && it.deltaY > 0 || it.deltaY < 0) {
+                        val movement = it.deltaY
+                        var zoomFactor = 1.05
+
+                        if (movement < 0) {
+                            zoomFactor = 0.90
+                        }
+
+                        mainPane.scaleX = mainPane.scaleX * zoomFactor
+                        mainPane.scaleY = mainPane.scaleY * zoomFactor
                     }
-
-                    mainPane.scaleX = mainPane.scaleX * zoomFactor
-                    mainPane.scaleY = mainPane.scaleY * zoomFactor
 
                     it.consume()
                 }

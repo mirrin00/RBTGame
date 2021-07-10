@@ -2,8 +2,6 @@ package summer.practice.infty.drawable
 
 import javafx.geometry.Point2D
 import javafx.scene.Group
-import javafx.scene.paint.Color
-import javafx.scene.shape.Circle
 import javafx.scene.shape.Line
 import tornadofx.*
 import kotlin.math.pow
@@ -14,7 +12,9 @@ import summer.practice.infty.rbt.RedBlackTree
 
 class DrawableTree<T : Comparable<T>, V>(tree: RedBlackTree<T, V> = RedBlackTree()
                                          , private val size: Double = 25.0
-                                         , private val gap: Double = 100.0) {
+                                         , private val gap: Double = 100.0
+                                         , private val draggableNodes: Boolean = false
+                                            ) {
 
     private val iter = tree.iterator()
     private var height = tree.height
@@ -29,7 +29,7 @@ class DrawableTree<T : Comparable<T>, V>(tree: RedBlackTree<T, V> = RedBlackTree
         val hasLeft = iter.hasLeftSon()
         val hasRight = iter.hasRightSon()
 
-        val node = DrawableNode(curX, curY, iter, parentLink = parent)
+        val node = DrawableNode(curX, curY, iter, parentLink = parent, draggable = draggableNodes)
 
         val offset = ((((curHeight + 1) * (curHeight) + (size*2) * 2.0.pow(curHeight)) / 2) / 2 )
 
@@ -55,13 +55,6 @@ class DrawableTree<T : Comparable<T>, V>(tree: RedBlackTree<T, V> = RedBlackTree
         val queue: Queue<DrawableNode<T, V>> = LinkedList()
 
         if (root != null){
-
-            val rootOutline = Circle(size * 1.2)
-            rootOutline.fill = Color.WHITE
-            rootOutline.stroke = Color.GOLD
-            rootOutline.strokeWidth = size * 0.2
-            treeGroup.add(rootOutline)
-
             queue.add(root)
         }
 
@@ -189,10 +182,6 @@ class DrawableTree<T : Comparable<T>, V>(tree: RedBlackTree<T, V> = RedBlackTree
             node.nodeShape.layoutY = oldNode.nodeShape.layoutY
 
             timeline{
-
-                //node.parentLink?.hide()
-                //node.leftLink?.hide()
-                //node.rightLink?.hide()
 
                 keyframe(2.seconds){
 

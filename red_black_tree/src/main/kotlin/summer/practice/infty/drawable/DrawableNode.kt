@@ -13,7 +13,7 @@ import tornadofx.*
 import summer.practice.infty.rbt.RedBlackTreeIterator
 
 class DrawableNode<T, V>(nodeX:Double = 0.0, nodeY:Double = 0.0, private val iter: RedBlackTreeIterator<T, V>,
-                         var size: Double = 50.0, var parentLink: Line? = null)
+                         var size: Double = 50.0, var parentLink: Line? = null, draggable: Boolean = false)
 {
     val key = iter.getKey()
     var leftLink: Line? = null
@@ -63,30 +63,32 @@ class DrawableNode<T, V>(nodeX:Double = 0.0, nodeY:Double = 0.0, private val ite
 
             /*Code for draging nodes*/
 
-            var startX = 0.0
-            var startY = 0.0
-            var initialTranslateX = translateX
-            var initialTranslateY = translateY
+            if(draggable) {
+                var startX = 0.0
+                var startY = 0.0
+                var initialTranslateX = translateX
+                var initialTranslateY = translateY
 
 
-            nodeShape.setOnMousePressed{
-                startX = it.x
-                startY = it.y
-                initialTranslateX = translateX
-                initialTranslateY = translateY
+                nodeShape.setOnMousePressed {
+                    startX = it.x
+                    startY = it.y
+                    initialTranslateX = translateX
+                    initialTranslateY = translateY
 
-                nodeShape.scene.cursor = Cursor.MOVE
-            }
+                    nodeShape.scene.cursor = Cursor.MOVE
+                }
 
 
-            nodeShape.setOnMouseReleased{
-                nodeShape.scene.cursor = Cursor.HAND
-            }
+                nodeShape.setOnMouseReleased {
+                    nodeShape.scene.cursor = Cursor.HAND
+                }
 
-            nodeShape.setOnMouseDragged{
-                moveNode(initialTranslateX + it.x - startX, initialTranslateY + it.y - startY)
+                nodeShape.setOnMouseDragged {
+                    moveNode(initialTranslateX + it.x - startX, initialTranslateY + it.y - startY)
 
-                it.consume()
+                    it.consume()
+                }
             }
 
 
