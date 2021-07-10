@@ -14,6 +14,7 @@ class Inn(override val k_count: Int,
     override fun actWithPlayer(player: Player) {
         player.health = max(max_regain, player.max_health)
         player.magic = max(max_regain, player.max_magic)
+        player.coins -= cost
     }
 
     override fun canAct(player: Player) = (player.coins > cost) &&
