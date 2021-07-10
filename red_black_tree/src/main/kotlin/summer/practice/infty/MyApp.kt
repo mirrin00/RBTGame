@@ -1,4 +1,4 @@
-//package summer.practice.infty
+package summer.practice.infty
 
 import summer.practice.infty.view.TreeView
 import tornadofx.*
