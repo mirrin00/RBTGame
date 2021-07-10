@@ -7,7 +7,7 @@ class Treasure(override val k_count: Int,
     override val description: String = "You find a treasure with $coins_count coins"
 
     override fun actWithPlayer(player: Player) {
-        player.changeCoins(coins_count)
+        player.coins += coins_count
     }
 
     override fun canAct(player: Player): Boolean = true
