@@ -5,6 +5,7 @@ import javafx.scene.paint.Color
 import javafx.scene.paint.ImagePattern
 import javafx.scene.shape.Line
 import javafx.scene.text.Font
+import javafx.scene.text.Text
 import javafx.scene.text.TextBoundsType
 import summer.practice.infty.ResourceLoader
 
@@ -19,6 +20,7 @@ class PartialTree<T : Comparable<T>>(treeGame: RedBlackTreeGame<T>, curKey: T) {
     init{
 
         val roomsInfo = treeGame.getRoomWithSons(curKey)
+        val keys = treeGame.getLeftRightKeys(curKey)
 
 
         if(roomsInfo.first != null) {
@@ -44,6 +46,8 @@ class PartialTree<T : Comparable<T>>(treeGame: RedBlackTreeGame<T>, curKey: T) {
                     strokeWidth = 3.0
                     stroke = Color.GREEN
                 }
+
+                add(getTextForKey(curKey))
             }
 
             //Creating leftNode
@@ -72,6 +76,8 @@ class PartialTree<T : Comparable<T>>(treeGame: RedBlackTreeGame<T>, curKey: T) {
                         strokeWidth = 3.0
                         stroke = Color.BLACK
                     }
+
+                    if(keys.first != null) add(getTextForKey(keys.first!!))
                 }
                 treeGroup.add(leftNode)
             }
@@ -103,12 +109,29 @@ class PartialTree<T : Comparable<T>>(treeGame: RedBlackTreeGame<T>, curKey: T) {
                         strokeWidth = 3.0
                         stroke = Color.BLACK
                     }
+
+                    if(keys.second != null) add(getTextForKey(keys.second!!))
                 }
                 treeGroup.add(rightNode)
             }
 
             treeGroup.add(curNode)
         }
+    }
+
+    fun getTextForKey(key: T): Text{
+        val text = Text()
+        val keyValue = key.toString()
+        val size = 35.0/keyValue.length
+        text.x = -10.0
+        text.y = (size - 5.0)/2
+        text.text = keyValue
+        text.font = Font(size)
+        text.fill = Color.rgb(255,255,255,1.0)
+        text.stroke = Color.rgb(0,0,0,1.0)
+        text.strokeWidth = 1.0/keyValue.length
+        text.boundsType = TextBoundsType.LOGICAL
+        return text
     }
 
     fun getDrawnTree(): Group{
