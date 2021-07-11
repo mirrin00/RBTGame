@@ -1,7 +1,6 @@
 package summer.practice.infty.game
 
-private const val standard = 1.0
-private const val increased = 1.5
+private const val damage = 1.0
 private const val heath_damage = 0.5
 private const val no_damage = 0.0
 
@@ -9,82 +8,82 @@ fun getRatioFromElemets(attack: Element, def: Element): Double{
     return when(attack){
         Element.HELLISH -> {
             when(def){
-                Element.HELLISH -> standard
-                Element.MARINE -> increased
-                Element.FROSTY -> increased
-                Element.SANDY -> standard
-                Element.UNDERGROUND -> increased
-                Element.HEAVENLY -> standard
-                Element.USUAL -> increased
-                Element.NONE -> standard
+                Element.HELLISH -> no_damage
+                Element.MARINE -> damage
+                Element.FROSTY -> damage
+                Element.SANDY -> no_damage
+                Element.UNDERGROUND -> damage
+                Element.HEAVENLY -> no_damage
+                Element.USUAL -> damage
+                Element.NONE -> no_damage
             }
         }
         //------
         Element.MARINE -> {
             when(def){
-                Element.HELLISH -> increased
-                Element.MARINE -> standard
-                Element.FROSTY -> standard
-                Element.SANDY -> standard
-                Element.UNDERGROUND -> standard
-                Element.HEAVENLY -> increased
-                Element.USUAL -> increased
-                Element.NONE -> standard
+                Element.HELLISH -> damage
+                Element.MARINE -> no_damage
+                Element.FROSTY -> no_damage
+                Element.SANDY -> no_damage
+                Element.UNDERGROUND -> no_damage
+                Element.HEAVENLY -> damage
+                Element.USUAL -> damage
+                Element.NONE -> no_damage
             }
         }
         //------
         Element.FROSTY -> {
             when(def){
-                Element.HELLISH -> increased
-                Element.MARINE -> standard
-                Element.FROSTY -> standard
-                Element.SANDY -> standard
-                Element.UNDERGROUND -> standard
-                Element.HEAVENLY -> increased
-                Element.USUAL -> increased
-                Element.NONE -> standard
+                Element.HELLISH -> damage
+                Element.MARINE -> no_damage
+                Element.FROSTY -> no_damage
+                Element.SANDY -> no_damage
+                Element.UNDERGROUND -> no_damage
+                Element.HEAVENLY -> damage
+                Element.USUAL -> damage
+                Element.NONE -> no_damage
             }
         }
         //------
         Element.SANDY -> {
             when(def){
-                Element.HELLISH -> increased
-                Element.MARINE -> standard
-                Element.FROSTY -> increased
-                Element.SANDY -> standard
-                Element.UNDERGROUND -> standard
-                Element.HEAVENLY -> standard
-                Element.USUAL -> increased
-                Element.NONE -> standard
+                Element.HELLISH -> damage
+                Element.MARINE -> no_damage
+                Element.FROSTY -> damage
+                Element.SANDY -> no_damage
+                Element.UNDERGROUND -> no_damage
+                Element.HEAVENLY -> no_damage
+                Element.USUAL -> damage
+                Element.NONE -> no_damage
             }
         }
         //------
         Element.UNDERGROUND -> {
             when(def){
-                Element.HELLISH -> standard
-                Element.MARINE -> increased
-                Element.FROSTY -> standard
-                Element.SANDY -> standard
-                Element.UNDERGROUND -> standard
-                Element.HEAVENLY -> increased
-                Element.USUAL -> increased
-                Element.NONE -> standard
+                Element.HELLISH -> no_damage
+                Element.MARINE -> damage
+                Element.FROSTY -> no_damage
+                Element.SANDY -> no_damage
+                Element.UNDERGROUND -> no_damage
+                Element.HEAVENLY -> damage
+                Element.USUAL -> damage
+                Element.NONE -> no_damage
             }
         }
         //------
         Element.HEAVENLY -> {
             when(def){
-                Element.HELLISH -> increased
-                Element.MARINE -> increased
-                Element.FROSTY -> increased
-                Element.SANDY -> increased
-                Element.UNDERGROUND -> standard
-                Element.HEAVENLY -> standard
-                Element.USUAL -> increased
-                Element.NONE -> standard
+                Element.HELLISH -> damage
+                Element.MARINE -> damage
+                Element.FROSTY -> damage
+                Element.SANDY -> damage
+                Element.UNDERGROUND -> no_damage
+                Element.HEAVENLY -> no_damage
+                Element.USUAL -> damage
+                Element.NONE -> no_damage
             }
         }
-        else -> standard
+        else -> no_damage
     }
 }
 

@@ -1,17 +1,18 @@
 package summer.practice.infty.game
 
+import summer.practice.infty.game.creatures.Creature
 import summer.practice.infty.game.items.Item
 import summer.practice.infty.game.items.ItemType
 import summer.practice.infty.game.items.generateEmptyItem
 import kotlin.math.min
 import kotlin.random.Random
 
-private const val WEAPON_INDEX = 0
-private const val ARMOR_INDEX = 1
-private const val MAGIC_INDEX = 2
-private const val AMULET_INDEX = 3
+const val WEAPON_INDEX = 0
+const val ARMOR_INDEX = 1
+const val MAGIC_INDEX = 2
+const val AMULET_INDEX = 3
 
-class Player{
+class Player(private val game: Game){
     var coins: Int = 0
         set(value) {
             field = if(value < 0) 0
@@ -37,6 +38,8 @@ class Player{
                 else -> value
             }
         }
+    var in_fight: Boolean = false
+    var cur_room: Int = 0
     // Attributes
     // Basic value of attributes
     private val basic_perception: Int = Random.nextInt(1,10)
@@ -52,8 +55,8 @@ class Player{
         private set
     var intelligence: Int = basic_intelligence
         private set
-    private val inventory = Array<Item>(INVENTORY_CAPACITY){ generateEmptyItem()}
-    private val active_items = Array<Item>(4){ generateEmptyItem()}
+    private val inventory = Array<Item>(INVENTORY_CAPACITY){ val v = generateEmptyItem(); v.inv_number = it; v}
+    private val active_items = Array<Item>(4){ val v = generateEmptyItem(); v.inv_number = it; v}
 
     private fun recalculateAttributes(){
         perception = basic_perception
@@ -84,6 +87,7 @@ class Player{
         active_items[index] = inventory[item.inv_number].also{
             inventory[item.inv_number] = active_items[index]
         }
+        inventory[item.inv_number].inv_number = active_items[index].inv_number
         recalculateAttributes()
     }
 
@@ -97,7 +101,93 @@ class Player{
         inventory[index1] = inventory[index2].also{
             inventory[index2] = inventory[index1]
         }
+        inventory[index1].inv_number = index2
+        inventory[index2].inv_number = index1
     }
+
+    fun removeInventoryItem(item: Item){
+        removeInventoryItem(item.inv_number)
+    }
+
+    fun removeInventoryItem(index: Int){
+        if(index in 0 until INVENTORY_CAPACITY){
+            inventory[index] = generateEmptyItem()
+        }
+    }
+
+    fun getItemsCountInInventory(): Int{
+        var count = 0
+        inventory.forEach { if(it.type == ItemType.EMPTY) count++ }
+        return count
+    }
+
+    fun AddItem(item: Item){
+        for(i in inventory.indices){
+            if(inventory[i].type == ItemType.EMPTY){
+                item.inv_number = i
+                inventory[i] = item
+            }
+        }
+    }
+
+    fun soldInventoryItem(index: Int){
+        if(index !in 0 until INVENTORY_CAPACITY) return
+        coins += inventory[index].price
+        inventory[index] = generateEmptyItem()
+    }
+
+    fun soldActiveItem(index: Int){
+        if(index !in active_items.indices) return
+        coins += active_items[index].price
+        active_items[index] = generateEmptyItem()
+    }
+
+    fun Attack(creature: Creature, by_magic: Boolean = false){
+        var att = if(by_magic) active_items[MAGIC_INDEX] else active_items[WEAPON_INDEX]
+        if(by_magic){
+            while(magic < att.cost && hasMagicPotion()){
+                useMagicPotion()
+            }
+            if(magic < att.cost) att = active_items[WEAPON_INDEX]
+        }
+        creature.health -= (att.basic_value * creature.getDamageRatio(by_magic) +
+                att.attr_value * getRatioFromElemets(att.element, creature.element)).toInt()
+        health -= (att.attr_value * getHealthDamageOfElemnts(att.element, creature.element)).toInt()
+    }
+
+    fun getArmorElement() = active_items[ARMOR_INDEX].element
+
+    fun hasHealthPotion(): Boolean{
+        for(item in inventory)
+            if(item.type == ItemType.HEALTH_POTION) return true
+        return false
+    }
+
+    fun hasMagicPotion(): Boolean{
+        for(item in inventory)
+            if(item.type == ItemType.MAGIC_POTION) return true
+        return false
+    }
+
+    fun useHealthPotion(){
+        var potion = generateEmptyItem()
+        for(item in inventory)
+            if(item.type == ItemType.HEALTH_POTION)
+                potion = if(potion.basic_value > item.basic_value) item else potion
+        potion.use(this)
+    }
+
+    fun useMagicPotion(){
+        var potion = generateEmptyItem()
+        for(item in inventory)
+            if(item.type == ItemType.MAGIC_POTION)
+                potion = if(potion.basic_value > item.basic_value) item else potion
+        potion.use(this)
+    }
+
+    fun getInventoryCapacity() = INVENTORY_CAPACITY
+
+    fun getActiveCapacity() = active_items.size
 
     companion object{
         const val INVENTORY_CAPACITY = 6
