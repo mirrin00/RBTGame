@@ -54,12 +54,13 @@ class RedBlackTreeGame<T: Comparable<T>>: RedBlackTree<T, Room>(){
 
     // Returns room by key and it sons. All can be null
     fun getRoomWithSons(key: T): Triple<Room?, Room?, Room?>{
-        var cur = root
-        while(cur != null){
-            if(key == cur.key) break
-            cur = if(key < cur.key) cur.left
-            else cur.right
-        }
+        val cur = getNodeAndDepth(key).first
         return Triple(cur?.data, cur?.left?.data, cur?.right?.data)
+    }
+
+    // Returns keys of sons
+    fun getLeftRightKeys(key: T): Pair<T?, T?>{
+        val cur = getNodeAndDepth(key).first
+        return Pair(cur?.left?.key, cur?.right?.key)
     }
 }
