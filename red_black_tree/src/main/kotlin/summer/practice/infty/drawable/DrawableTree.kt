@@ -1,7 +1,5 @@
 package summer.practice.infty.drawable
 
-import summer.practice.infty.game.rooms.*
-
 import javafx.geometry.Point2D
 import javafx.scene.Group
 import javafx.scene.shape.Line
@@ -12,7 +10,7 @@ import java.util.LinkedList
 
 import summer.practice.infty.rbt.RedBlackTree
 
-class DrawableTree<T : Comparable<T>>(tree: RedBlackTree<T, Room> = RedBlackTree()
+class DrawableTree<T : Comparable<T>, V>(tree: RedBlackTree<T, V> = RedBlackTree()
                                          , private val size: Double = 25.0
                                          , private val gap: Double = 100.0
                                          , private val draggableNodes: Boolean = false
@@ -20,9 +18,9 @@ class DrawableTree<T : Comparable<T>>(tree: RedBlackTree<T, Room> = RedBlackTree
 
     private val iter = tree.iterator()
     private var height = tree.height
-    private var root: DrawableNode<T>? = createNode(0.0, 0.0, height)
+    private var root: DrawableNode<T, V>? = createNode(0.0, 0.0, height)
 
-    private fun createNode(curX: Double, curY: Double, curHeight: Int, parent: Line? = null): DrawableNode<T>?{
+    private fun createNode(curX: Double, curY: Double, curHeight: Int, parent: Line? = null): DrawableNode<T, V>?{
 
         if(!iter.hasNext()){
             return null
@@ -38,12 +36,14 @@ class DrawableTree<T : Comparable<T>>(tree: RedBlackTree<T, Room> = RedBlackTree
         if(hasLeft){
             node.leftLink = Line(curX, curY, curX - offset, curY + gap)
             node.leftLink!!.strokeWidth = size * 0.12
+            iter.next()
             node.leftNode = createNode(curX - offset, curY + gap, curHeight-1, node.leftLink)
         }
 
         if(hasRight){
             node.rightLink = Line(curX, curY, curX + offset, curY + gap)
             node.rightLink!!.strokeWidth = size * 0.12
+            iter.next()
             node.rightNode = createNode(curX + offset, curY + gap, curHeight-1, node.rightLink)
         }
 
@@ -52,13 +52,13 @@ class DrawableTree<T : Comparable<T>>(tree: RedBlackTree<T, Room> = RedBlackTree
 
     fun createDrawnTree(): Group{
         val treeGroup = Group()
-        val queue: Queue<DrawableNode<T>> = LinkedList()
+        val queue: Queue<DrawableNode<T, V>> = LinkedList()
 
         if (root != null){
             queue.add(root)
         }
 
-        var curNode: DrawableNode<T>
+        var curNode: DrawableNode<T, V>
         while(!queue.isEmpty()) {
             curNode = queue.remove()
 
@@ -88,9 +88,9 @@ class DrawableTree<T : Comparable<T>>(tree: RedBlackTree<T, Room> = RedBlackTree
 
     }
 
-    fun getNode(key: T): DrawableNode<T>?{
+    fun getNode(key: T): DrawableNode<T, V>?{
 
-        val queue: Queue<DrawableNode<T>> = LinkedList()
+        val queue: Queue<DrawableNode<T, V>> = LinkedList()
 
         if(root == null){
             return null
@@ -98,7 +98,7 @@ class DrawableTree<T : Comparable<T>>(tree: RedBlackTree<T, Room> = RedBlackTree
 
         queue.add(root)
 
-        var curNode: DrawableNode<T>? = null
+        var curNode: DrawableNode<T, V>? = null
         while(!queue.isEmpty()){
             curNode = queue.remove()
 
@@ -125,15 +125,15 @@ class DrawableTree<T : Comparable<T>>(tree: RedBlackTree<T, Room> = RedBlackTree
 
     }
 
-    private fun getRoot(): DrawableNode<T>?{
+    private fun getRoot(): DrawableNode<T, V>?{
         return root
     }
 
-    fun changeTree(other: DrawableTree<T>){
-        val nodesToChange = ArrayList<DrawableNode<T>>(0)
+    fun changeTree(other: DrawableTree<T, V>){
+        val nodesToChange = ArrayList<DrawableNode<T, V>>(0)
         val addedKeys = ArrayList<T>(0)
 
-        val queue: Queue<DrawableNode<T>> = LinkedList()
+        val queue: Queue<DrawableNode<T, V>> = LinkedList()
 
         if(other.getRoot() == null){
             root = null
@@ -142,7 +142,7 @@ class DrawableTree<T : Comparable<T>>(tree: RedBlackTree<T, Room> = RedBlackTree
 
         queue.add(other.getRoot())
 
-        var curNode: DrawableNode<T>?
+        var curNode: DrawableNode<T, V>?
 
         while(!queue.isEmpty()){
             curNode = queue.remove()
@@ -168,7 +168,7 @@ class DrawableTree<T : Comparable<T>>(tree: RedBlackTree<T, Room> = RedBlackTree
 
 
         var offset = 0.0
-        var node: DrawableNode<T>
+        var node: DrawableNode<T, V>
 
 
         for(oldNode in nodesToChange){

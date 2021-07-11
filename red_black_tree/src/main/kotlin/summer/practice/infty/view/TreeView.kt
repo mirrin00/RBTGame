@@ -108,18 +108,6 @@ class TreeView: View() {
             }
         }
 
-        button {
-            label("Draw current")
-            action {
-                treeGroup = myController.drawCurrent(input.value.toInt())
-                input.value = ""
-
-                mainPane.clear()
-                mainPane.add(treeGroup)
-
-            }
-        }
-
     }
 }
 

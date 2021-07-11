@@ -5,21 +5,16 @@ import tornadofx.*
 import java.util.*
 
 import summer.practice.infty.drawable.DrawableTree
-import summer.practice.infty.drawable.PartialTree
 import summer.practice.infty.rbt.RedBlackTree
-import summer.practice.infty.rbt.RedBlackTreeGame
-import summer.practice.infty.game.rooms.Room
-import summer.practice.infty.game.rooms.EmptyRoom
-import summer.practice.infty.game.rooms.UsualRoom
 
 class DrawingController: Controller(){
     var numberOfElements = 0
-    var tree = RedBlackTreeGame<Int>()
-    var drawableTree = DrawableTree<Int>(tree, draggableNodes = true)
+    var tree = RedBlackTree<Int, Int>()
+    var drawableTree = DrawableTree<Int, Int>(tree, draggableNodes = true)
 
     fun addNodeAction(){
 
-        if(numberOfElements > 99){
+        if(numberOfElements > 100){
             return
         }
 
@@ -28,7 +23,7 @@ class DrawingController: Controller(){
             key = (Math.random()*100).toInt()
         }
 
-        tree.insert(key, UsualRoom(1))
+        tree.insert(key, (Math.random()*100).toInt())
         numberOfElements += 1
 
         drawableTree.changeTree(DrawableTree(tree, draggableNodes = true))
@@ -45,15 +40,9 @@ class DrawingController: Controller(){
     }
 
     fun resetTree(){
-        tree = RedBlackTreeGame()
+        tree = RedBlackTree()
         drawableTree = DrawableTree(tree, draggableNodes = true)
         numberOfElements = 0
-    }
-
-    fun drawCurrent(curKey: Int): Group{
-        var partialTree = PartialTree<Int>(tree, curKey)
-
-        return partialTree.getDrawnTree()
     }
 
 }

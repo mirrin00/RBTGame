@@ -1,5 +1,7 @@
 package summer.practice.infty.rbt
 
+import kotlin.math.pow
+
 open class RedBlackTree<T: Comparable<T>, V>: Iterable<V?> {
     protected var root: Node<T, V>? = null // root of the tree
     var height: Int = 0 // Height of the tree, not black!!!
@@ -91,7 +93,7 @@ open class RedBlackTree<T: Comparable<T>, V>: Iterable<V?> {
     // Balance the tree after insert
     private fun insertBalance(node: Node<T, V>?){
         if(node == null) return
-        rotateInsert(node)
+        rotate(node)
         recolor(node)
     }
 
@@ -112,7 +114,7 @@ open class RedBlackTree<T: Comparable<T>, V>: Iterable<V?> {
     }
 
     // Checks, if rotation is possible, and performs it
-    private fun rotateInsert(node: Node<T, V>){
+    private fun rotate(node: Node<T, V>){
         val parent = node.parent ?: return
         val grandparent = parent.parent ?: return
         val uncle = if(parent.is_left) grandparent.right
