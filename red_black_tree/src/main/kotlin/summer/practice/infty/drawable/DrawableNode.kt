@@ -19,16 +19,20 @@ import summer.practice.infty.rbt.RedBlackTreeIterator
 class DrawableNode<T>(nodeX:Double = 0.0, nodeY:Double = 0.0, private val iter: RedBlackTreeIterator<T, Room>,
                          var size: Double = 50.0, var parentLink: Line? = null, draggable: Boolean = false)
 {
+    //Values of node
     val key = iter.getKey()
-    var leftLink: Line? = null
-    var rightLink: Line? = null
     var leftNode: DrawableNode<T>? = null
     var rightNode: DrawableNode<T>? = null
 
+
+    //Shapes of node
     var nodeShape = Group()
+    var leftLink: Line? = null
+    var rightLink: Line? = null
     private val mainShape = Circle()
     var textInNode = Text()
 
+    //Color of node
     private val color: Color = if (iter.isRed()) {Color.RED}
                 else {Color.BLACK}
 
@@ -71,7 +75,7 @@ class DrawableNode<T>(nodeX:Double = 0.0, nodeY:Double = 0.0, private val iter: 
             add(mainShape)
             add(textInNode)
 
-            /*Code for draging nodes*/
+            /*Code for dragging nodes*/
 
             if(draggable) {
                 var startX = 0.0

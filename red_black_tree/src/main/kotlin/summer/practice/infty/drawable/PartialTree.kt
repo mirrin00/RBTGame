@@ -22,7 +22,8 @@ class PartialTree<T : Comparable<T>>(treeGame: RedBlackTreeGame<T>, curKey: T) {
 
 
         if(roomsInfo.first != null) {
-            //creating curNode
+
+            //Creating curNode
             val curNode = Group()
 
             curNode.apply {
@@ -48,6 +49,7 @@ class PartialTree<T : Comparable<T>>(treeGame: RedBlackTreeGame<T>, curKey: T) {
 
             //Creating leftNode
             if(roomsInfo.second != null){
+
                 //Link to leftNode
                 val leftLink = Line(0.0, 0.0, -50.0, 100.0)
                 leftLink.strokeWidth = 3.0
@@ -79,6 +81,7 @@ class PartialTree<T : Comparable<T>>(treeGame: RedBlackTreeGame<T>, curKey: T) {
 
             //Creating rightNode
             if(roomsInfo.third != null){
+
                 //Link to rightNode
                 val rightLink = Line(0.0, 0.0, 50.0, 100.0)
                 rightLink.strokeWidth = 3.0
@@ -111,6 +114,8 @@ class PartialTree<T : Comparable<T>>(treeGame: RedBlackTreeGame<T>, curKey: T) {
         }
     }
 
+
+    //Return group that can be added to plane
     fun getDrawnTree(): Group{
         return treeGroup
     }
