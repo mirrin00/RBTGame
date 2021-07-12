@@ -193,17 +193,19 @@ open class RedBlackTree<T: Comparable<T>, V>: Iterable<V?> {
 
     // Balances tree after deletion
     private fun deleteBalance(node: Node<T, V>?,
-                              parent: Node<T, V>,
+                              parent_node: Node<T, V>,
                               is_left: Boolean = true){/* true, if node is left
                                                           son of parent */
         if(isRedNode(node)){
             node?.is_red = false
             return
         }
+        var parent = parent_node
         var sibling = parent.getSon(!(node?.is_left ?: is_left))
         // sibling not null, because red node can not be null
         if(isRedNode(sibling)){
             rotate(sibling!!, parent)
+            parent = sibling
             sibling = sibling.getSon(!sibling.is_left)
         }
         /*
