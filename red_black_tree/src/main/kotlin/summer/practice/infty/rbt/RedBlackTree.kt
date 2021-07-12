@@ -240,4 +240,10 @@ open class RedBlackTree<T: Comparable<T>, V>: Iterable<V?> {
     override fun iterator(): RedBlackTreeIterator<T, V> {
         return RedBlackTreeIterator<T, V>(root)
     }
+
+    // Clears the tree
+    fun clear(){
+        root = null
+        height = 0
+    }
 }

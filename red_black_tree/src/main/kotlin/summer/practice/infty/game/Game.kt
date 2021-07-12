@@ -19,7 +19,6 @@ class Game {
     var creature: Creature = EmptyCreature()
     var event: RoomEvent = EmptyEvent()
     private var cur_stage = Stages.WAY
-    private var depth_level = 0
     private var adds = 0
     private var dels = 0
 
@@ -47,6 +46,7 @@ class Game {
         if(creature !is Trader || index >= 3 ||
            player.getItemsCountInInventory() >= player.getInventoryCapacity()) return
         (creature as? Trader)?.buy(index, player)
+        adds += 1
     }
 
     fun sold(item_index: Int, active: Boolean = false){
@@ -61,6 +61,7 @@ class Game {
         val b = creature as? Bandit ?: return
         if(player.coins >= b.pay_cost){
             player.coins -= b.pay_cost
+            adds += 2
             next()
         }
     }
@@ -70,6 +71,7 @@ class Game {
         val b = creature as? Bandit ?: return
         b.in_battle = true
         player.in_fight = true
+        dels += 2
     }
 
     fun fight(by_magic: Boolean){
@@ -80,12 +82,15 @@ class Game {
             if(player.health <= 0 && player.hasHealthPotion())
                 player.useHealthPotion()
         }
+        adds += if(by_magic) 1 else 2
+        dels += if(by_magic) 2 else 1
         if(player.health <= 0) end()
         else next()
     }
 
     fun actEvent(){
         if(event.canAct(player)){
+            adds += 1
             changeTree()
             event.actWithPlayer(player)
             next()
@@ -106,7 +111,10 @@ class Game {
     }
 
     fun start(){
-        TODO("Start game")
+        generateEasyTree()
+        player.cur_room = tree.iterator().getKey()
+        room = tree.find(player.cur_room)!!
+        cur_stage = Stages.WAY
     }
 
     private fun end(){
@@ -148,6 +156,12 @@ class Game {
         tree.deleteRooms(*arr)
         adds = 0
         dels = 0
+    }
+
+    private fun generateEasyTree(){
+        tree.clear()
+        val keys = Array<Int>(Random.nextInt(50, 80)){Random.nextInt(0, 1000)}
+        tree.insertRooms(*keys)
     }
 
     // Debug method
