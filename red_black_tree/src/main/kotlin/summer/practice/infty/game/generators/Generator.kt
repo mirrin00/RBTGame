@@ -13,15 +13,15 @@ object Generator{
     private val room_event_fabric: RoomEventFabric = UsualRoomEventFabric()
     private val item_fabric: ItemFabric = GameItemFabric()
 
-    fun generateRoom(deep_level: Int) = room_fabric.generateRoom(deep_level)
+    fun generateRoom(depth_level: Int) = room_fabric.generateRoom(depth_level)
 
-    fun generateCreature(deep_level: Int, element: Element) = creature_fabric.generateCreature(deep_level, element)
+    fun generateCreature(depth_level: Int, element: Element) = creature_fabric.generateCreature(depth_level, element)
 
-    fun generateRoomEvent(deep_level: Int) = room_event_fabric.generateRoomEvent(deep_level)
+    fun generateRoomEvent(depth_level: Int) = room_event_fabric.generateRoomEvent(depth_level)
 
-    fun generateItem(deep_level: Int) = item_fabric.generateItem(deep_level)
+    fun generateItem(depth_level: Int) = item_fabric.generateItem(depth_level)
 
-    fun getRandomFromDeep(deep_level: Int) = getRatioFromDeep(deep_level) * Random.nextDouble(0.5, 2.5)
+    fun getRandomFromDepth(depth_level: Int) = getRatioFromDeep(depth_level) * Random.nextDouble(0.5, 2.5)
 
     fun generateElement(red: Boolean? = null): Element{
         if(red == null){
@@ -52,13 +52,14 @@ object Generator{
         }
     }
 
-    fun generateItemType(): ItemType = when((0 until ItemType.values().size - 2).random()){
+    fun generateItemType(): ItemType = when((0 until ItemType.values().size - 1).random()){
         0 -> ItemType.ARMOR
         1 -> ItemType.WEAPON
         2 -> ItemType.MAGIC
         3 -> ItemType.AMULET
         4 -> ItemType.MAGIC_POTION
         5 -> ItemType.HEALTH_POTION
+        6 -> ItemType.OTHER
         else -> ItemType.OTHER
     }
 
