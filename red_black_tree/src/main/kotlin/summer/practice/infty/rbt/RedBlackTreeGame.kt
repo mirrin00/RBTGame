@@ -39,6 +39,12 @@ class RedBlackTreeGame<T: Comparable<T>>: RedBlackTree<T, Room>(){
         regenerateRooms(root)
     }
 
+    // Deletes set of Rooms
+    fun deleteRooms(vararg keys: T){
+        for(key in keys) super.delete(key)
+        regenerateRooms(root)
+    }
+
     // Room insertion and rooms regeneration for color matching
     override fun insert(key: T, value: Room?) {
         super.insert(key, value)

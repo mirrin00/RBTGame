@@ -121,7 +121,7 @@ class Player(private val game: Game){
         return count
     }
 
-    fun AddItem(item: Item){
+    fun addItem(item: Item){
         for(i in inventory.indices){
             if(inventory[i].type == ItemType.EMPTY){
                 item.inv_number = i

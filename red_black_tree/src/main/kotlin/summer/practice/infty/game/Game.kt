@@ -10,24 +10,35 @@ import summer.practice.infty.game.events.RoomEvent
 import summer.practice.infty.game.rooms.EmptyRoom
 import summer.practice.infty.game.rooms.Room
 import summer.practice.infty.rbt.RedBlackTreeGame
+import kotlin.random.Random
 
 class Game {
-    val tree = RedBlackTreeGame<Int>()
+    private val tree = RedBlackTreeGame<Int>()
     val player = Player(this)
     var room: Room = EmptyRoom()
     var creature: Creature = EmptyCreature()
     var event: RoomEvent = EmptyEvent()
     private var cur_stage = Stages.WAY
     private var depth_level = 0
+    private var adds = 0
+    private var dels = 0
 
     fun next(){
         cur_stage = when(cur_stage){
             Stages.CREATURE ->{
-                if(event.isVisible(player.perception)) Stages.EVENT
-                else Stages.WAY
+                if(event.isVisible(player.perception)){
+                    Stages.EVENT
+                }else{
+                    changeTree()
+                    Stages.WAY
+                }
             }
             Stages.EVENT -> Stages.WAY
-            Stages.WAY -> Stages.CREATURE
+            Stages.WAY -> {
+                creature = room.creature
+                event = room.event
+                Stages.CREATURE
+            }
         }
     }
 
@@ -75,13 +86,23 @@ class Game {
 
     fun actEvent(){
         if(event.canAct(player)){
+            changeTree()
             event.actWithPlayer(player)
             next()
         }
     }
 
     fun nextRoom(left: Boolean){
-
+        val left_right = tree.getLeftRightKeys(player.cur_room)
+        if(left_right.first == null && left_right.second == null) win()
+        if(left){
+            player.cur_room = if(left_right.first != null) left_right.first!!
+                              else left_right.second!!
+        }else{
+            player.cur_room = if(left_right.second != null) left_right.second!!
+                              else left_right.first!!
+        }
+        room = tree.find(player.cur_room)!!
     }
 
     fun start(){
@@ -90,6 +111,43 @@ class Game {
 
     private fun end(){
         TODO("End Game")
+    }
+
+    private fun win(){
+        TODO("Win Game")
+    }
+
+    fun increaseNumberOfRoomAdds(inc: Int){
+        if(inc < 0) return
+        adds += inc
+    }
+
+    fun increaseNumberOfRoomDels(inc: Int){
+        if(inc < 0) return
+        dels += inc
+    }
+
+    private fun changeTree(){
+        val key_min = player.cur_room - 100
+        val key_max = player.cur_room + 100
+        var arr = Array<Int>(adds * 5){
+            var key: Int
+            do{
+                key = Random.nextInt(key_min, key_max)
+            }while(key == player.cur_room)
+            key
+        }
+        tree.insertRooms(*arr)
+        arr = Array<Int>(dels * 3){
+            var key: Int
+            do{
+                key = Random.nextInt(key_min, key_max)
+            }while(key == player.cur_room)
+            key
+        }
+        tree.deleteRooms(*arr)
+        adds = 0
+        dels = 0
     }
 
     // Debug method
