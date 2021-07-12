@@ -1,7 +1,5 @@
 package summer.practice.infty.rbt
 
-import kotlin.math.pow
-
 open class RedBlackTree<T: Comparable<T>, V>: Iterable<V?> {
     protected var root: Node<T, V>? = null // root of the tree
     var height: Int = 0 // Height of the tree, not black!!!
@@ -93,7 +91,7 @@ open class RedBlackTree<T: Comparable<T>, V>: Iterable<V?> {
     // Balance the tree after insert
     private fun insertBalance(node: Node<T, V>?){
         if(node == null) return
-        rotate(node)
+        rotateInsert(node)
         recolor(node)
     }
 
@@ -114,7 +112,7 @@ open class RedBlackTree<T: Comparable<T>, V>: Iterable<V?> {
     }
 
     // Checks, if rotation is possible, and performs it
-    private fun rotate(node: Node<T, V>){
+    private fun rotateInsert(node: Node<T, V>){
         val parent = node.parent ?: return
         val grandparent = parent.parent ?: return
         val uncle = if(parent.is_left) grandparent.right
@@ -195,17 +193,19 @@ open class RedBlackTree<T: Comparable<T>, V>: Iterable<V?> {
 
     // Balances tree after deletion
     private fun deleteBalance(node: Node<T, V>?,
-                              parent: Node<T, V>,
+                              parent_node: Node<T, V>,
                               is_left: Boolean = true){/* true, if node is left
                                                           son of parent */
         if(isRedNode(node)){
             node?.is_red = false
             return
         }
+        var parent = parent_node
         var sibling = parent.getSon(!(node?.is_left ?: is_left))
         // sibling not null, because red node can not be null
         if(isRedNode(sibling)){
             rotate(sibling!!, parent)
+            parent = sibling
             sibling = sibling.getSon(!sibling.is_left)
         }
         /*
