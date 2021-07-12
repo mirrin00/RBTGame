@@ -21,7 +21,7 @@ object Generator{
 
     fun generateItem(depth_level: Int) = item_fabric.generateItem(depth_level)
 
-    fun getRandomFromDeep(depth_level: Int) = getRatioFromDeep(depth_level) * Random.nextDouble(0.5, 2.5)
+    fun getRandomFromDepth(depth_level: Int) = getRatioFromDeep(depth_level) * Random.nextDouble(0.5, 2.5)
 
     fun generateElement(red: Boolean? = null): Element{
         if(red == null){

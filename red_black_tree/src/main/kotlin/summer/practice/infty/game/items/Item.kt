@@ -17,14 +17,24 @@ class Item(val element: Element,
     val attr_value: Int = if(attr == Attributes.DEXTERITY) min(80, attr_val)
                           else attr_val
 
-    val tip: String = when(type){
-        ItemType.WEAPON -> "Sword\n" + getDescription()
-        ItemType.ARMOR -> "Armor\n" + getDescription()
-        ItemType.MAGIC -> "Magic scroll\n" + getDescription()
-        ItemType.AMULET -> "Mysterious amulet\nElement: $element\n$attr: $attr_value"
-        ItemType.HEALTH_POTION -> "Health potion\nHealth restore: $basic_value\nPrice: $price"
-        ItemType.MAGIC_POTION -> "Magic potion\nMagic restore: $basic_value\nPrice: $price"
-        ItemType.OTHER -> "Relic\nPrice: $price"
+    val string_type: String = when(type){
+        ItemType.WEAPON -> "Weapon"
+        ItemType.ARMOR -> "Armor"
+        ItemType.MAGIC -> "Magic scroll"
+        ItemType.AMULET -> "Mysterious amulet"
+        ItemType.HEALTH_POTION -> "Health potion"
+        ItemType.MAGIC_POTION -> "Magic potion"
+        ItemType.OTHER -> "Relic"
+        ItemType.EMPTY -> ""
+    }
+    val tip: String = string_type + "\n" + when(type){
+        ItemType.WEAPON -> getDescription()
+        ItemType.ARMOR -> getDescription()
+        ItemType.MAGIC -> getDescription()
+        ItemType.AMULET -> "Element: $element\n$attr: $attr_value"
+        ItemType.HEALTH_POTION -> "Health restore: $basic_value\nPrice: $price"
+        ItemType.MAGIC_POTION -> "Magic restore: $basic_value\nPrice: $price"
+        ItemType.OTHER -> "Price: $price"
         ItemType.EMPTY -> ""
     }
 

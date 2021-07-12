@@ -9,8 +9,10 @@ class EmptyCreature: Creature{
     override var health: Int = 0
     override val damage: Int = 0
     override var in_battle: Boolean = false
+    override val description: String = ""
+    override val win_description: String = ""
 
-    override fun Attack(player: Player){}
+    override fun attack(player: Player){}
 
     override fun getDamageRatio(magic: Boolean): Double = 0.0
 

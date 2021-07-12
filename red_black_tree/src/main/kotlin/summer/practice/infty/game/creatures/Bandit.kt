@@ -12,6 +12,9 @@ class Bandit(override val element: Element,
              override val damage: Int,
              val pay_cost: Int): Creature{
     override var in_battle: Boolean = false
+    override val description: String = "The bandit ambushed you while you were walking along the trail. " +
+                                       "You can pay him $pay_cost coins to let you go, or you can fight him"
+    override val win_description: String = "The Bandit has been killed. You can move on."
 
     override fun getDamageRatio(magic: Boolean): Double = 1.0
 

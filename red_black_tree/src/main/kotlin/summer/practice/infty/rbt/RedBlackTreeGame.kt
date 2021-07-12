@@ -3,6 +3,8 @@ package summer.practice.infty.rbt
 import summer.practice.infty.game.rooms.Room
 import summer.practice.infty.game.generators.Generator
 import summer.practice.infty.game.rooms.EmptyRoom
+import java.util.*
+import kotlin.random.Random
 
 // RBT extension for a game, where the V parameter is interface Room
 class RedBlackTreeGame<T: Comparable<T>>: RedBlackTree<T, Room>(){
@@ -26,6 +28,7 @@ class RedBlackTreeGame<T: Comparable<T>>: RedBlackTree<T, Room>(){
             else cur.right
             depth++
         }
+        if(cur == null) depth = 0
         return Pair(cur, depth)
     }
 
@@ -68,5 +71,27 @@ class RedBlackTreeGame<T: Comparable<T>>: RedBlackTree<T, Room>(){
     fun getLeftRightKeys(key: T): Pair<T?, T?>{
         val cur = getNodeAndDepth(key).first
         return Pair(cur?.left?.key, cur?.right?.key)
+    }
+
+    // Returns the depth of node wby key
+    fun getKeyDepth(key: T): Int{
+        return getNodeAndDepth(key).second
+    }
+
+    fun getRandomKeyOnDepth(depth: Int): T?{
+        if(depth <= 0) return null
+        var cur_depth = 1
+        var cur = root
+        while(cur != null){
+            if(cur_depth == depth) return cur.key
+            if(cur.left == null && cur.right == null) return cur.key
+            cur = if(Random.nextBoolean()){
+                if(cur.left != null) cur.left else cur.right
+            }else{
+                if(cur.right != null) cur.right else cur.left
+            }
+            cur_depth++
+        }
+        return cur?.key
     }
 }

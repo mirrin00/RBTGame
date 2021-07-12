@@ -1,10 +1,6 @@
 package summer.practice.infty.game
 
-import javafx.beans.binding.BooleanExpression
-import summer.practice.infty.game.creatures.Bandit
-import summer.practice.infty.game.creatures.Creature
-import summer.practice.infty.game.creatures.EmptyCreature
-import summer.practice.infty.game.creatures.Trader
+import summer.practice.infty.game.creatures.*
 import summer.practice.infty.game.events.EmptyEvent
 import summer.practice.infty.game.events.RoomEvent
 import summer.practice.infty.game.rooms.EmptyRoom
@@ -21,6 +17,9 @@ class Game {
     private var cur_stage = Stages.WAY
     private var adds = 0
     private var dels = 0
+    private var creature_description = ""
+    private var event_description = ""
+    private var way_description = ""
 
     fun next(){
         cur_stage = when(cur_stage){
@@ -36,6 +35,19 @@ class Game {
             Stages.WAY -> {
                 creature = room.creature
                 event = room.event
+                player.in_fight = creature.in_battle
+                creature_description = creature.description
+                event_description = event.description
+                val left_right = tree.getLeftRightKeys(player.cur_room)
+                way_description = if(left_right.first == null && left_right.second == null) "You win!"
+                                  else "You can go "
+                way_description += when{
+                    left_right.first == null && left_right.second == null -> ""
+                    left_right.first == null -> "right."
+                    left_right.second == null -> "left."
+                    left_right.first != null && left_right.second != null -> "left or right"
+                    else -> ""
+                }
                 Stages.CREATURE
             }
         }
@@ -62,6 +74,7 @@ class Game {
         if(player.coins >= b.pay_cost){
             player.coins -= b.pay_cost
             adds += 2
+            event_description = "You bought off the Bandit. $event_description"
             next()
         }
     }
@@ -78,14 +91,19 @@ class Game {
         if(cur_stage != Stages.CREATURE) return
         while(player.health > 0 && creature.health > 0){
             player.Attack(creature)
-            creature.Attack(player)
-            if(player.health <= 0 && player.hasHealthPotion())
+            creature.attack(player)
+            while(player.health <= 0 && player.hasHealthPotion())
                 player.useHealthPotion()
         }
         adds += if(by_magic) 1 else 2
         dels += if(by_magic) 2 else 1
-        if(player.health <= 0) end()
-        else next()
+        player.in_fight = false
+        if(player.health <= 0){
+            end()
+        }else{
+            event_description = creature.win_description + " " + event_description
+            next()
+        }
     }
 
     fun actEvent(){
@@ -108,6 +126,65 @@ class Game {
                               else left_right.first!!
         }
         room = tree.find(player.cur_room)!!
+    }
+
+    fun movePlayerOnDepth(){
+        player.cur_room = tree.getRandomKeyOnDepth(tree.getKeyDepth(player.cur_room))
+                ?: throw RuntimeException("Null key in teleport")
+        room = tree.find(player.cur_room)!!
+        cur_stage = Stages.WAY
+        adds += 2
+        dels += 4
+        next()
+    }
+
+    fun addNextCreatureDescription(){
+        val keys = tree.getLeftRightKeys(player.cur_room)
+        var next_creature: Creature?
+        if(keys.first != null){
+            next_creature = tree.find(keys.first!!)?.creature
+            val type = when{
+                (next_creature is Trader) -> "Trader"
+                (next_creature is Golem) -> "Golem"
+                (next_creature is Bandit) -> "Bandit"
+                (next_creature is Dragon) -> "Dragon"
+                else -> "Unknown"
+            }
+            way_description += " On the left side is the $type with damage " +
+                               "equal to ${next_creature?.damage ?: 0}."
+        }
+        if(keys.second != null){
+            next_creature = tree.find(keys.second!!)?.creature
+            val type = when{
+                (next_creature is Trader) -> "Trader"
+                (next_creature is Golem) -> "Golem"
+                (next_creature is Bandit) -> "Bandit"
+                (next_creature is Dragon) -> "Dragon"
+                else -> "Unknown"
+            }
+            way_description += " On the right side is the $type with damage " +
+                               "equal to ${next_creature?.damage ?: 0}."
+        }
+    }
+
+    fun swapPlayerItems(index1: Int, index2: Int){
+        player.swapInventoryItems(index1, index2)
+        if(player.in_fight){
+            creature.attack(player)
+            while(player.health <= 0 && player.hasHealthPotion())
+                player.useHealthPotion()
+        }
+        if(player.health <= 0) end()
+    }
+
+    fun useItem(index: Int){
+        player.useItem(index)
+        if(player.in_fight){
+            creature.attack(player)
+            while(player.health <= 0 && player.hasHealthPotion())
+                player.useHealthPotion()
+        }
+        if(player.health <= 0) end()
     }
 
     fun start(){
@@ -164,11 +241,12 @@ class Game {
         tree.insertRooms(*keys)
     }
 
-    // Debug method
-    fun debugStageDescription() = when(cur_stage){
-        Stages.CREATURE -> "It's description of creature stage"
-        Stages.EVENT -> "It's description of event"
-        Stages.WAY -> "It's description of ways"
+    fun getDescription(){
+        when(cur_stage){
+            Stages.CREATURE -> creature_description
+            Stages.EVENT -> event_description
+            Stages.WAY -> way_description
+        }
     }
 }
 

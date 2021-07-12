@@ -5,11 +5,11 @@ import kotlin.RuntimeException
 import kotlin.random.Random
 
 internal class UsualRoomEventFabric: RoomEventFabric{
-    private fun generateKCount(depth_level: Int) = (Generator.getRandomFromDeep(depth_level) * k_ratio * Random.nextDouble(0.25, 1.0)).toInt()
+    private fun generateKCount(depth_level: Int) = (Generator.getRandomFromDepth(depth_level) * k_ratio * Random.nextDouble(0.25, 1.0)).toInt()
 
-    private fun generateCoinsCount(depth_level: Int) = (Generator.getRandomFromDeep(depth_level) * Random.nextDouble(2.0, 5.0)).toInt()
+    private fun generateCoinsCount(depth_level: Int) = (Generator.getRandomFromDepth(depth_level) * Random.nextDouble(2.0, 5.0)).toInt()
 
-    private fun generateInnCost(depth_level: Int) = (Generator.getRandomFromDeep(depth_level) * Random.nextDouble(1.0, 4.0)).toInt()
+    private fun generateInnCost(depth_level: Int) = (Generator.getRandomFromDepth(depth_level) * Random.nextDouble(1.0, 4.0)).toInt()
 
     private fun generateInnRegain() = 10 * Random.nextInt(8, 20)
 

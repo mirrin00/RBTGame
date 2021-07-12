@@ -17,9 +17,12 @@ class Trader(item1: Item,
     override val damage: Int = 0
     override var in_battle: Boolean = false
         set(value) {field = false}
+    override val description: String = "You meet the trader. He is ready to trade with you. The Trader has:" +
+                                       "\n${item1.string_type}\n${item2.string_type}\n${item3.string_type}"
+    override val win_description: String = "Trader has left you. You continues along the trail."
     private val items = arrayOf(item1, item2, item3)
 
-    override fun Attack(player: Player) {}
+    override fun attack(player: Player) {}
 
     override fun getDamageRatio(magic: Boolean): Double = 0.0
 

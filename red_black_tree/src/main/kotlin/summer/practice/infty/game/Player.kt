@@ -12,7 +12,7 @@ const val ARMOR_INDEX = 1
 const val MAGIC_INDEX = 2
 const val AMULET_INDEX = 3
 
-class Player(private val game: Game){
+class Player(val game: Game){
     var coins: Int = 0
         set(value) {
             field = if(value < 0) 0
@@ -183,6 +183,11 @@ class Player(private val game: Game){
             if(item.type == ItemType.MAGIC_POTION)
                 potion = if(potion.basic_value > item.basic_value) item else potion
         potion.use(this)
+    }
+
+    fun useItem(index: Int){
+        if(index !in inventory.indices) return
+        inventory[index].use(this)
     }
 
     fun getInventoryCapacity() = INVENTORY_CAPACITY
