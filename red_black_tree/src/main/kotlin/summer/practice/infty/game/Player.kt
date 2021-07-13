@@ -191,19 +191,27 @@ class Player(val game: Game){
     }
 
     fun useHealthPotion(){
-        var potion = generateEmptyItem()
+        var potion: Item? = null
         for(item in inventory)
             if(item.type == ItemType.HEALTH_POTION)
-                potion = if(potion.basic_value > item.basic_value) item else potion
-        potion.use(this)
+                potion = when{
+                    potion == null -> item
+                    potion.basic_value > item.basic_value -> item
+                    else -> potion
+                }
+        potion?.use(this)
     }
 
     fun useMagicPotion(){
-        var potion = generateEmptyItem()
+        var potion: Item? = null
         for(item in inventory)
             if(item.type == ItemType.MAGIC_POTION)
-                potion = if(potion.basic_value > item.basic_value) item else potion
-        potion.use(this)
+                potion = when{
+                    potion == null -> item
+                    potion.basic_value > item.basic_value -> item
+                    else -> potion
+                }
+        potion?.use(this)
     }
 
     fun useItem(index: Int){

@@ -15,7 +15,7 @@ import summer.practice.infty.game.rooms.Room
 import summer.practice.infty.rbt.RedBlackTreeGame
 import kotlin.random.Random
 
-class Game(private val view: ViewController) {
+class Game(var view: ViewController? = null) {
     private val tree = RedBlackTreeGame<Int>()
     private var player = Player(this)
     var room: Room = EmptyRoom()
@@ -28,14 +28,12 @@ class Game(private val view: ViewController) {
     private var creature_description = ""
     private var event_description = ""
     private var way_description = ""
-
-    init {
-        view.game = this
-    }
+    private var description_action_before = ""
 
     fun next(){
         cur_stage = when(cur_stage){
             Stages.CREATURE ->{
+                description_action_before = creature.win_description
                 if(event.isVisible(player.perception)){
                     Stages.EVENT
                 }else{
@@ -43,7 +41,10 @@ class Game(private val view: ViewController) {
                     Stages.WAY
                 }
             }
-            Stages.EVENT -> Stages.WAY
+            Stages.EVENT -> {
+                description_action_before = ""
+                Stages.WAY
+            }
             Stages.WAY -> {
                 creature = room.creature
                 event = room.event
@@ -60,11 +61,11 @@ class Game(private val view: ViewController) {
                     left_right.first != null && left_right.second != null -> "left or right"
                     else -> ""
                 }
-                view.updateLocalTree(tree, player.cur_room)
+                view?.updateLocalTree(tree, player.cur_room)
                 Stages.CREATURE
             }
         }
-        view.update()
+        view?.update()
     }
 
     fun buy(index: Int){
@@ -73,19 +74,19 @@ class Game(private val view: ViewController) {
            player.getItemsCountInInventory() >= player.getInventoryCapacity()) return
         (creature as? Trader)?.buy(index, player)
         adds += 1
-        view.update()
+        view?.update()
     }
 
     fun sold(item_index: Int, active: Boolean = false){
         if(!game_active) return
         if(cur_stage == Stages.CREATURE && creature is Trader) {
-            if (active || item_index in 0 until player.getActiveCapacity()) player.soldActiveItem(item_index)
+            if (active && item_index in 0 until player.getActiveCapacity()) player.soldActiveItem(item_index)
             else if (item_index in 0 until player.getInventoryCapacity()) player.soldInventoryItem(item_index)
         }else{
             if (active && item_index in 0 until player.getActiveCapacity()) player.removeActiveItem(item_index)
             else if (item_index in 0 until player.getInventoryCapacity()) player.removeInventoryItem(item_index)
         }
-        view.update()
+        view?.update()
     }
 
     fun pay(){
@@ -97,7 +98,7 @@ class Game(private val view: ViewController) {
             event_description = "You bought off the Bandit. $event_description"
             next()
         }
-        view.update()
+        view?.update()
     }
 
     fun toFight(){
@@ -106,7 +107,7 @@ class Game(private val view: ViewController) {
         b.in_battle = true
         player.in_fight = true
         dels += 2
-        view.update()
+        view?.update()
     }
 
     fun fight(by_magic: Boolean){
@@ -123,14 +124,14 @@ class Game(private val view: ViewController) {
         if(player.health <= 0){
             end()
         }else{
-            event_description = creature.win_description + " " + event_description
             for(i in 1..3){
                 if(player.getItemsCountInInventory() >= player.getInventoryCapacity()) break
                 player.addItem(Generator.generateItem(room.deep_level))
             }
+            player.coins += (creature as? Bandit)?.coins ?: 0
             next()
         }
-        view.update()
+        view?.update()
     }
 
     fun actEvent(){
@@ -141,7 +142,7 @@ class Game(private val view: ViewController) {
             event.actWithPlayer(player)
             next()
         }
-        view.update()
+        view?.update()
     }
 
     fun nextRoom(left: Boolean){
@@ -157,7 +158,7 @@ class Game(private val view: ViewController) {
         }
         room = tree.find(player.cur_room)!!
         next()
-        view.update()
+        view?.update()
     }
 
     fun movePlayerOnDepth(){
@@ -168,8 +169,6 @@ class Game(private val view: ViewController) {
         cur_stage = Stages.WAY
         adds += 2
         dels += 4
-        next()
-        view.update()
     }
 
     fun addNextCreatureDescription(){
@@ -201,7 +200,7 @@ class Game(private val view: ViewController) {
                                "equal to ${next_creature?.damage ?: 0}."
         }
         next()
-        view.update()
+        view?.update()
     }
 
     fun swapPlayerItems(index1: Int, index2: Int){
@@ -213,7 +212,7 @@ class Game(private val view: ViewController) {
                 player.useHealthPotion()
         }
         if(player.health <= 0) end()
-        view.update()
+        view?.update()
     }
 
     fun useItem(index: Int){
@@ -225,7 +224,7 @@ class Game(private val view: ViewController) {
                 player.useHealthPotion()
         }
         if(player.health <= 0) end()
-        view.update()
+        view?.update()
     }
 
     fun start(){
@@ -239,21 +238,21 @@ class Game(private val view: ViewController) {
         player.cur_room = tree.iterator().getKey()
         room = tree.find(player.cur_room)!!
         cur_stage = Stages.WAY
-        view.updateLocalTree(tree, player.cur_room)
-        view.updateTree(tree)
-        view.update()
+        view?.updateLocalTree(tree, player.cur_room)
+        view?.updateTree(tree)
+        view?.update()
     }
 
     private fun end(){
         player.reset()
         game_active = false
-        view.youDied()
+        view?.youDied()
     }
 
     private fun win(){
         player.reset()
         game_active = false
-        view.win()
+        view?.win()
     }
 
     fun increaseNumberOfRoomAdds(inc: Int){
@@ -287,8 +286,8 @@ class Game(private val view: ViewController) {
         tree.deleteRooms(*arr)
         adds = 0
         dels = 0
-        view.updateTree(tree)
-        view.updateLocalTree(tree, player.cur_room)
+        view?.updateTree(tree)
+        view?.updateLocalTree(tree, player.cur_room)
     }
 
     private fun generateEasyTree(){
@@ -302,8 +301,8 @@ class Game(private val view: ViewController) {
 
     fun getDescription() = when(cur_stage){
             Stages.CREATURE -> creature_description
-            Stages.EVENT -> event_description
-            Stages.WAY -> way_description
+            Stages.EVENT -> "$description_action_before $event_description"
+            Stages.WAY -> "$description_action_before $way_description"
         }
 
     fun getHealth() = player.health
@@ -318,8 +317,8 @@ class Game(private val view: ViewController) {
         Stages.CREATURE -> creature.getActions(player)
         Stages.EVENT -> {
             val actions = ArrayList<Action>()
-            if(event.canAct(player)) actions.add(ActionEvent(true, event.description, event.getUseDescription()))
-            else actions.add(ActionEvent(false, event.description, event.getRequirements()))
+            if(event.canAct(player)) actions.add(ActionEvent(true, event.getActionDescription(), event.getUseDescription()))
+            else actions.add(ActionEvent(false, event.getRequirements()))
             actions.add(ActionNext(true, "Move on"))
             actions
         }

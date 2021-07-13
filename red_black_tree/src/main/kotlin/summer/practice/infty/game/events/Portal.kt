@@ -11,6 +11,8 @@ class Portal(override val k_count: Int): RoomEvent {
         player.game.movePlayerOnDepth()
     }
 
+    override fun getActionDescription(): String = "Enter the portal"
+
     override fun canAct(player: Player): Boolean = true
 
     override fun getUseDescription(): String = getRequirements()

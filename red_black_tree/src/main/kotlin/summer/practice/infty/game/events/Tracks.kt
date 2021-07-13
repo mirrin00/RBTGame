@@ -11,6 +11,8 @@ class Tracks(override val k_count: Int): RoomEvent{
         player.game.addNextCreatureDescription()
     }
 
+    override fun getActionDescription(): String = "Explore the tracks"
+
     override fun canAct(player: Player): Boolean = true
 
     override fun getUseDescription(): String = getRequirements()

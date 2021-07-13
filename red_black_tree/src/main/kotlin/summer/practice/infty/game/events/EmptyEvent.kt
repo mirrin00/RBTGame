@@ -7,6 +7,7 @@ class EmptyEvent: RoomEvent {
     override val description: String = ""
 
     override fun actWithPlayer(player: Player) {}
+    override fun getActionDescription(): String = ""
 
     override fun canAct(player: Player): Boolean = true
 

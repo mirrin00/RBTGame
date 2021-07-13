@@ -23,6 +23,9 @@ import tornadofx.usePrefWidth
 class ViewController(var gameWindow : MyView): Controller() {
     var game = gameWindow.game
     val final = FinalWindow()
+    init{
+        game.view = this
+    }
     fun win(){
         val str: String = ("☆ Congratulations! You reached the leaf! ☆")
         final.changelabel(str)
