@@ -16,9 +16,12 @@ import summer.practice.infty.game.items.Item
 import summer.practice.infty.game.items.generateEmptyItem
 import summer.practice.infty.rbt.RedBlackTreeGame
 import summer.practice.infty.view.FinalWindow
+import tornadofx.usePrefHeight
+import tornadofx.usePrefWidth
 
 
-class ViewController(var gameWindow : MyView, val game : Game): Controller() {
+class ViewController(var gameWindow : MyView): Controller() {
+    var game = gameWindow.game
     val final = FinalWindow()
     fun win(){
         val str: String = ("☆ Congratulations! You reached the leaf! ☆")
@@ -39,9 +42,9 @@ class ViewController(var gameWindow : MyView, val game : Game): Controller() {
         gameWindow.updateLocalTree(partialTree.getDrawnTree())
     }
     fun update(){
-        changeLabel(gameWindow.health, game.getHealth())
-        changeLabel(gameWindow.money, game.getCoins())
-        changeLabel(gameWindow.magic, game.getMagic())
+        changeLabel(gameWindow.health, game.getHealth().toString())
+        changeLabel(gameWindow.money, game.getCoins().toString())
+        changeLabel(gameWindow.magic, game.getMagic().toString())
 
         changeLabel(gameWindow.attributes, game.getAttributes())
         changeLabel(gameWindow.textDescription, game.getDescription())
@@ -70,7 +73,7 @@ class ViewController(var gameWindow : MyView, val game : Game): Controller() {
 
         val inventory = game.getInventory()
         for (i in inventory.indices){
-            val b = when(i){
+            val b : Button = when(i){
                 0 -> gameWindow.inv0
                 1 -> gameWindow.inv1
                 2 -> gameWindow.inv2
@@ -79,7 +82,7 @@ class ViewController(var gameWindow : MyView, val game : Game): Controller() {
                 5 -> gameWindow.inv5
                 else -> null
             } ?: continue
-            val t = when(i){
+            val t : Tooltip = when(i){
                 0 -> gameWindow.inv0t
                 1 -> gameWindow.inv1t
                 2 -> gameWindow.inv2t
@@ -89,7 +92,7 @@ class ViewController(var gameWindow : MyView, val game : Game): Controller() {
                 else -> null
             } ?: continue
             val item = inventory.getOrNull(i) ?: continue
-            changeButton(b, ResourceLoader.getImage(item.type.name)!!, t, item.tip)
+            changeButton(b, ResourceLoader.getImage(item.type.name), t, item.tip)
         }
         val activeItems = game.getActiveItems()
         for (i in activeItems.indices){
@@ -108,14 +111,22 @@ class ViewController(var gameWindow : MyView, val game : Game): Controller() {
                 else -> null
             } ?: continue
             val item = inventory.getOrNull(i) ?: continue
-            changeButton(b, ResourceLoader.getImage(item.type.name)!!, t, item.tip)
+            changeButton(b, ResourceLoader.getImage(item.type.name), t, item.tip)
         }
     }
 
-    fun changeButton(b : Button, image : Image, t : Tooltip, tip : String){
+    fun changeButton(b : Button, image : Image?, t : Tooltip, tip : String){
         var i = ImageView()
-        i.setImage(image)
-        b.graphicProperty().setValue(i)
+        if(image != null){
+            i.setImage(image)
+            val b_w = b.width
+            val b_h = b.height
+            i.setFitWidth(b_w)
+            i.setFitHeight(b_h)
+            b.graphicProperty().setValue(i)
+            b.usePrefWidth = true
+            b.usePrefHeight = true
+        }
         t.text = tip
     }
 
@@ -133,6 +144,7 @@ class ViewController(var gameWindow : MyView, val game : Game): Controller() {
         b.setVisible(true)
         b.setDisable(isDisabled)
         b.setText(text)
+        t.text = tip
     }
     fun changeLabel(l : Label,  n : String){
         l.setText(n)

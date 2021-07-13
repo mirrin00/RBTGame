@@ -4,6 +4,7 @@ import summer.practice.infty.actions.Action
 import summer.practice.infty.actions.ActionEvent
 import summer.practice.infty.actions.ActionNext
 import summer.practice.infty.actions.ActionNextRoom
+import summer.practice.infty.controllers.ViewController
 import summer.practice.infty.game.creatures.*
 import summer.practice.infty.game.events.EmptyEvent
 import summer.practice.infty.game.events.RoomEvent
@@ -26,6 +27,10 @@ class Game(private val view: ViewController) {
     private var creature_description = ""
     private var event_description = ""
     private var way_description = ""
+
+    init {
+        view.game = this
+    }
 
     fun next(){
         cur_stage = when(cur_stage){
@@ -228,6 +233,8 @@ class Game(private val view: ViewController) {
         player.cur_room = tree.iterator().getKey()
         room = tree.find(player.cur_room)!!
         cur_stage = Stages.WAY
+        view.updateLocalTree(tree, player.cur_room)
+        view.updateTree(tree)
         view.update()
     }
 

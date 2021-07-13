@@ -12,12 +12,16 @@ import summer.practice.infty.controllers.InterfaceController
 import tornadofx.*
 import javafx.scene.input.MouseEvent
 import summer.practice.infty.actions.Action
+import summer.practice.infty.controllers.ViewController
+import summer.practice.infty.game.Game
 
 
 class MyView: View("Red Black Tree Game") {
     override val root : BorderPane by fxml("/MyInterface.fxml")
     var treeGroup = Group()
     val RBTmap = MyMap()
+    val vcontrol = ViewController(this)
+    val game = Game(vcontrol)
     val icontrol = InterfaceController(this)
     val mainPane : StackPane by fxid("stackpane")
     var actions = ArrayList<Action>()

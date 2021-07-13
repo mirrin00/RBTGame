@@ -7,7 +7,7 @@ import tornadofx.Controller
 
 class InterfaceController(gameWindow : MyView) : Controller(){
     var picked : Int = -1
-    val game = Game(gameWindow)
+    val game = gameWindow.game
     fun swapItems(i : Int){
         if (picked < 0){
             picked = i
