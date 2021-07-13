@@ -21,5 +21,5 @@ interface Creature {
 
     fun getDamageRatio(magic: Boolean = false): Double
 
-    fun getActions(): ArrayList<Action>
+    fun getActions(player: Player): ArrayList<Action>
 }

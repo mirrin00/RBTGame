@@ -2,7 +2,6 @@ package summer.practice.infty.game.creatures
 
 import summer.practice.infty.actions.Action
 import summer.practice.infty.actions.ActionBuy
-import summer.practice.infty.actions.ActionFight
 import summer.practice.infty.actions.ActionNext
 import summer.practice.infty.game.Element
 import summer.practice.infty.game.Player
@@ -26,12 +25,12 @@ class Trader(item1: Item,
 
     override fun getDamageRatio(magic: Boolean): Double = 0.0
 
-    override fun getActions(): ArrayList<Action> {
+    override fun getActions(player: Player): ArrayList<Action> {
         val actions = ArrayList<Action>()
-        actions.add(ActionBuy(0, "Buy first item", items[0].tip))
-        actions.add(ActionBuy(1, "Buy second item", items[1].tip))
-        actions.add(ActionBuy(2, "Buy third item", items[3].tip))
-        actions.add(ActionNext("Leave the Trader"))
+        actions.add(ActionBuy(0, true,"Buy first item", items[0].tip))
+        actions.add(ActionBuy(1, true,"Buy second item", items[1].tip))
+        actions.add(ActionBuy(2, true,"Buy third item", items[3].tip))
+        actions.add(ActionNext(true,"Leave the Trader"))
         return  actions
     }
 
