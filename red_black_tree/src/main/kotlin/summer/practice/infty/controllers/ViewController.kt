@@ -46,9 +46,8 @@ class ViewController(var gameWindow : MyView, val game : Game): Controller() {
         changeLabel(gameWindow.attributes, game.getAttributes())
         changeLabel(gameWindow.textDescription, game.getDescription())
 
-        //gameWindow.actions = game.getActions()
+        gameWindow.actions = game.getActions()
         makeDisable()
-        gameWindow.actions = ArrayList<Action>() //потом убрать
         for (i in gameWindow.actions.indices){
             val b = when(i){
                 0 -> gameWindow.act1
@@ -69,10 +68,7 @@ class ViewController(var gameWindow : MyView, val game : Game): Controller() {
             changeButtonAbility(b, !a.active, a.description, t, a.tip)
         }
 
-        //val inventory = game.getInventory()
-        val inventory = Array<Item>(6){
-            generateEmptyItem()
-        }
+        val inventory = game.getInventory()
         for (i in inventory.indices){
             val b = when(i){
                 0 -> gameWindow.inv0
@@ -95,10 +91,7 @@ class ViewController(var gameWindow : MyView, val game : Game): Controller() {
             val item = inventory.getOrNull(i) ?: continue
             changeButton(b, ResourceLoader.getImage(item.type.name)!!, t, item.tip)
         }
-        //val activeItems = game.getActiveItems()
-        val activeItems = Array<Item>(6){
-            generateEmptyItem()
-        }
+        val activeItems = game.getActiveItems()
         for (i in activeItems.indices){
             val b = when(i){
                 WEAPON_INDEX -> gameWindow.active1
