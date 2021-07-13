@@ -20,12 +20,11 @@ import tornadofx.usePrefHeight
 import tornadofx.usePrefWidth
 
 
-class ViewController(var gameWindow : MyView): Controller() {
+class ViewController<T: Comparable<T>>(var gameWindow : MyView): Controller() {
+    var drawableTree = DrawableTree<T>(RedBlackTreeGame<T>(), draggableNodes = true)
     var game = gameWindow.game
     val final = FinalWindow()
-    init{
-        game.view = this
-    }
+
     fun win(){
         val str: String = ("☆ Congratulations! You reached the leaf! ☆")
         final.changelabel(str)
@@ -36,11 +35,11 @@ class ViewController(var gameWindow : MyView): Controller() {
         final.changelabel(str)
         final.openWindow()
     }
-    fun <T:Comparable<T>>updateTree(rbt : RedBlackTreeGame<T>){
-        var drawableTree = DrawableTree<T>(rbt, draggableNodes = true)
+    fun updateTree(rbt : RedBlackTreeGame<T>){
+        drawableTree.changeTree(DrawableTree<T>(rbt, draggableNodes = true))
         gameWindow.updateTree(drawableTree.createDrawnTree())
     }
-    fun <T:Comparable<T>>updateLocalTree(rbt : RedBlackTreeGame<T>, key : T){
+    fun updateLocalTree(rbt : RedBlackTreeGame<T>, key : T){
         var partialTree = PartialTree<T>(rbt, key)
         gameWindow.updateLocalTree(partialTree.getDrawnTree())
     }

@@ -21,7 +21,7 @@ class MyView: View("Red Black Tree Game") {
     var treeGroup = Group()
     val RBTmap = MyMap()
     val game = Game()
-    val vcontrol = ViewController(this)
+    val vcontrol = ViewController<Int>(this)
     val icontrol = InterfaceController(this)
     val mainPane : StackPane by fxid("stackpane")
     var actions = ArrayList<Action>()
@@ -68,7 +68,9 @@ class MyView: View("Red Black Tree Game") {
 
         //ImageView
     val imagePlayer : ImageView by fxid("ImagePlayer")
-
+    init{
+        game.view = vcontrol
+    }
     fun startGame(){
         icontrol.start()
     }
