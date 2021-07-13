@@ -15,7 +15,7 @@ import summer.practice.infty.game.rooms.Room
 import summer.practice.infty.rbt.RedBlackTreeGame
 import kotlin.random.Random
 
-class Game(var view: ViewController? = null) {
+class Game(var view: ViewController<Int>? = null) {
     private val tree = RedBlackTreeGame<Int>()
     private var player = Player(this)
     var room: Room = EmptyRoom()
