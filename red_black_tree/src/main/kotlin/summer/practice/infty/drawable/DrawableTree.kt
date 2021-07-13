@@ -17,7 +17,6 @@ class DrawableTree<T : Comparable<T>>(tree: RedBlackTree<T, Room> = RedBlackTree
                                          , private val gap: Double = 100.0
                                          , private val draggableNodes: Boolean = false
                                             ) {
-
     private val iter = tree.iterator()
     private var height = tree.height
     private var root: DrawableNode<T>? = createNode(0.0, 0.0, height)
@@ -50,6 +49,7 @@ class DrawableTree<T : Comparable<T>>(tree: RedBlackTree<T, Room> = RedBlackTree
         return node
     }
 
+    //Returns group of nodes
     fun createDrawnTree(): Group{
         val treeGroup = Group()
         val queue: Queue<DrawableNode<T>> = LinkedList()
@@ -88,7 +88,7 @@ class DrawableTree<T : Comparable<T>>(tree: RedBlackTree<T, Room> = RedBlackTree
 
     }
 
-    fun getNode(key: T): DrawableNode<T>?{
+    private fun getNode(key: T): DrawableNode<T>?{
 
         val queue: Queue<DrawableNode<T>> = LinkedList()
 
@@ -236,10 +236,7 @@ class DrawableTree<T : Comparable<T>>(tree: RedBlackTree<T, Room> = RedBlackTree
                     }
                 }
             }
-
             offset += gap
         }
-
     }
-
 }
