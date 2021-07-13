@@ -22,6 +22,7 @@ class Game(var view: ViewController<Int>? = null) {
     var creature: Creature = EmptyCreature()
     var event: RoomEvent = EmptyEvent()
     private var game_active = false
+    private var is_last_room = false
     private var cur_stage = Stages.WAY
     private var adds = 0
     private var dels = 0
@@ -43,6 +44,7 @@ class Game(var view: ViewController<Int>? = null) {
             }
             Stages.EVENT -> {
                 description_action_before = ""
+                if(is_last_room) win()
                 Stages.WAY
             }
             Stages.WAY -> {
@@ -52,8 +54,12 @@ class Game(var view: ViewController<Int>? = null) {
                 creature_description = creature.description
                 event_description = event.description
                 val left_right = tree.getLeftRightKeys(player.cur_room)
-                way_description = if(left_right.first == null && left_right.second == null) "You win!"
-                                  else "You can go "
+                if(left_right.first == null && left_right.second == null){
+                    way_description = "You win!"
+                    is_last_room = true
+                }else{
+                    way_description = "You can go "
+                }
                 way_description += when{
                     left_right.first == null && left_right.second == null -> ""
                     left_right.first == null -> "right."
@@ -113,7 +119,7 @@ class Game(var view: ViewController<Int>? = null) {
     fun fight(by_magic: Boolean){
         if(cur_stage != Stages.CREATURE || !game_active) return
         while(player.health > 0 && creature.health > 0){
-            player.Attack(creature)
+            player.Attack(creature, by_magic)
             creature.attack(player)
             while(player.health <= 0 && player.hasHealthPotion())
                 player.useHealthPotion()
@@ -187,9 +193,9 @@ class Game(var view: ViewController<Int>? = null) {
             way_description += " On the left side is the $type with damage " +
                                "equal to ${next_creature?.damage ?: 0}."
         }
-        if(keys.second != null){
+        if(keys.second != null) {
             next_creature = tree.find(keys.second!!)?.creature
-            val type = when{
+            val type = when {
                 (next_creature is Trader) -> "Trader"
                 (next_creature is Golem) -> "Golem"
                 (next_creature is Bandit) -> "Bandit"
@@ -197,10 +203,8 @@ class Game(var view: ViewController<Int>? = null) {
                 else -> "Unknown"
             }
             way_description += " On the right side is the $type with damage " +
-                               "equal to ${next_creature?.damage ?: 0}."
+                    "equal to ${next_creature?.damage ?: 0}."
         }
-        next()
-        view?.update()
     }
 
     fun swapPlayerItems(index1: Int, index2: Int){
@@ -229,6 +233,7 @@ class Game(var view: ViewController<Int>? = null) {
 
     fun start(){
         game_active = true
+        is_last_room = false
         player = Player(this)
         player.addItem(Generator.generateItem(0, ItemType.WEAPON))
         player.addItem(Generator.generateItem(0, ItemType.MAGIC))

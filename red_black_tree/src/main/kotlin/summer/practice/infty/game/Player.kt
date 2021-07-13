@@ -11,6 +11,7 @@ const val WEAPON_INDEX = 0
 const val ARMOR_INDEX = 1
 const val MAGIC_INDEX = 2
 const val AMULET_INDEX = 3
+private const val armor_coef = 0.1
 
 class Player(val game: Game){
     var coins: Int = 0
@@ -223,7 +224,9 @@ class Player(val game: Game){
         for(i in active_items.indices) active_items[i] = generateEmptyItem()
         for(i in inventory.indices) inventory[i] = generateEmptyItem()
     }
-    
+
+    fun getArmorAbsorption() = active_items[ARMOR_INDEX].basic_value * armor_coef
+
     fun canUseMagic() = magic >= active_items[MAGIC_INDEX].cost
 
     fun getInventory() = inventory.copyOf()
