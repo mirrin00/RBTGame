@@ -11,7 +11,7 @@ internal class GameCreatureFabric: CreatureFabric{
 
     private fun generatePayCost(depth_level: Int) = (Generator.getRandomFromDepth(depth_level) * Random.nextDouble(2.0, 5.0)).toInt()
 
-    override fun generateCreature(depth_level: Int, element: Element): Creature = when((0..4).random()){
+    override fun generateCreature(depth_level: Int, element: Element): Creature = when((0..3).random()){
         0 -> Trader(Generator.generateItem(depth_level),
                     Generator.generateItem(depth_level),
                     Generator.generateItem(depth_level))

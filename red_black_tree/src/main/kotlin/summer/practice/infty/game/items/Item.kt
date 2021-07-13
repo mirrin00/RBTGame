@@ -38,7 +38,8 @@ class Item(val element: Element,
         ItemType.EMPTY -> ""
     }
 
-    private fun getDescription() = "Element: $element\nValue: $basic_value\n$attr: $attr_value\n" +
+    private fun getDescription() = "Element: $element\nValue: $basic_value\n" +
+            (if(attr != Attributes.NONE) "$attr: $attr_value\n" else "") +
             (if(type == ItemType.MAGIC) "Cost: $cost\n" else "") + "Price: $price"
 
     fun use(player: Player){

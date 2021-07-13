@@ -110,7 +110,7 @@ class ViewController(var gameWindow : MyView): Controller() {
                 AMULET_INDEX -> gameWindow.active4t
                 else -> null
             } ?: continue
-            val item = inventory.getOrNull(i) ?: continue
+            val item = activeItems.getOrNull(i) ?: continue
             changeButton(b, ResourceLoader.getImage(item.type.name), t, item.tip)
         }
     }

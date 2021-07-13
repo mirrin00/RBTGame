@@ -167,6 +167,8 @@ class Player(val game: Game){
             if(magic < att.cost){
                 att = active_items[WEAPON_INDEX]
                 attr_ratio = 1.0 + 0.1 * strength
+            }else{
+                magic -= att.cost
             }
         }
         creature.health -= (att.basic_value * attr_ratio * creature.getDamageRatio(by_magic) +

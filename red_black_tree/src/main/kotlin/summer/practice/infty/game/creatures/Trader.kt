@@ -29,7 +29,7 @@ class Trader(item1: Item,
         val actions = ArrayList<Action>()
         actions.add(ActionBuy(0, true,"Buy first item", items[0].tip))
         actions.add(ActionBuy(1, true,"Buy second item", items[1].tip))
-        actions.add(ActionBuy(2, true,"Buy third item", items[3].tip))
+        actions.add(ActionBuy(2, true,"Buy third item", items[2].tip))
         actions.add(ActionNext(true,"Leave the Trader"))
         return  actions
     }

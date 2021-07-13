@@ -48,20 +48,20 @@
       <Pane prefHeight="391.0" prefWidth="419.0" BorderPane.alignment="CENTER">
          <children>
             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#2197ff00" height="271.0" layoutX="10.0" layoutY="9.0" stroke="#bf0d0d" strokeWidth="3.0" width="317.0" />
-            <Button fx:id="active3" alignment="CENTER" layoutX="50.0" layoutY="26.0" mnemonicParsing="false" onAction="#pickedActive3" prefHeight="60.0" prefWidth="60.0">
+            <Button fx:id="active3" alignment="CENTER" layoutX="50.0" layoutY="26.0" mnemonicParsing="false" onMouseReleased="#pickedActive3" prefHeight="60.0" prefWidth="60.0">
                <tooltip>
                   <Tooltip fx:id="active3t" text="Empty Tooltip" />
                </tooltip></Button>
             <ImageView fx:id="ImagePlayer" fitHeight="114.0" fitWidth="98.0" layoutX="122.0" layoutY="26.0" pickOnBounds="true" preserveRatio="true" />
-            <Button fx:id="active1" alignment="CENTER" layoutX="230.0" layoutY="26.0" mnemonicParsing="false" onAction="#pickedActive1" prefHeight="60.0" prefWidth="60.0">
+            <Button fx:id="active1" alignment="CENTER" layoutX="230.0" layoutY="26.0" mnemonicParsing="false" onMouseReleased="#pickedActive1" prefHeight="60.0" prefWidth="60.0">
                <tooltip>
                   <Tooltip fx:id="active1t" text="Empty Tooltip" />
                </tooltip></Button>
-            <Button fx:id="active4" alignment="CENTER" layoutX="50.0" layoutY="89.0" mnemonicParsing="false" onAction="#pickedActive4" prefHeight="60.0" prefWidth="60.0">
+            <Button fx:id="active4" alignment="CENTER" layoutX="50.0" layoutY="89.0" mnemonicParsing="false" onMouseReleased="#pickedActive4" prefHeight="60.0" prefWidth="60.0">
                <tooltip>
                   <Tooltip fx:id="active4t" text="Empty Tooltip" />
                </tooltip></Button>
-            <Button fx:id="active2" alignment="CENTER" layoutX="230.0" layoutY="89.0" mnemonicParsing="false" onAction="#pickedActive2" prefHeight="60.0" prefWidth="60.0">
+            <Button fx:id="active2" alignment="CENTER" layoutX="230.0" layoutY="89.0" mnemonicParsing="false" onMouseReleased="#pickedActive2" prefHeight="60.0" prefWidth="60.0">
                <tooltip>
                   <Tooltip fx:id="active2t" text="Empty Tooltip" />
                </tooltip></Button>
@@ -83,7 +83,7 @@
                   </Button>
                   <Button fx:id="inv1" alignment="CENTER" mnemonicParsing="false" onMouseReleased="#pickedInv1" prefHeight="60.0" prefWidth="60.0" GridPane.columnIndex="1">
                      <tooltip>
-                        <Tooltip fx:id="inv1" text="Empty Tooltip" />
+                        <Tooltip fx:id="inv1t" text="Empty Tooltip" />
                      </tooltip></Button>
                   <Button fx:id="inv3" alignment="CENTER" mnemonicParsing="false" onMouseReleased="#pickedInv3" prefHeight="60.0" prefWidth="60.0" GridPane.rowIndex="1">
                      <tooltip>
@@ -125,7 +125,7 @@
                      <HBox.margin>
                         <Insets bottom="9.0" right="9.0" top="9.0" />
                      </HBox.margin></Label>
-                  <Label alignment="CENTER" prefHeight="30.0" prefWidth="45.0" style="-fx-border-color: #bf0d0d;" text="💰💰💰💰🔮">
+                  <Label alignment="CENTER" prefHeight="30.0" prefWidth="45.0" style="-fx-border-color: #bf0d0d;" text="💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰🔮">
                      <HBox.margin>
                         <Insets bottom="9.0" left="9.0" top="9.0" />
                      </HBox.margin>

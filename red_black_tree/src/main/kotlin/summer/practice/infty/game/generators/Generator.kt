@@ -2,7 +2,6 @@ package summer.practice.infty.game.generators
 
 import summer.practice.infty.game.Attributes
 import summer.practice.infty.game.Element
-import summer.practice.infty.game.Game
 import summer.practice.infty.game.items.ItemType
 import kotlin.math.pow
 import kotlin.random.Random
@@ -19,7 +18,7 @@ object Generator{
 
     fun generateRoomEvent(depth_level: Int) = room_event_fabric.generateRoomEvent(depth_level)
 
-    fun generateItem(depth_level: Int) = item_fabric.generateItem(depth_level)
+    fun generateItem(depth_level: Int, type: ItemType = ItemType.EMPTY) = item_fabric.generateItem(depth_level, type)
 
     fun getRandomFromDepth(depth_level: Int) = getRatioFromDeep(depth_level) * Random.nextDouble(0.5, 2.5)
 

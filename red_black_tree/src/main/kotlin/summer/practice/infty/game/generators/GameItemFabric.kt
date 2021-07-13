@@ -1,6 +1,7 @@
 package summer.practice.infty.game.generators
 
 import summer.practice.infty.game.items.Item
+import summer.practice.infty.game.items.ItemType
 import kotlin.random.Random
 
 internal class GameItemFabric: ItemFabric{
@@ -13,8 +14,8 @@ internal class GameItemFabric: ItemFabric{
 
     private fun generatePrice(depth_level: Int) = (Generator.getRandomFromDepth(depth_level) * Random.nextDouble(1.2, 3.0)).toInt()
 
-    override fun generateItem(depth_level: Int): Item = Item(Generator.generateElement(),
-                                                            Generator.generateItemType(),
+    override fun generateItem(depth_level: Int, type: ItemType): Item = Item(Generator.generateElement(),
+                                                            if(type == ItemType.EMPTY) Generator.generateItemType() else type,
                                                             generateBasicValue(depth_level),
                                                             Generator.generateAttribute(),
                                                             generateAttributeValue(depth_level),

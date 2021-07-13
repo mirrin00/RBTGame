@@ -9,6 +9,7 @@ import summer.practice.infty.game.creatures.*
 import summer.practice.infty.game.events.EmptyEvent
 import summer.practice.infty.game.events.RoomEvent
 import summer.practice.infty.game.generators.Generator
+import summer.practice.infty.game.items.ItemType
 import summer.practice.infty.game.rooms.EmptyRoom
 import summer.practice.infty.game.rooms.Room
 import summer.practice.infty.rbt.RedBlackTreeGame
@@ -63,6 +64,7 @@ class Game(private val view: ViewController) {
                 Stages.CREATURE
             }
         }
+        view.update()
     }
 
     fun buy(index: Int){
@@ -78,10 +80,10 @@ class Game(private val view: ViewController) {
         if(!game_active) return
         if(cur_stage == Stages.CREATURE && creature is Trader) {
             if (active || item_index in 0 until player.getActiveCapacity()) player.soldActiveItem(item_index)
-            else if (item_index !in 0 until player.getInventoryCapacity()) player.soldInventoryItem(item_index)
+            else if (item_index in 0 until player.getInventoryCapacity()) player.soldInventoryItem(item_index)
         }else{
-            if (active || item_index in 0 until player.getActiveCapacity()) player.removeActiveItem(item_index)
-            else if (item_index !in 0 until player.getInventoryCapacity()) player.removeInventoryItem(item_index)
+            if (active && item_index in 0 until player.getActiveCapacity()) player.removeActiveItem(item_index)
+            else if (item_index in 0 until player.getInventoryCapacity()) player.removeInventoryItem(item_index)
         }
         view.update()
     }
@@ -229,6 +231,10 @@ class Game(private val view: ViewController) {
     fun start(){
         game_active = true
         player = Player(this)
+        player.addItem(Generator.generateItem(0, ItemType.WEAPON))
+        player.addItem(Generator.generateItem(0, ItemType.MAGIC))
+        player.addItem(Generator.generateItem(0, ItemType.ARMOR))
+        player.addItem(Generator.generateItem(0, ItemType.HEALTH_POTION))
         generateEasyTree()
         player.cur_room = tree.iterator().getKey()
         room = tree.find(player.cur_room)!!

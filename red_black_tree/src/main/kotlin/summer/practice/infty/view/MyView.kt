@@ -91,22 +91,26 @@ class MyView: View("Red Black Tree Game") {
     }
 
     fun pickedActive1(i : MouseEvent){
-        if(i.getButton() == MouseButton.SECONDARY) {
+        icontrol.resetPicked()
+        if(i.getButton() == MouseButton.MIDDLE) {
             icontrol.sold(0, true)
         }
     }
     fun pickedActive2(i : MouseEvent){
-        if(i.getButton() == MouseButton.SECONDARY) {
+        icontrol.resetPicked()
+        if(i.getButton() == MouseButton.MIDDLE) {
             icontrol.sold(1, true)
         }
     }
     fun pickedActive3(i : MouseEvent){
-        if(i.getButton() == MouseButton.SECONDARY) {
+        icontrol.resetPicked()
+        if(i.getButton() == MouseButton.MIDDLE) {
             icontrol.sold(2, true)
         }
     }
     fun pickedActive4(i : MouseEvent){
-        if(i.getButton() == MouseButton.SECONDARY) {
+        icontrol.resetPicked()
+        if(i.getButton() == MouseButton.MIDDLE) {
             icontrol.sold(3, true)
         }
     }
@@ -115,7 +119,12 @@ class MyView: View("Red Black Tree Game") {
             icontrol.swapItems(0)
         }
         if(i.getButton() == MouseButton.SECONDARY) {
+            icontrol.use(0)
+            icontrol.resetPicked()
+        }
+        if(i.getButton() == MouseButton.MIDDLE) {
             icontrol.sold(0, false)
+            icontrol.resetPicked()
         }
     }
     fun pickedInv1(i : MouseEvent){
@@ -123,7 +132,12 @@ class MyView: View("Red Black Tree Game") {
             icontrol.swapItems(1)
         }
         if(i.getButton() == MouseButton.SECONDARY) {
+            icontrol.use(1)
+            icontrol.resetPicked()
+        }
+        if(i.getButton() == MouseButton.MIDDLE) {
             icontrol.sold(1, false)
+            icontrol.resetPicked()
         }
     }
     fun pickedInv2(i : MouseEvent){
@@ -131,7 +145,12 @@ class MyView: View("Red Black Tree Game") {
             icontrol.swapItems(2)
         }
         if(i.getButton() == MouseButton.SECONDARY) {
+            icontrol.use(2)
+            icontrol.resetPicked()
+        }
+        if(i.getButton() == MouseButton.MIDDLE) {
             icontrol.sold(2, false)
+            icontrol.resetPicked()
         }
     }
     fun pickedInv3(i : MouseEvent){
@@ -139,7 +158,12 @@ class MyView: View("Red Black Tree Game") {
             icontrol.swapItems(3)
         }
         if(i.getButton() == MouseButton.SECONDARY) {
+            icontrol.use(3)
+            icontrol.resetPicked()
+        }
+        if(i.getButton() == MouseButton.MIDDLE) {
             icontrol.sold(3, false)
+            icontrol.resetPicked()
         }
     }
     fun pickedInv4(i : MouseEvent){
@@ -147,7 +171,12 @@ class MyView: View("Red Black Tree Game") {
             icontrol.swapItems(4)
         }
         if(i.getButton() == MouseButton.SECONDARY) {
+            icontrol.use(4)
+            icontrol.resetPicked()
+        }
+        if(i.getButton() == MouseButton.MIDDLE) {
             icontrol.sold(4, false)
+            icontrol.resetPicked()
         }
     }
     fun pickedInv5(i : MouseEvent){
@@ -155,7 +184,12 @@ class MyView: View("Red Black Tree Game") {
             icontrol.swapItems(5)
         }
         if(i.getButton() == MouseButton.SECONDARY) {
+            icontrol.use(5)
+            icontrol.resetPicked()
+        }
+        if(i.getButton() == MouseButton.MIDDLE) {
             icontrol.sold(5, false)
+            icontrol.resetPicked()
         }
     }
 
