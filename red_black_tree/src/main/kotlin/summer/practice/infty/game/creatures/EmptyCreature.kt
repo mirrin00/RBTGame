@@ -16,5 +16,5 @@ class EmptyCreature: Creature{
 
     override fun getDamageRatio(magic: Boolean): Double = 0.0
 
-    override fun getActions(): ArrayList<Action> = ArrayList()
+    override fun getActions(player: Player): ArrayList<Action> = ArrayList()
 }

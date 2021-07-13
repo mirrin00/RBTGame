@@ -18,14 +18,14 @@ class Bandit(override val element: Element,
 
     override fun getDamageRatio(magic: Boolean): Double = 1.0
 
-    override fun getActions(): ArrayList<Action>{
+    override fun getActions(player: Player): ArrayList<Action>{
         val actions = ArrayList<Action>()
         if(in_battle){
-            actions.add(ActionFight(false, "Fight by weapon"))
-            actions.add(ActionFight(true, "Fight by magic"))
+            actions.add(ActionFight(false,true,"Fight by weapon"))
+            actions.add(ActionFight(true, player.canUseMagic(),"Fight by magic"))
         }else{
-            actions.add(ActionPay("Pay $pay_cost to avoid fight"))
-            actions.add(ActionToFight("Fight with Bandit"))
+            actions.add(ActionPay(player.coins >= pay_cost, "Pay $pay_cost to avoid fight"))
+            actions.add(ActionToFight(true, "Fight with Bandit"))
         }
         return actions
     }

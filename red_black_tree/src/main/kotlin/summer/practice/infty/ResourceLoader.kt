@@ -17,6 +17,15 @@ object ResourceLoader {
         loadImage("/sea2.jpg", "MARINE2")
         loadImage("/sky.jpg", "HEAVENLY")
         loadImage("/snow.jpg", "FROSTY")
+        // Item icons
+        loadImage("/sword.png", "WEAPON")
+        loadImage("/armor.png", "ARMOR")
+        loadImage("/magic_scroll.png", "MAGIC")
+        loadImage("/amulet.png", "AMULET")
+        loadImage("/health_potion.png", "HEALTH_POTION")
+        loadImage("/magic_potion.png", "MAGIC_POTION")
+        loadImage("/relic.png", "OTHER")
+        loadImage("/empty.png", "EMPTY")
     }
 
     private fun loadImage(filename: String, key: String){

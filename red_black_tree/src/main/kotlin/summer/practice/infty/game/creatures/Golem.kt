@@ -3,6 +3,7 @@ package summer.practice.infty.game.creatures
 import summer.practice.infty.actions.Action
 import summer.practice.infty.actions.ActionFight
 import summer.practice.infty.game.Element
+import summer.practice.infty.game.Player
 
 class Golem(override val element: Element,
             override var health: Int,
@@ -14,10 +15,10 @@ class Golem(override val element: Element,
 
     override fun getDamageRatio(magic: Boolean): Double = if(magic) 1.0 else 0.7
 
-    override fun getActions(): ArrayList<Action> {
+    override fun getActions(player: Player): ArrayList<Action> {
         val actions = ArrayList<Action>()
-        actions.add(ActionFight(false, "Fight by weapon"))
-        actions.add(ActionFight(true, "Fight by magic"))
+        actions.add(ActionFight(false, true, "Fight by weapon"))
+        actions.add(ActionFight(true, player.canUseMagic(),"Fight by magic"))
         return  actions
     }
 }

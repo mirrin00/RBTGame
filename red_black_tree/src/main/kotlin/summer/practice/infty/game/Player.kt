@@ -25,7 +25,11 @@ class Player(val game: Game){
             field = when{
                 value < 0 -> 0
                 value > max_health -> max_health
-                else -> value
+                value > field -> value
+                else -> {
+                    if((1..100).random() > dexterity) value
+                    else field
+                }
             }
         }
     var max_magic = 100
@@ -42,14 +46,14 @@ class Player(val game: Game){
     var cur_room: Int = 0
     // Attributes
     // Basic value of attributes
-    private val basic_perception: Int = Random.nextInt(1,10)
-    private val basic_dextery: Int = 0
-    private val basic_strength: Int = 0
-    private val basic_intelligence: Int = 0
+    private var basic_perception: Int = Random.nextInt(1,10)
+    private var basic_dexterity: Int = Random.nextInt(1,10)
+    private var basic_strength: Int = Random.nextInt(1,10)
+    private var basic_intelligence: Int = Random.nextInt(1,10)
     // Completed value of attributes = basic + active_items.attr_values
     var perception: Int = basic_perception
             private set
-    var dextery: Int = basic_dextery
+    var dexterity: Int = basic_dexterity
         private set
     var strength: Int = basic_strength
         private set
@@ -60,19 +64,19 @@ class Player(val game: Game){
 
     private fun recalculateAttributes(){
         perception = basic_perception
-        dextery = basic_dextery
+        dexterity = basic_dexterity
         strength = basic_strength
         intelligence = basic_intelligence
         for(item in active_items){
             when(item.attr){
-                Attributes.DEXTERITY -> dextery += item.attr_value
+                Attributes.DEXTERITY -> dexterity += item.attr_value
                 Attributes.PERCEPTION -> perception += item.attr_value
                 Attributes.INTELLIGENCE -> intelligence += item.attr_value
                 Attributes.STRENGTH -> strength += item.attr_value
                 else -> {}
             }
         }
-        dextery = min(90, dextery)
+        dexterity = min(90, dexterity)
     }
 
     fun setActiveItem(item: Item){
@@ -115,9 +119,19 @@ class Player(val game: Game){
         }
     }
 
+    fun removeActiveItem(item: Item){
+        removeActiveItem(item.inv_number)
+    }
+
+    fun removeActiveItem(index: Int){
+        if(index in active_items.indices){
+            active_items[index] = generateEmptyItem()
+        }
+    }
+
     fun getItemsCountInInventory(): Int{
         var count = 0
-        inventory.forEach { if(it.type == ItemType.EMPTY) count++ }
+        inventory.forEach { if(it.type != ItemType.EMPTY) count++ }
         return count
     }
 
@@ -126,6 +140,7 @@ class Player(val game: Game){
             if(inventory[i].type == ItemType.EMPTY){
                 item.inv_number = i
                 inventory[i] = item
+                return
             }
         }
     }
@@ -144,15 +159,19 @@ class Player(val game: Game){
 
     fun Attack(creature: Creature, by_magic: Boolean = false){
         var att = if(by_magic) active_items[MAGIC_INDEX] else active_items[WEAPON_INDEX]
+        var attr_ratio = 1.0 + 0.1 * (if(by_magic) intelligence else strength)
         if(by_magic){
             while(magic < att.cost && hasMagicPotion()){
                 useMagicPotion()
             }
-            if(magic < att.cost) att = active_items[WEAPON_INDEX]
+            if(magic < att.cost){
+                att = active_items[WEAPON_INDEX]
+                attr_ratio = 1.0 + 0.1 * strength
+            }
         }
-        creature.health -= (att.basic_value * creature.getDamageRatio(by_magic) +
+        creature.health -= (att.basic_value * attr_ratio * creature.getDamageRatio(by_magic) +
                 att.attr_value * getRatioFromElemets(att.element, creature.element)).toInt()
-        health -= (att.attr_value * getHealthDamageOfElemnts(att.element, creature.element)).toInt()
+        health -= (att.attr_value * attr_ratio * getHealthDamageOfElemnts(att.element, creature.element)).toInt()
     }
 
     fun getArmorElement() = active_items[ARMOR_INDEX].element
@@ -189,6 +208,17 @@ class Player(val game: Game){
         if(index !in inventory.indices) return
         inventory[index].use(this)
     }
+
+    fun reset(){
+        for(i in active_items.indices) active_items[i] = generateEmptyItem()
+        for(i in inventory.indices) inventory[i] = generateEmptyItem()
+    }
+    
+    fun canUseMagic() = magic >= active_items[MAGIC_INDEX].cost
+
+    fun getInventory() = inventory.copyOf()
+
+    fun getActiveItems() = active_items.copyOf()
 
     fun getInventoryCapacity() = INVENTORY_CAPACITY
 
