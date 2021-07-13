@@ -21,12 +21,12 @@ import summer.practice.infty.view.FinalWindow
 class ViewController(var gameWindow : MyView, val game : Game): Controller() {
     val final = FinalWindow()
     fun win(){
-        val str: String = ("☆ Congratulations! You won! ☆")
+        val str: String = ("☆ Congratulations! You reached the leaf! ☆")
         final.changelabel(str)
         final.openWindow()
     }
     fun youDied(){
-        val str: String = ("🕱 You're dead 🕱")
+        val str: String = ("🕱 You died 🕱")
         final.changelabel(str)
         final.openWindow()
     }
