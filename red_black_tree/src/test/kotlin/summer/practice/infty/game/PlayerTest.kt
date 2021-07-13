@@ -1,11 +1,25 @@
 package summer.practice.infty.game
 
 import org.junit.Test
+import summer.practice.infty.game.creatures.Dragon
 import summer.practice.infty.game.items.Item
 import summer.practice.infty.game.items.ItemType
+import summer.practice.infty.game.items.generateEmptyItem
+import java.lang.reflect.Field
 import kotlin.test.assertEquals
 
+
 internal class PlayerTest{
+
+    private fun getPrivateInventory(player: Player): Array<Item>{
+        val playerClass: Class<*> = player.javaClass
+
+        val field: Array<Field> = playerClass.declaredFields
+        val inventoryField = player.javaClass.getDeclaredField("inventory")
+        inventoryField.isAccessible = true
+
+        return inventoryField.get(player) as Array<Item>
+    }
 
     @Test
     fun getItemsCountInInventoryTest(){
@@ -15,13 +29,35 @@ internal class PlayerTest{
 
         val item = Item(Element.MARINE, ItemType.ARMOR, 10, Attributes.STRENGTH, 15, 15, 15, 0)
 
-        for(i in 0 until playerWithFullInventory.getInventory().size){
-            playerWithFullInventory.getInventory()[i] = item
+
+        var threeInventory = Array<Item>(0){ generateEmptyItem()}
+        try {
+            threeInventory = getPrivateInventory(playerWithThreeItems)
         }
-        for(i in 0 until 3){
-            playerWithThreeItems.getInventory()[i] = item
+        catch(cast: ClassCastException){
+            assert(false)
+        }
+        catch (e: Exception){
+            assert(false)
         }
 
+        var fullInventory = Array<Item>(0){ generateEmptyItem()}
+        try {
+            fullInventory = getPrivateInventory(playerWithFullInventory)
+        }
+        catch(cast: ClassCastException){
+            assert(false)
+        }
+        catch (e: Exception){
+            assert(false)
+        }
+
+        for(i in 0 until playerWithFullInventory.getInventory().size){
+            fullInventory[i] = item
+        }
+        for(i in 0 until 3){
+            threeInventory[i] = item
+        }
 
         assertEquals(0, playerWithEmptyInventory.getItemsCountInInventory())
         assertEquals(3, playerWithThreeItems.getItemsCountInInventory())
@@ -41,16 +77,38 @@ internal class PlayerTest{
             playerWithFullInventory.getInventory()[i] = otherItem
         }
 
-        for(i in playerWithOneSlot.getInventory()){
-            playerWithOneSlot.addItem(otherItem)
+        var oneSlotInventory = Array<Item>(0){ generateEmptyItem()}
+        try {
+            oneSlotInventory = getPrivateInventory(playerWithOneSlot)
         }
-        playerWithOneSlot.getInventory()[0] = Item(Element.NONE, ItemType.EMPTY, 0, Attributes.NONE, 0, 0, 0 ,0)
+        catch(cast: ClassCastException){
+            assert(false)
+        }
+        catch (e: Exception){
+            assert(false)
+        }
+
+        var fullInventory = Array<Item>(0){ generateEmptyItem()}
+        try {
+            fullInventory = getPrivateInventory(playerWithFullInventory)
+        }
+        catch(cast: ClassCastException){
+            assert(false)
+        }
+        catch (e: Exception){
+            assert(false)
+        }
+
+        for(i in 0 until playerWithOneSlot.getInventory().size){
+            oneSlotInventory[i] = otherItem
+            fullInventory[i] = otherItem
+        }
+        oneSlotInventory[0] = Item(Element.NONE, ItemType.EMPTY, 0, Attributes.NONE, 0, 0, 0 ,0)
+        fullInventory[fullInventory.lastIndex] = otherItem
 
         playerWithEmptyInventory.addItem(itemToAdd)
         playerWithFullInventory.addItem(itemToAdd)
         playerWithOneSlot.addItem(itemToAdd)
-
-
 
         for(i in 0 until playerWithEmptyInventory.getInventory().size){
             if(i == 0){
@@ -92,5 +150,18 @@ internal class PlayerTest{
         assertEquals(item2, player.getInventory()[0])
         assertEquals(item1, player.getInventory()[1])
         assertEquals(item3, player.getInventory()[2])
+    }
+
+    @Test
+    fun attackTest(){
+        val player = Player(Game())
+        val dragon = Dragon(Element.HEAVENLY, 1000000, 100)
+        player.addItem(Item(Element.FROSTY, ItemType.WEAPON, 10000, Attributes.STRENGTH, 50, 1, 1, 1))
+        player.setActiveItem(player.getInventory()[0])
+
+        player.Attack(dragon)
+
+        assertEquals((1000000 - (10000*(1.0 + player.strength*0.1) + 50) * 1.0).toInt(), dragon.health)
+        //assertEquals(100 - (50.0 * (1 + 0.1 * player.strength) * 0.5).toInt(), player.health)
     }
 }
