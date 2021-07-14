@@ -121,10 +121,8 @@ class ViewController<T: Comparable<T>>(var gameWindow : MyView): Controller() {
         var i = ImageView()
         if(image != null){
             i.setImage(image)
-            val b_w = b.width
-            val b_h = b.height
-            i.setFitWidth(b_w)
-            i.setFitHeight(b_h)
+            i.setFitWidth(b.width)
+            i.setFitHeight(b.height)
             b.graphicProperty().setValue(i)
             b.usePrefWidth = true
             b.usePrefHeight = true
