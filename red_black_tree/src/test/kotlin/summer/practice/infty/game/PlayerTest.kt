@@ -27,7 +27,7 @@ internal class PlayerTest{
         val playerWithFullInventory = Player(Game())
         val playerWithThreeItems = Player(Game())
 
-        val item = Item(Element.MARINE, ItemType.ARMOR, 10, Attributes.STRENGTH, 15, 15, 15, 0)
+        val item = Item(Element.MARINE, ItemType.ARMOR, 10, Attributes.STRENGTH, 15, 15, 15, 0, 10, 0)
 
 
         var threeInventory = Array<Item>(0){ generateEmptyItem()}
@@ -70,8 +70,8 @@ internal class PlayerTest{
         val playerWithFullInventory = Player(Game())
         val playerWithOneSlot = Player(Game())
 
-        val itemToAdd = Item(Element.MARINE, ItemType.ARMOR, 10, Attributes.STRENGTH, 15, 15, 15, 0)
-        val otherItem = Item(Element.FROSTY, ItemType.AMULET, 10, Attributes.DEXTERITY, 10, 10, 10, 0)
+        val itemToAdd = Item(Element.MARINE, ItemType.ARMOR, 10, Attributes.STRENGTH, 15, 15, 15, 0,10, 0)
+        val otherItem = Item(Element.FROSTY, ItemType.AMULET, 10, Attributes.DEXTERITY, 10, 10, 10, 0,10, 0)
 
         for(i in 0 until playerWithFullInventory.getInventory().size){
             playerWithFullInventory.getInventory()[i] = otherItem
@@ -103,7 +103,7 @@ internal class PlayerTest{
             oneSlotInventory[i] = otherItem
             fullInventory[i] = otherItem
         }
-        oneSlotInventory[0] = Item(Element.NONE, ItemType.EMPTY, 0, Attributes.NONE, 0, 0, 0 ,0)
+        oneSlotInventory[0] = Item(Element.NONE, ItemType.EMPTY, 0, Attributes.NONE, 0, 0, 0 ,0,10, 0)
         fullInventory[fullInventory.lastIndex] = otherItem
 
         playerWithEmptyInventory.addItem(itemToAdd)
@@ -135,10 +135,10 @@ internal class PlayerTest{
     fun swapInventoryItemsTest(){
         val player = Player(Game())
 
-        val item1 = Item(Element.MARINE, ItemType.ARMOR, 10, Attributes.STRENGTH, 15, 15, 15, 0)
-        val item2 = Item(Element.FROSTY, ItemType.AMULET, 10, Attributes.DEXTERITY, 10, 10, 10, 1)
-        val item3 = Item(Element.HEAVENLY, ItemType.HEALTH_POTION, 10, Attributes.DEXTERITY, 10, 10, 10, 2)
-        val item4 = Item(Element.HELLISH, ItemType.OTHER, 10, Attributes.DEXTERITY, 10, 10, 10, 2)
+        val item1 = Item(Element.MARINE, ItemType.ARMOR, 10, Attributes.STRENGTH, 15, 15, 15, 0,10, 0)
+        val item2 = Item(Element.FROSTY, ItemType.AMULET, 10, Attributes.DEXTERITY, 10, 10, 10, 1,10, 1)
+        val item3 = Item(Element.HEAVENLY, ItemType.HEALTH_POTION, 10, Attributes.DEXTERITY, 10, 10, 10, 2,10, 2)
+        val item4 = Item(Element.HELLISH, ItemType.OTHER, 10, Attributes.DEXTERITY, 10, 10, 10, 2,10, 3)
 
         player.addItem(item1)
         player.addItem(item2)
@@ -149,19 +149,22 @@ internal class PlayerTest{
 
         assertEquals(item2, player.getInventory()[0])
         assertEquals(item1, player.getInventory()[1])
-        assertEquals(item3, player.getInventory()[2])
+        assertEquals(item3, player.getInventory()[3])
     }
+
 
     @Test
     fun attackTest(){
         val player = Player(Game())
         val dragon = Dragon(Element.HEAVENLY, 1000000, 100)
-        player.addItem(Item(Element.FROSTY, ItemType.WEAPON, 10000, Attributes.STRENGTH, 50, 1, 1, 1))
+        player.addItem(Item(Element.FROSTY, ItemType.WEAPON, 10000, Attributes.STRENGTH, 50, 1, 1, 1,10, 0))
+        player.addItem(Item(Element.FROSTY, ItemType.ARMOR, 100, Attributes.STRENGTH, 50, 1, 1, 1,10, 0))
         player.setActiveItem(player.getInventory()[0])
 
+        //Player commits suicide
         player.Attack(dragon)
 
-        assertEquals((1000000 - (10000*(1.0 + player.strength*0.1) + 50) * 1.0).toInt(), dragon.health)
-        //assertEquals(100 - (50.0 * (1 + 0.1 * player.strength) * 0.5).toInt(), player.health)
+        assertEquals(1000000 - (10000 * (1.0 + player.strength*0.1) * 1 * 1.5).toInt(), dragon.health)
+        assertEquals(0, player.health)
     }
 }
