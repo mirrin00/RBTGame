@@ -11,6 +11,8 @@ class Item(val element: Element,
            val attr: Attributes,
            attr_val: Int,
            val cost: Int,
+           val health_increase: Int,
+           val magic_increase: Int,
            val price: Int,
            var inv_number: Int){
 
@@ -31,7 +33,9 @@ class Item(val element: Element,
         ItemType.WEAPON -> getDescription()
         ItemType.ARMOR -> getDescription()
         ItemType.MAGIC -> getDescription()
-        ItemType.AMULET -> "Element: $element\n$attr: $attr_value"
+        ItemType.AMULET -> "Element: $element\n$attr: $attr_value" +
+                        (if(health_increase != 0) "\nMax health: +$health_increase" else "") +
+                        (if(magic_increase != 0) "\nMax magic: +$magic_increase" else "")
         ItemType.HEALTH_POTION -> "Health restore: $basic_value\nPrice: $price"
         ItemType.MAGIC_POTION -> "Magic restore: $basic_value\nPrice: $price"
         ItemType.OTHER -> "Price: $price"
@@ -59,4 +63,4 @@ class Item(val element: Element,
     }
 }
 
-fun generateEmptyItem() = Item(Element.NONE, ItemType.EMPTY, 1, Attributes.NONE, 0,0, 0,0)
+fun generateEmptyItem() = Item(Element.NONE, ItemType.EMPTY, 1, Attributes.NONE, 0,0, 0,0, 0,0)

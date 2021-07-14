@@ -17,8 +17,8 @@ class Golem(override val element: Element,
 
     override fun getActions(player: Player): ArrayList<Action> {
         val actions = ArrayList<Action>()
-        actions.add(ActionFight(false, true, "Fight by weapon"))
-        actions.add(ActionFight(true, player.canUseMagic(),"Fight by magic"))
+        actions.add(ActionFight(false, true, "Fight by weapon", "Golem\n" + getStatus()))
+        actions.add(ActionFight(true, player.canUseMagic(),"Fight by magic", "Golem\n" + getStatus()))
         return  actions
     }
 }

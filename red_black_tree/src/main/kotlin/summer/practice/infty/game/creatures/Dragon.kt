@@ -18,8 +18,8 @@ class Dragon(override val element: Element,
 
     override fun getActions(player: Player): ArrayList<Action> {
         val actions = ArrayList<Action>()
-        actions.add(ActionFight(false, true,"Fight by weapon"))
-        actions.add(ActionFight(true, player.canUseMagic(),"Fight by magic"))
+        actions.add(ActionFight(false, true,"Fight by weapon", "Dragon\n" + getStatus()))
+        actions.add(ActionFight(true, player.canUseMagic(),"Fight by magic", "Dragon\n" + getStatus()))
         return  actions
     }
 }

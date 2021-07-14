@@ -11,20 +11,20 @@
     <bottom>
         <VBox prefHeight="134.0" prefWidth="820.0" BorderPane.alignment="CENTER">
             <children>
-            <Label alignment="CENTER" prefHeight="25.0" prefWidth="782.0" text="Выбор действия" />
-                <Button fx:id="action1" alignment="CENTER" mnemonicParsing="false" onAction="#pickedAction1" prefHeight="25.0" prefWidth="804.0" text="действие 1">
+            <Label alignment="CENTER" prefHeight="25.0" prefWidth="782.0" text="Action selector" />
+                <Button fx:id="action1" alignment="CENTER" mnemonicParsing="false" onAction="#pickedAction1" prefHeight="25.0" prefWidth="804.0" text="Action 1">
                <tooltip>
                   <Tooltip fx:id="action1t" text="Empty Tooltip" />
                </tooltip></Button>
-                <Button fx:id="action2" alignment="CENTER" mnemonicParsing="false" onAction="#pickedAction2" prefHeight="25.0" prefWidth="804.0" text="действие 2">
+                <Button fx:id="action2" alignment="CENTER" mnemonicParsing="false" onAction="#pickedAction2" prefHeight="25.0" prefWidth="804.0" text="Action 2">
                <tooltip>
                   <Tooltip fx:id="action2t" text="Empty Tooltip" />
                </tooltip></Button>
-            <Button fx:id="action3" alignment="CENTER" mnemonicParsing="false" onAction="#pickedAction3" prefHeight="25.0" prefWidth="804.0" text="действие 3">
+            <Button fx:id="action3" alignment="CENTER" mnemonicParsing="false" onAction="#pickedAction3" prefHeight="25.0" prefWidth="804.0" text="Action 3">
                <tooltip>
                   <Tooltip fx:id="action3t" text="Empty Tooltip" />
                </tooltip></Button>
-            <Button fx:id="action4" alignment="CENTER" mnemonicParsing="false" onAction="#pickedAction4" prefHeight="25.0" prefWidth="804.0" text="действие 4" textAlignment="CENTER">
+            <Button fx:id="action4" alignment="CENTER" mnemonicParsing="false" onAction="#pickedAction4" prefHeight="25.0" prefWidth="804.0" text="Action 4" textAlignment="CENTER">
                <tooltip>
                   <Tooltip fx:id="action4t" text="Empty Tooltip" />
                </tooltip></Button>
@@ -125,7 +125,7 @@
                      <HBox.margin>
                         <Insets bottom="9.0" right="9.0" top="9.0" />
                      </HBox.margin></Label>
-                  <Label alignment="CENTER" prefHeight="30.0" prefWidth="45.0" style="-fx-border-color: #bf0d0d;" text="💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰🔮">
+                  <Label alignment="CENTER" prefHeight="30.0" prefWidth="45.0" style="-fx-border-color: #bf0d0d;" text="⚝">
                      <HBox.margin>
                         <Insets bottom="9.0" left="9.0" top="9.0" />
                      </HBox.margin>
@@ -136,8 +136,8 @@
                      </HBox.margin></Label>
                </children>
             </HBox>
-            <Label fx:id="textDescription" alignment="CENTER" contentDisplay="CENTER" layoutX="10.0" layoutY="338.0" prefHeight="95.0" prefWidth="320.0" style="-fx-border-color: #bf0d0d; -fx-border-width: 3; -fx-border-radius: 10;" text="Текстовое описание" textAlignment="CENTER" wrapText="true" />
-            <Label fx:id="attributes" layoutX="337.0" layoutY="7.0" prefHeight="268.0" prefWidth="52.0" style="-fx-border-color: #bf0d0d; -fx-border-width: 3; -fx-border-radius: 10;" text="Атрибуты" />
+            <Label fx:id="textDescription" alignment="CENTER" contentDisplay="CENTER" layoutX="10.0" layoutY="338.0" prefHeight="95.0" prefWidth="320.0" style="-fx-border-color: #bf0d0d; -fx-border-width: 3; -fx-border-radius: 10;" text="Description" textAlignment="CENTER" wrapText="true" />
+            <Label fx:id="attributes" layoutX="337.0" layoutY="7.0" prefHeight="268.0" prefWidth="52.0" style="-fx-border-color: #bf0d0d; -fx-border-width: 3; -fx-border-radius: 10;" text="Attributes" />
             <Button alignment="CENTER" layoutX="337.0" layoutY="284.0" mnemonicParsing="false" onAction="#OpenTheMap" prefHeight="47.0" prefWidth="52.0" text="MAP" />
          </children>
       </Pane>
@@ -156,7 +156,7 @@
             </Menu>
             <Menu mnemonicParsing="false" text="About">
                <items>
-                  <MenuItem mnemonicParsing="false" text="Rules" />
+                  <MenuItem mnemonicParsing="false" onAction="#pickedRules" text="Rules" />
                </items>
             </Menu>
          </menus>

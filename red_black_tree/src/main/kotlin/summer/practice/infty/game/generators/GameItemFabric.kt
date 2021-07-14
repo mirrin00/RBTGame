@@ -14,11 +14,22 @@ internal class GameItemFabric: ItemFabric{
 
     private fun generatePrice(depth_level: Int) = (Generator.getRandomFromDepth(depth_level) * Random.nextDouble(1.2, 3.0)).toInt()
 
-    override fun generateItem(depth_level: Int, type: ItemType): Item = Item(Generator.generateElement(),
-                                                            if(type == ItemType.EMPTY) Generator.generateItemType() else type,
-                                                            generateBasicValue(depth_level),
-                                                            Generator.generateAttribute(),
-                                                            generateAttributeValue(depth_level),
-                                                            generateCost(depth_level),
-                                                            generatePrice(depth_level), 0)
+    private fun generateHealthMagicIncrease(depth_level: Int, type: ItemType): Int = if(type != ItemType.AMULET) 0 else when((0..9).random()){
+        1, 5, 7 -> (Generator.getRandomFromDepth(depth_level) * Random.nextDouble(1.0, 2.0)).toInt()
+        0 -> -Random.nextInt(1, 20)
+        else -> 0
+    }
+
+    override fun generateItem(depth_level: Int, type: ItemType): Item{
+        val new_type = if(type == ItemType.EMPTY) Generator.generateItemType() else type
+        return Item(Generator.generateElement(),
+                    new_type,
+                    generateBasicValue(depth_level),
+                    Generator.generateAttribute(),
+                    generateAttributeValue(depth_level),
+                    generateCost(depth_level),
+                    generateHealthMagicIncrease(depth_level, new_type),
+                    generateHealthMagicIncrease(depth_level, new_type),
+                    generatePrice(depth_level),0)
+    }
 }

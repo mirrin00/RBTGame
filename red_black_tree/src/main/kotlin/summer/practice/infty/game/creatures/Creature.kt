@@ -21,6 +21,8 @@ interface Creature {
         health -= (10 * player.getArmorAbsorption() * getHealthDamageOfElemnts(element, player.getArmorElement())).toInt()
     }
 
+    fun getStatus(): String = "Element: ${element.name}  Health: $health  Damage: $damage"
+
     fun getDamageRatio(magic: Boolean = false): Double
 
     fun getActions(player: Player): ArrayList<Action>

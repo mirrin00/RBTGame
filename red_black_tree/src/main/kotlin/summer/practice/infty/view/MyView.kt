@@ -1,19 +1,23 @@
 package summer.practice.infty.view
 
 import javafx.scene.Group
-import javafx.scene.layout.BorderPane
-import javafx.scene.layout.StackPane
+import javafx.scene.control.Alert
+import javafx.scene.control.Alert.AlertType
 import javafx.scene.control.Button
 import javafx.scene.control.Label
 import javafx.scene.control.Tooltip
 import javafx.scene.image.ImageView
 import javafx.scene.input.MouseButton
-import summer.practice.infty.controllers.InterfaceController
-import tornadofx.*
 import javafx.scene.input.MouseEvent
+import javafx.scene.layout.BorderPane
+import javafx.scene.layout.Region
+import javafx.scene.layout.StackPane
 import summer.practice.infty.actions.Action
+import summer.practice.infty.controllers.InterfaceController
 import summer.practice.infty.controllers.ViewController
 import summer.practice.infty.game.Game
+import tornadofx.View
+import tornadofx.clear
 
 
 class MyView: View("Red Black Tree Game") {
@@ -194,6 +198,16 @@ class MyView: View("Red Black Tree Game") {
             icontrol.resetPicked()
         }
     }
+    fun pickedRules(){
+        val rules = Alert(AlertType.INFORMATION)
+        rules.isResizable = true
+        rules.title = "Rules information"
+        rules.headerText = null
+        rules.contentText = "The Rules must be here"
+        rules.dialogPane.minHeight(Region.USE_PREF_SIZE)
+        rules.showAndWait()
+    }
+
 
     fun OpenTheMap(){
         RBTmap.openWindow()

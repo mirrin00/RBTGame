@@ -4,6 +4,7 @@ import summer.practice.infty.game.creatures.Creature
 import summer.practice.infty.game.items.Item
 import summer.practice.infty.game.items.ItemType
 import summer.practice.infty.game.items.generateEmptyItem
+import kotlin.math.max
 import kotlin.math.min
 import kotlin.random.Random
 
@@ -11,7 +12,7 @@ const val WEAPON_INDEX = 0
 const val ARMOR_INDEX = 1
 const val MAGIC_INDEX = 2
 const val AMULET_INDEX = 3
-private const val armor_coef = 0.1
+private const val armor_coef = 0.2
 
 class Player(val game: Game){
     var coins: Int = 0
@@ -19,7 +20,8 @@ class Player(val game: Game){
             field = if(value < 0) 0
                     else value
         }
-    var max_health = 100
+    private val basic_max_health = 100
+    var max_health = basic_max_health
         private set
     var health: Int = max_health
         set(value){
@@ -33,7 +35,8 @@ class Player(val game: Game){
                 }
             }
         }
-    var max_magic = 100
+    private val basic_max_magic = 100
+    var max_magic = basic_max_magic
         private set
     var magic: Int = max_magic
         set(value){
@@ -64,6 +67,11 @@ class Player(val game: Game){
     private val active_items = Array<Item>(4){ val v = generateEmptyItem(); v.inv_number = it; v}
 
     private fun recalculateAttributes(){
+        dexterity = 0
+        max_health = basic_max_health + active_items[AMULET_INDEX].health_increase
+        max_magic = basic_max_magic + active_items[AMULET_INDEX].magic_increase
+        health = min(health, max_health)
+        magic = min(magic, max_magic)
         perception = basic_perception
         dexterity = basic_dexterity
         strength = basic_strength
@@ -172,9 +180,9 @@ class Player(val game: Game){
                 magic -= att.cost
             }
         }
-        creature.health -= (att.basic_value * attr_ratio * creature.getDamageRatio(by_magic) +
-                att.attr_value * getRatioFromElemets(att.element, creature.element)).toInt()
-        health -= (att.attr_value * attr_ratio * getHealthDamageOfElemnts(att.element, creature.element)).toInt()
+        val damage = att.basic_value * attr_ratio * creature.getDamageRatio(by_magic)
+        creature.health -= (damage * getRatioFromElemets(att.element, creature.element)).toInt()
+        health -= (max(0.0,damage - getArmorAbsorption()) * getHealthDamageOfElemnts(att.element, creature.element)).toInt()
     }
 
     fun getArmorElement() = active_items[ARMOR_INDEX].element

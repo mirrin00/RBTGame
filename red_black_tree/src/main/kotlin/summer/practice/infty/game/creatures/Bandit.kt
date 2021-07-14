@@ -22,11 +22,11 @@ class Bandit(override val element: Element,
     override fun getActions(player: Player): ArrayList<Action>{
         val actions = ArrayList<Action>()
         if(in_battle){
-            actions.add(ActionFight(false,true,"Fight by weapon"))
-            actions.add(ActionFight(true, player.canUseMagic(),"Fight by magic"))
+            actions.add(ActionFight(false,true,"Fight by weapon", "Bandit\n" + getStatus()))
+            actions.add(ActionFight(true, player.canUseMagic(),"Fight by magic", "Bandit\n" + getStatus()))
         }else{
             actions.add(ActionPay(player.coins >= pay_cost, "Pay $pay_cost coins to avoid fight"))
-            actions.add(ActionToFight(true, "Fight with Bandit"))
+            actions.add(ActionToFight(true, "Fight with Bandit", "Bandit\n" + getStatus()))
         }
         return actions
     }
