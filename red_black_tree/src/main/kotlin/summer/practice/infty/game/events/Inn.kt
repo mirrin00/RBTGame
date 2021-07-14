@@ -7,15 +7,17 @@ import kotlin.math.min
 class Inn(override val k_count: Int,
           private val cost: Int,
           private val max_regain: Int): RoomEvent {
-    override val description: String = "There is an inn for travelers. You " +
+    override val description: String = "There is an Inn for travelers. You " +
             "can rest and regain health and magics up to $max_regain points." +
-            " The cost of rest is $cost"
+            " The cost of rest is $cost coins"
 
     override fun actWithPlayer(player: Player) {
         player.health = max(max_regain, player.max_health)
         player.magic = max(max_regain, player.max_magic)
         player.coins -= cost
     }
+
+    override fun getActionDescription(): String = "Rest in the Inn"
 
     override fun canAct(player: Player) = (player.coins > cost) &&
                                           (min(player.magic, player.health) < max_regain) &&

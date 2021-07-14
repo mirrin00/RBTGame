@@ -8,15 +8,25 @@ object ResourceLoader {
     private val map = RedBlackTree<String, Image>()
 
     init{
-        loadImage("/cave.jpg", "Underground")
-        loadImage("/cave2.jpg", "Underground2")
-        loadImage("/forest.jpg", "Usual")
-        loadImage("/lava.jpg", "Hellish")
-        loadImage("/sand.jpg", "Sandy")
-        loadImage("/sea.jpg", "Marine")
-        loadImage("/sea2.jpg", "Marine2")
-        loadImage("/sky.jpg", "Heavenly")
-        loadImage("/snow.jpg", "Frosty")
+        loadImage("/cave2.jpg", "UNDERGROUND")
+        loadImage("/cave.jpg", "UNDERGROUND2")
+        loadImage("/forest.jpg", "USUAL")
+        loadImage("/lava.jpg", "HELLISH")
+        loadImage("/sand.jpg", "SANDY")
+        loadImage("/sea.jpg", "MARINE")
+        loadImage("/sea2.jpg", "MARINE2")
+        loadImage("/sky.jpg", "HEAVENLY")
+        loadImage("/snow.jpg", "FROSTY")
+        // Item icons
+        loadImage("/sword.png", "WEAPON")
+        loadImage("/armor.png", "ARMOR")
+        loadImage("/magic_scroll.png", "MAGIC")
+        loadImage("/amulet.png", "AMULET")
+        loadImage("/health_potion.png", "HEALTH_POTION")
+        loadImage("/magic_potion.png", "MAGIC_POTION")
+        loadImage("/relic.png", "OTHER")
+        loadImage("/empty.png", "EMPTY")
+        loadImage("/player.jpg", "PLAYER")
     }
 
     private fun loadImage(filename: String, key: String){

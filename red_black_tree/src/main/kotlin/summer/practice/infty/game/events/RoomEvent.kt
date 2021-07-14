@@ -8,6 +8,8 @@ interface RoomEvent{
 
     fun actWithPlayer(player: Player)
 
+    fun getActionDescription(): String
+
     fun getRequirements(): String
 
     fun getUseDescription(): String

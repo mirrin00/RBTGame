@@ -1,54 +1,68 @@
 package summer.practice.infty.drawable
 
+import summer.practice.infty.game.rooms.*
+
 import javafx.scene.Cursor
 import javafx.scene.Group
 import javafx.scene.paint.Color
+import javafx.scene.paint.ImagePattern
 import javafx.scene.shape.Circle
 import javafx.scene.shape.Line
 import javafx.scene.text.Font
 import javafx.scene.text.TextBoundsType
 import javafx.scene.text.Text
+import summer.practice.infty.ResourceLoader
 import tornadofx.*
 
 import summer.practice.infty.rbt.RedBlackTreeIterator
 
-class DrawableNode<T, V>(nodeX:Double = 0.0, nodeY:Double = 0.0, private val iter: RedBlackTreeIterator<T, V>,
+class DrawableNode<T>(nodeX:Double = 0.0, nodeY:Double = 0.0, private val iter: RedBlackTreeIterator<T, Room>,
                          var size: Double = 50.0, var parentLink: Line? = null, draggable: Boolean = false)
 {
+    //Values of node
     val key = iter.getKey()
+    var leftNode: DrawableNode<T>? = null
+    var rightNode: DrawableNode<T>? = null
+
+
+    //Shapes of node
+    var nodeShape = Group()
     var leftLink: Line? = null
     var rightLink: Line? = null
-    var leftNode: DrawableNode<T, V>? = null
-    var rightNode: DrawableNode<T, V>? = null
-
-    var nodeShape = Group()
     private val mainShape = Circle()
     var textInNode = Text()
 
+    //Color of node
     private val color: Color = if (iter.isRed()) {Color.RED}
                 else {Color.BLACK}
 
     init {
+        val keyValue = iter.getKey().toString()
+        val curRoom = iter.next()
+
+
+        val img = ResourceLoader.getImage(curRoom!!.element.name)
+
+        mainShape.fill = if(img != null) {
+            ImagePattern(img)
+        }else{
+            Color.WHITE
+        }
+
         mainShape.radius = size/2
-        mainShape.fill = Color.WHITE
-
-        //mainShape.fill = ImagePattern(Image("img.jpg"))
-
-        mainShape.strokeWidth = 6.0
+        mainShape.strokeWidth = 3.0
         mainShape.stroke = color
 
         var size = 35.0
-
-        val keyValue = iter.getKey().toString()
 
         size /= keyValue.length
 
 
         textInNode.x = -10.0
         textInNode.y = (size - 5.0)/2
-        textInNode.text = iter.getKey().toString()
+        textInNode.text = keyValue
         textInNode.font = Font(size)
-        textInNode.fill = Color.rgb(0,0,0,0.25)
+        textInNode.fill = Color.rgb(255,255,255,1.0)
         textInNode.stroke = Color.rgb(0,0,0,1.0)
         textInNode.strokeWidth = 1.0/keyValue.length
         textInNode.boundsType = TextBoundsType.LOGICAL
@@ -61,7 +75,7 @@ class DrawableNode<T, V>(nodeX:Double = 0.0, nodeY:Double = 0.0, private val ite
             add(mainShape)
             add(textInNode)
 
-            /*Code for draging nodes*/
+            /*Code for dragging nodes*/
 
             if(draggable) {
                 var startX = 0.0

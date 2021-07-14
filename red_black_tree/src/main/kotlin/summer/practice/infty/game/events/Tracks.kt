@@ -8,8 +8,10 @@ class Tracks(override val k_count: Int): RoomEvent{
             "learn more about these creatures"
 
     override fun actWithPlayer(player: Player){
-        TODO("Add note about creature in the next rooms")
+        player.game.addNextCreatureDescription()
     }
+
+    override fun getActionDescription(): String = "Explore the tracks"
 
     override fun canAct(player: Player): Boolean = true
 

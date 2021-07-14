@@ -8,8 +8,10 @@ class Portal(override val k_count: Int): RoomEvent {
             "Think twice."
 
     override fun actWithPlayer(player: Player){
-        TODO("Move player into another level")
+        player.game.movePlayerOnDepth()
     }
+
+    override fun getActionDescription(): String = "Enter the portal"
 
     override fun canAct(player: Player): Boolean = true
 

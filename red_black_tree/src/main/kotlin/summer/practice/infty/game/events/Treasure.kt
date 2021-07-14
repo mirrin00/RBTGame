@@ -10,6 +10,8 @@ class Treasure(override val k_count: Int,
         player.coins += coins_count
     }
 
+    override fun getActionDescription(): String = "Take the treasure"
+
     override fun canAct(player: Player): Boolean = true
 
     override fun getUseDescription(): String = getRequirements()
