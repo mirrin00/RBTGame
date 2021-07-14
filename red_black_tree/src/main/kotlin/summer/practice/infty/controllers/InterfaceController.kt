@@ -1,7 +1,6 @@
 package summer.practice.infty.controllers
 
 import summer.practice.infty.actions.Action
-import summer.practice.infty.game.Game
 import summer.practice.infty.view.MyView
 import tornadofx.Controller
 
@@ -24,7 +23,7 @@ class InterfaceController(gameWindow : MyView) : Controller(){
         game.useItem(i)
     }
     fun sold(i : Int, active : Boolean){
-        game.sold(i, active)
+        game.sell(i, active)
     }
     fun act(a : Action){
         a.act(game)

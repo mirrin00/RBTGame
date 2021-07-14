@@ -26,6 +26,7 @@ object ResourceLoader {
         loadImage("/magic_potion.png", "MAGIC_POTION")
         loadImage("/relic.png", "OTHER")
         loadImage("/empty.png", "EMPTY")
+        loadImage("/player.jpg", "PLAYER")
     }
 
     private fun loadImage(filename: String, key: String){

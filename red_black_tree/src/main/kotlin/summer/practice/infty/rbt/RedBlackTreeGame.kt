@@ -34,8 +34,8 @@ class RedBlackTreeGame<T: Comparable<T>>: RedBlackTree<T, Room>(){
 
     // Inserts set of Rooms
     fun insertRooms(vararg keys: T){
+        for(key in keys) super.insert(key, EmptyRoom())
         for(key in keys){
-            super.insert(key, EmptyRoom())
             val (node, deep) = getNodeAndDepth(key)
             node?.data = Generator.generateRoom(deep)
         }

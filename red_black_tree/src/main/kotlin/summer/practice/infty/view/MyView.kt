@@ -1,5 +1,6 @@
 package summer.practice.infty.view
 
+import javafx.geometry.Pos
 import javafx.scene.Group
 import javafx.scene.control.Alert
 import javafx.scene.control.Alert.AlertType
@@ -12,6 +13,7 @@ import javafx.scene.input.MouseEvent
 import javafx.scene.layout.BorderPane
 import javafx.scene.layout.Region
 import javafx.scene.layout.StackPane
+import summer.practice.infty.ResourceLoader
 import summer.practice.infty.actions.Action
 import summer.practice.infty.controllers.InterfaceController
 import summer.practice.infty.controllers.ViewController
@@ -73,6 +75,8 @@ class MyView: View("Red Black Tree Game") {
         //ImageView
     val imagePlayer : ImageView by fxid("ImagePlayer")
     init{
+        val image = ResourceLoader.getImage("PLAYER")
+        if(image != null) imagePlayer.setImage(image)
         game.view = vcontrol
     }
     fun startGame(){
@@ -201,10 +205,24 @@ class MyView: View("Red Black Tree Game") {
     fun pickedRules(){
         val rules = Alert(AlertType.INFORMATION)
         rules.isResizable = true
-        rules.title = "Rules information"
+        rules.title = "Rules"
         rules.headerText = null
-        rules.contentText = "The Rules must be here"
-        rules.dialogPane.minHeight(Region.USE_PREF_SIZE)
+        rules.contentText = "The main goal of the game is to reach the leaf " +
+                "of the tree. Each room has an element. This is very important " +
+                "because they react. So don't do anything rash. Also be careful" +
+                " with the Hellish-Marine reaction and the Heavenly-Frosty " +
+                "reaction, because you will take damage from your attack.\nIn " +
+                "your inventory, you can swap items by clicking on the primary " +
+                "mouse button. You can use items by clicking on the secondary " +
+                "mouse button. Items such as weapons, armor, a magic scroll and " +
+                "a mysterious amulet are placed in the active slot when used. " +
+                "You can also drop items from your inventory by clicking on them " +
+                "with the middle mouse button. If you are trading, this action " +
+                "will sell the item.\nThe map button opens the current tree " +
+                "map, which can change during your journey. Look there more " +
+                "often, it will help you reach your goal.\nGood luck!"
+        rules.dialogPane.minHeight = 300.0
+        rules.dialogPane.minWidth = 550.0
         rules.showAndWait()
     }
 
@@ -218,20 +236,5 @@ class MyView: View("Red Black Tree Game") {
     fun updateLocalTree( imageTree: Group){
         mainPane.clear()
         mainPane.add(imageTree)
-    }
-
-    fun plusNode() {
-       // RBTmap.plusNode2()
-    }
-    fun minusNode() {
-        //RBTmap.minusNode2()
-    }
-    fun resetTree(){
-       // RBTmap.resetTree2()
-    }
-    fun drawcurrent(){
-        /*treeGroup = RBTmap.drawcurrent2()
-        mainPane.clear()
-        mainPane.add(treeGroup)*/
     }
 }

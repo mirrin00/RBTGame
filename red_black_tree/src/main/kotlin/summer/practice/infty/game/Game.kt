@@ -39,6 +39,7 @@ class Game(var view: ViewController<Int>? = null) {
                     Stages.EVENT
                 }else{
                     changeTree()
+                    if(is_last_room) win()
                     Stages.WAY
                 }
             }
@@ -83,7 +84,7 @@ class Game(var view: ViewController<Int>? = null) {
         view?.update()
     }
 
-    fun sold(item_index: Int, active: Boolean = false){
+    fun sell(item_index: Int, active: Boolean = false){
         if(!game_active) return
         if(cur_stage == Stages.CREATURE && creature is Trader) {
             if (active && item_index in 0 until player.getActiveCapacity()) player.soldActiveItem(item_index)
@@ -101,7 +102,7 @@ class Game(var view: ViewController<Int>? = null) {
         if(player.coins >= b.pay_cost){
             player.coins -= b.pay_cost
             adds += 2
-            event_description = "You bought off the Bandit. $event_description"
+            description_action_before = "You bought off the Bandit."
             next()
         }
         view?.update()
@@ -239,7 +240,7 @@ class Game(var view: ViewController<Int>? = null) {
         player.addItem(Generator.generateItem(0, ItemType.MAGIC))
         player.addItem(Generator.generateItem(0, ItemType.ARMOR))
         player.addItem(Generator.generateItem(0, ItemType.HEALTH_POTION))
-        generateEasyTree()
+        generateMediumTree()
         player.cur_room = tree.iterator().getKey()
         room = tree.find(player.cur_room)!!
         cur_stage = Stages.WAY
@@ -298,6 +299,18 @@ class Game(var view: ViewController<Int>? = null) {
     private fun generateEasyTree(){
         tree.clear()
         val keys = Array<Int>(Random.nextInt(50, 80)){Random.nextInt(0, 1000)}
+        tree.insertRooms(*keys)
+    }
+
+    private fun generateMediumTree(){
+        tree.clear()
+        val keys = Array<Int>(Random.nextInt(120, 180)){Random.nextInt(0, 1000)}
+        tree.insertRooms(*keys)
+    }
+
+    private fun generateHardTree(){
+        tree.clear()
+        val keys = Array<Int>(Random.nextInt(200, 300)){Random.nextInt(0, 1000)}
         tree.insertRooms(*keys)
     }
 

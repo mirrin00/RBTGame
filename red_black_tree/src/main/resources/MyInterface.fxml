@@ -52,7 +52,7 @@
                <tooltip>
                   <Tooltip fx:id="active3t" text="Empty Tooltip" />
                </tooltip></Button>
-            <ImageView fx:id="ImagePlayer" fitHeight="114.0" fitWidth="98.0" layoutX="122.0" layoutY="26.0" pickOnBounds="true" preserveRatio="true" />
+            <ImageView fx:id="ImagePlayer" fitHeight="114.0" fitWidth="98.0" layoutX="122.0" layoutY="26.0" pickOnBounds="true" />
             <Button fx:id="active1" alignment="CENTER" layoutX="230.0" layoutY="26.0" mnemonicParsing="false" onMouseReleased="#pickedActive1" prefHeight="60.0" prefWidth="60.0">
                <tooltip>
                   <Tooltip fx:id="active1t" text="Empty Tooltip" />
@@ -148,10 +148,6 @@
             <Menu mnemonicParsing="false" text="Game">
                <items>
                   <MenuItem mnemonicParsing="false" onAction="#startGame" text="New Game" />
-                  <MenuItem disable="true" mnemonicParsing="false" onAction="#plusNode" text="Add random node" />
-                  <MenuItem disable="true" mnemonicParsing="false" onAction="#minusNode" text="Remove node" />
-                  <MenuItem disable="true" mnemonicParsing="false" onAction="#resetTree" text="Reset tree" />
-                  <MenuItem disable="true" mnemonicParsing="false" onAction="#drawcurrent" text="draw current" />
                </items>
             </Menu>
             <Menu mnemonicParsing="false" text="About">
