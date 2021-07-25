@@ -1,10 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="792.0" prefWidth="604.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="792.0" prefWidth="604.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
+      <MenuBar>
+         <menus>
+            <Menu mnemonicParsing="false" text="Camera">
+              <items>
+                  <MenuItem mnemonicParsing="false" onAction="#centerCamera" text="Center camera" />
+              </items>
+            </Menu>
+         </menus>
+      </MenuBar>
       <ScrollPane fx:id="scroll" hbarPolicy="NEVER" hvalue="0.5" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" pannable="true" prefHeight="405.0" prefWidth="604.0" vbarPolicy="NEVER" vvalue="0.5" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
          <content>
             <StackPane fx:id="stackk" prefHeight="538.0" prefWidth="598.0" />

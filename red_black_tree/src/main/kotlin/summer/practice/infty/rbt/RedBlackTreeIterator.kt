@@ -68,6 +68,10 @@ class RedBlackTreeIterator<T, V>(private var cur: Node<T, V>?): Iterator<V?>{
     // Returns the key of the next element
     fun getKey() = cur?.key ?: throw RangeException(1,
                                         "Check first by hasNext()")
+
+    // Returns true, if the next element is sub_root
+    fun isSubRoot() = cur?.is_sub_root ?: throw RangeException(1,
+                                        "Check first by hasNext()")
 }
 
 private enum class Direction{

@@ -9,6 +9,8 @@ import kotlin.random.Random
 // RBT extension for a game, where the V parameter is interface Room
 class RedBlackTreeGame<T: Comparable<T>>: RedBlackTree<T, Room>(){
 
+    private var root_depth = 0
+
     // Regenerates room for specific color(red or black)
     private fun regenerateRooms(node: Node<T, Room>?){
         if(node == null) return
@@ -37,7 +39,7 @@ class RedBlackTreeGame<T: Comparable<T>>: RedBlackTree<T, Room>(){
         for(key in keys) super.insert(key, EmptyRoom())
         for(key in keys){
             val (node, deep) = getNodeAndDepth(key)
-            node?.data = Generator.generateRoom(deep)
+            node?.data = Generator.generateRoom(root_depth + deep)
         }
         regenerateRooms(root)
     }
@@ -93,5 +95,17 @@ class RedBlackTreeGame<T: Comparable<T>>: RedBlackTree<T, Room>(){
             cur_depth++
         }
         return cur?.key
+    }
+
+    fun changeRoot(key: T){
+        val (node, depth) = getNodeAndDepth(key)
+        root_depth += depth
+        root = node
+        root?.parent = null
+        root?.is_sub_root = true
+    }
+
+    fun getRootKey(): T?{
+        return root?.key
     }
 }

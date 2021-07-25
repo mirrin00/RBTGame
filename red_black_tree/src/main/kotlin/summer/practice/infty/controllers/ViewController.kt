@@ -7,6 +7,7 @@ import javafx.scene.image.Image
 import summer.practice.infty.view.MyView
 import tornadofx.Controller
 import javafx.scene.image.ImageView
+import javafx.stage.Modality
 import summer.practice.infty.ResourceLoader
 import summer.practice.infty.actions.Action
 import summer.practice.infty.drawable.DrawableTree
@@ -28,12 +29,12 @@ class ViewController<T: Comparable<T>>(var gameWindow : MyView): Controller() {
     fun win(){
         val str: String = ("☆ Congratulations! You reached the leaf! ☆")
         final.changelabel(str)
-        final.openWindow()
+        final.openWindow(modality = Modality.APPLICATION_MODAL, resizable = true)
     }
     fun youDied(){
         val str: String = ("🕱 You died 🕱")
         final.changelabel(str)
-        final.openWindow()
+        final.openWindow(modality = Modality.APPLICATION_MODAL, resizable = true)
     }
     fun updateTree(rbt : RedBlackTreeGame<T>){
         drawableTree.changeTree(DrawableTree<T>(rbt, draggableNodes = true))

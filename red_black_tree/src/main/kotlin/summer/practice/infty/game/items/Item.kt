@@ -33,7 +33,7 @@ class Item(val element: Element,
         ItemType.WEAPON -> getDescription()
         ItemType.ARMOR -> getDescription()
         ItemType.MAGIC -> getDescription()
-        ItemType.AMULET -> "Element: $element\n$attr: $attr_value" +
+        ItemType.AMULET -> "$attr: $attr_value" +
                         (if(health_increase != 0) "\nMax health: +$health_increase" else "") +
                         (if(magic_increase != 0) "\nMax magic: +$magic_increase" else "")
         ItemType.HEALTH_POTION -> "Health restore: $basic_value\nPrice: $price"

@@ -23,14 +23,16 @@ class MyMap() : View("Map"){
         mainPane.setOnScroll {
             if(mainPane.scaleX < 10 && it.deltaY > 0 || it.deltaY < 0) {
                 val movement = it.deltaY
-                var zoomFactor = 1.05
+                var zoomFactor = 1.25
 
                 if (movement < 0) {
-                    zoomFactor = 0.90
+                    zoomFactor = 0.80
                 }
 
                 mainPane.scaleX = mainPane.scaleX * zoomFactor
                 mainPane.scaleY = mainPane.scaleY * zoomFactor
+                scroll.hvalue = 0.5 + ((scroll.hvalue - 0.5) * zoomFactor)
+                scroll.vvalue = 0.5 + ((scroll.vvalue - 0.5) * zoomFactor)
             }
             it.consume()
         }
@@ -38,6 +40,10 @@ class MyMap() : View("Map"){
     fun drawMap(imageTree : Group){
         mainPane.clear()
         mainPane.add(imageTree)
+    }
+    fun centerCamera(){
+        scroll.hvalue = 0.5
+        scroll.vvalue = 0.5
     }
 
     /*

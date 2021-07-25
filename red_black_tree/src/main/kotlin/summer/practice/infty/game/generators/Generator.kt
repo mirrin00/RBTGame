@@ -24,7 +24,7 @@ object Generator{
 
     fun generateElement(red: Boolean? = null): Element{
         if(red == null){
-            return when((0..7).random()){
+            return when((0..6).random()){
                 0 -> Element.USUAL
                 1 -> Element.HELLISH
                 2 -> Element.MARINE
@@ -32,7 +32,6 @@ object Generator{
                 4 -> Element.SANDY
                 5 -> Element.UNDERGROUND
                 6 -> Element.HEAVENLY
-                7 -> Element.NONE
                 else -> Element.NONE
             }
         }else{

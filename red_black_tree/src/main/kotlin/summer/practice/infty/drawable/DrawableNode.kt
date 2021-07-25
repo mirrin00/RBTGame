@@ -33,8 +33,11 @@ class DrawableNode<T>(nodeX:Double = 0.0, nodeY:Double = 0.0, private val iter: 
     var textInNode = Text()
 
     //Color of node
-    private val color: Color = if (iter.isRed()) {Color.RED}
-                else {Color.BLACK}
+    private val color: Color = when{
+        iter.isSubRoot() -> Color.ORANGE
+        iter.isRed() -> Color.RED
+        else -> Color.BLACK
+    }
 
     init {
         val keyValue = iter.getKey().toString()

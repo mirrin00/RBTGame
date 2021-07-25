@@ -5,8 +5,8 @@ plugins {
     id("org.openjfx.javafxplugin") version "0.0.10"
     application
 }
-group = "com.test"
-version = "1.0-SNAPSHOT"
+group = "com.github"
+version = "1.1"
 
 val tornadofx_version: String by rootProject
 
@@ -36,5 +36,15 @@ tasks {
     }
     compileTestKotlin {
         kotlinOptions.jvmTarget = "1.8"
+    }
+    jar {
+        manifest {
+            attributes["Main-Class"] = "summer.practice.infty.MainKt"
+        }
+        from(sourceSets.main.get().output)
+        dependsOn(configurations.runtimeClasspath)
+        from({
+            configurations.runtimeClasspath.get().filter { it.name.endsWith("jar") }.map { zipTree(it) }
+        })
     }
 }

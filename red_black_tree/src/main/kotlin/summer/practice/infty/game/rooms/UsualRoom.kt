@@ -22,9 +22,7 @@ class UsualRoom(override val deep_level: Int): Room {
     }
 
     override fun regenerateRoom(red: Boolean?) {
-        do {
-            element = Generator.generateElement(red)
-        }while(element == Element.NONE)
+        element = Generator.generateElement(red)
         creature = Generator.generateCreature(deep_level, element)
         event = Generator.generateRoomEvent(deep_level)
     }

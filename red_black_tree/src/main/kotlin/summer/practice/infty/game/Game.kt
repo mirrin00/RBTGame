@@ -13,6 +13,8 @@ import summer.practice.infty.game.items.ItemType
 import summer.practice.infty.game.rooms.EmptyRoom
 import summer.practice.infty.game.rooms.Room
 import summer.practice.infty.rbt.RedBlackTreeGame
+import kotlin.math.max
+import kotlin.math.min
 import kotlin.random.Random
 
 class Game(var view: ViewController<Int>? = null) {
@@ -22,10 +24,10 @@ class Game(var view: ViewController<Int>? = null) {
     var creature: Creature = EmptyCreature()
     var event: RoomEvent = EmptyEvent()
     private var game_active = false
-    private var is_last_room = false
     private var cur_stage = Stages.WAY
     private var adds = 0
     private var dels = 0
+    private var updates = 0
     private var creature_description = ""
     private var event_description = ""
     private var way_description = ""
@@ -39,13 +41,13 @@ class Game(var view: ViewController<Int>? = null) {
                     Stages.EVENT
                 }else{
                     changeTree()
-                    if(is_last_room) win()
+                    if(isLastRoom()) win()
                     Stages.WAY
                 }
             }
             Stages.EVENT -> {
                 description_action_before = ""
-                if(is_last_room) win()
+                if(isLastRoom()) win()
                 Stages.WAY
             }
             Stages.WAY -> {
@@ -55,12 +57,8 @@ class Game(var view: ViewController<Int>? = null) {
                 creature_description = creature.description
                 event_description = event.description
                 val left_right = tree.getLeftRightKeys(player.cur_room)
-                if(left_right.first == null && left_right.second == null){
-                    way_description = "You win!"
-                    is_last_room = true
-                }else{
-                    way_description = "You can go "
-                }
+                way_description = if(left_right.first == null && left_right.second == null) "You win!"
+                                  else "You can go "
                 way_description += when{
                     left_right.first == null && left_right.second == null -> ""
                     left_right.first == null -> "right."
@@ -164,6 +162,13 @@ class Game(var view: ViewController<Int>? = null) {
                               else left_right.first!!
         }
         room = tree.find(player.cur_room)!!
+        if(!room.element.red && ((height_ratio * tree.height).toInt() <
+           tree.getKeyDepth(player.cur_room))){
+            addSubTree()
+            player.cur_room = tree.getRootKey()!!
+            tree.insert(player.cur_room, room)
+            view?.updateTree(tree)
+        }
         next()
         view?.update()
     }
@@ -234,14 +239,14 @@ class Game(var view: ViewController<Int>? = null) {
 
     fun start(){
         game_active = true
-        is_last_room = false
         player = Player(this)
         player.addItem(Generator.generateItem(0, ItemType.WEAPON))
         player.addItem(Generator.generateItem(0, ItemType.MAGIC))
         player.addItem(Generator.generateItem(0, ItemType.ARMOR))
         player.addItem(Generator.generateItem(0, ItemType.HEALTH_POTION))
-        generateMediumTree()
-        player.cur_room = tree.iterator().getKey()
+        generateTree()
+        updates = Random.nextInt(4,7)
+        player.cur_room = tree.getRootKey() ?: 0
         room = tree.find(player.cur_room)!!
         cur_stage = Stages.WAY
         view?.updateLocalTree(tree, player.cur_room)
@@ -253,6 +258,11 @@ class Game(var view: ViewController<Int>? = null) {
         player.reset()
         game_active = false
         view?.youDied()
+    }
+
+    private fun isLastRoom(): Boolean{
+        val left_right = tree.getLeftRightKeys(player.cur_room)
+        return (left_right.first == null && left_right.second == null)
     }
 
     private fun win(){
@@ -274,20 +284,16 @@ class Game(var view: ViewController<Int>? = null) {
     private fun changeTree(){
         val key_min = player.cur_room - 100
         val key_max = player.cur_room + 100
-        var arr = Array<Int>(adds * 5){
-            var key: Int
-            do{
-                key = Random.nextInt(key_min, key_max)
-            }while(key == player.cur_room)
-            key
-        }
-        tree.insertRooms(*arr)
-        arr = Array<Int>(dels * 3){
-            var key: Int
-            do{
-                key = Random.nextInt(key_min, key_max)
-            }while(key == player.cur_room)
-            key
+        insertKeys(adds * add_mul, key_min, key_max)
+        val keys = tree.getKeys()
+        keys.remove(player.cur_room)
+        val arr = Array<Int>(max(0, min(keys.size - 5, dels * del_mul))){0}
+        for (i in arr.indices) {
+            var index = Random.nextInt(0, keys.size)
+            while (arr.contains(keys[index])) {
+                index++
+                if(index == keys.size) index = 0
+            }
         }
         tree.deleteRooms(*arr)
         adds = 0
@@ -296,22 +302,22 @@ class Game(var view: ViewController<Int>? = null) {
         view?.updateLocalTree(tree, player.cur_room)
     }
 
-    private fun generateEasyTree(){
-        tree.clear()
-        val keys = Array<Int>(Random.nextInt(50, 80)){Random.nextInt(0, 1000)}
-        tree.insertRooms(*keys)
+    private fun insertKeys(size: Int, key_min: Int = 0, key_max: Int = 10000){
+        if(key_min >= key_max) return
+        val arr = Array<Int>(size){Random.nextInt(key_min, key_max)}
+        tree.insertRooms(*arr)
     }
 
-    private fun generateMediumTree(){
+    private fun generateTree(){
         tree.clear()
-        val keys = Array<Int>(Random.nextInt(120, 180)){Random.nextInt(0, 1000)}
-        tree.insertRooms(*keys)
+        insertKeys(Random.nextInt(100, 200))
     }
 
-    private fun generateHardTree(){
-        tree.clear()
-        val keys = Array<Int>(Random.nextInt(200, 300)){Random.nextInt(0, 1000)}
-        tree.insertRooms(*keys)
+    private fun addSubTree(){
+        if(updates == 0) return
+        updates--
+        tree.changeRoot(player.cur_room)
+        insertKeys(Random.nextInt(64, 129))
     }
 
     // <------------------------>
@@ -359,3 +365,7 @@ private enum class Stages{
     EVENT,
     WAY
 }
+
+private const val add_mul = 5
+private const val del_mul = 2
+private const val height_ratio = 0.5

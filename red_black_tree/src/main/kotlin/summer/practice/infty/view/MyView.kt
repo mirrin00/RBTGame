@@ -2,11 +2,8 @@ package summer.practice.infty.view
 
 import javafx.geometry.Pos
 import javafx.scene.Group
-import javafx.scene.control.Alert
+import javafx.scene.control.*
 import javafx.scene.control.Alert.AlertType
-import javafx.scene.control.Button
-import javafx.scene.control.Label
-import javafx.scene.control.Tooltip
 import javafx.scene.image.ImageView
 import javafx.scene.input.MouseButton
 import javafx.scene.input.MouseEvent
@@ -207,7 +204,8 @@ class MyView: View("Red Black Tree Game") {
         rules.isResizable = true
         rules.title = "Rules"
         rules.headerText = null
-        rules.contentText = "The main goal of the game is to reach the leaf " +
+        val text = TextArea()
+        text.text = "The main goal of the game is to reach the leaf " +
                 "of the tree. Each room has an element. This is very important " +
                 "because they react. So don't do anything rash. Also be careful" +
                 " with the Hellish-Marine reaction and the Heavenly-Frosty " +
@@ -221,8 +219,9 @@ class MyView: View("Red Black Tree Game") {
                 "will sell the item.\nThe map button opens the current tree " +
                 "map, which can change during your journey. Look there more " +
                 "often, it will help you reach your goal.\nGood luck!"
-        rules.dialogPane.minHeight = 300.0
-        rules.dialogPane.minWidth = 550.0
+        text.isWrapText = true
+        text.isEditable = false
+        rules.dialogPane.content = text
         rules.showAndWait()
     }
 

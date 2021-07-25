@@ -32,7 +32,7 @@ class DrawableTree<T : Comparable<T>>(tree: RedBlackTree<T, Room> = RedBlackTree
 
         val node = DrawableNode(curX, curY, iter, parentLink = parent, draggable = draggableNodes)
 
-        val offset = ((((curHeight + 1) * (curHeight) + (size*2) * 2.0.pow(curHeight)) / 2) / 2 )
+        val offset = 2.0.pow(curHeight - 1) * (size + 6)/ 2
 
         if(hasLeft){
             node.leftLink = Line(curX, curY, curX - offset, curY + gap)
@@ -106,11 +106,10 @@ class DrawableTree<T : Comparable<T>>(tree: RedBlackTree<T, Room> = RedBlackTree
                 return curNode
             }
 
-            if(curNode.leftNode != null && curNode.key > key){
+            if(curNode.leftNode != null)
                 queue.add(curNode.leftNode)
-            }else if(curNode.rightNode != null && curNode.key < key){
+            if(curNode.rightNode != null)
                 queue.add(curNode.rightNode)
-            }
 
         }
 

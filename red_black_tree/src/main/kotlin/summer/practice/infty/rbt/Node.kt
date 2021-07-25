@@ -1,12 +1,15 @@
 package summer.practice.infty.rbt
 
+import javafx.beans.binding.BooleanExpression
+
 /* Node of RedBlackTree
  * T - type of key, V - type of value
  */
 class Node<T, V>(key: T,
                  var data: V?,
                  var parent: Node<T, V>? = null, // the link to the parent
-                 var is_left: Boolean = false) {
+                 var is_left: Boolean = false,
+                 var is_sub_root: Boolean = false) {
     var key: T = key
         private set
     var is_red: Boolean = true // indicates is node is red
