@@ -114,8 +114,8 @@ class Player(val game: Game){
         inventory[index1] = inventory[index2].also{
             inventory[index2] = inventory[index1]
         }
-        inventory[index1].inv_number = index2
-        inventory[index2].inv_number = index1
+        inventory[index1].inv_number = index1
+        inventory[index2].inv_number = index2
     }
 
     fun removeInventoryItem(item: Item){
@@ -147,8 +147,8 @@ class Player(val game: Game){
     fun addItem(item: Item){
         for(i in inventory.indices){
             if(inventory[i].type == ItemType.EMPTY){
-                item.inv_number = i
                 inventory[i] = item
+                item.inv_number = i
                 return
             }
         }

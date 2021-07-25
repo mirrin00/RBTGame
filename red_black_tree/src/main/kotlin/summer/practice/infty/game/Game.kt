@@ -155,18 +155,20 @@ class Game(var view: ViewController<Int>? = null) {
         val left_right = tree.getLeftRightKeys(player.cur_room)
         if(left_right.first == null && left_right.second == null) win()
         if(left){
+            // Use of !! is safe because case of two nulls was above
             player.cur_room = if(left_right.first != null) left_right.first!!
                               else left_right.second!!
         }else{
+            // Use of !! is safe because case of two nulls was above
             player.cur_room = if(left_right.second != null) left_right.second!!
                               else left_right.first!!
         }
-        room = tree.find(player.cur_room)!!
+        room = tree.find(player.cur_room) ?: throw RuntimeException("There is no next room by this key")
         if(!room.element.red && ((height_ratio * tree.height).toInt() <
            tree.getKeyDepth(player.cur_room))){
             val old_root = player.cur_room
             addSubTree()
-            player.cur_room = tree.getRootKey()!!
+            player.cur_room = tree.getRootKey() ?: throw RuntimeException("There is no elements in tree")
             tree.insert(player.cur_room, room)
             view?.addSubTree(old_root, tree)
         }
@@ -178,7 +180,7 @@ class Game(var view: ViewController<Int>? = null) {
         if(!game_active) return
         player.cur_room = tree.getRandomKeyOnDepth(tree.getKeyDepth(player.cur_room))
                 ?: throw RuntimeException("Null key in teleport")
-        room = tree.find(player.cur_room)!!
+        room = tree.find(player.cur_room) ?: throw RuntimeException("Player in room that is not in tree")
         cur_stage = Stages.WAY
         adds += 2
         dels += 4
@@ -189,6 +191,7 @@ class Game(var view: ViewController<Int>? = null) {
         val keys = tree.getLeftRightKeys(player.cur_room)
         var next_creature: Creature?
         if(keys.first != null){
+            // Use of !! is safe because it is checked line above
             next_creature = tree.find(keys.first!!)?.creature
             val type = when{
                 (next_creature is Trader) -> "Trader"
@@ -201,6 +204,7 @@ class Game(var view: ViewController<Int>? = null) {
                                "equal to ${next_creature?.damage ?: 0}."
         }
         if(keys.second != null) {
+            // Use of !! is safe because it is checked line above
             next_creature = tree.find(keys.second!!)?.creature
             val type = when {
                 (next_creature is Trader) -> "Trader"
@@ -241,14 +245,14 @@ class Game(var view: ViewController<Int>? = null) {
     fun start(){
         game_active = true
         player = Player(this)
-        player.addItem(Generator.generateItem(0, ItemType.WEAPON))
-        player.addItem(Generator.generateItem(0, ItemType.MAGIC))
-        player.addItem(Generator.generateItem(0, ItemType.ARMOR))
-        player.addItem(Generator.generateItem(0, ItemType.HEALTH_POTION))
+        player.addItem(Generator.generateItem(1, ItemType.WEAPON))
+        player.addItem(Generator.generateItem(1, ItemType.MAGIC))
+        player.addItem(Generator.generateItem(1, ItemType.ARMOR))
+        player.addItem(Generator.generateItem(3, ItemType.HEALTH_POTION))
         generateTree()
-        updates = Random.nextInt(4,7)
-        player.cur_room = tree.getRootKey() ?: 0
-        room = tree.find(player.cur_room)!!
+        updates = Random.nextInt(2,5)
+        player.cur_room = tree.getRootKey() ?: throw RuntimeException("No root key in tree")
+        room = tree.find(player.cur_room) ?: throw RuntimeException("Player in room that is not in tree")
         cur_stage = Stages.WAY
         view?.clearTree()
         view?.updateLocalTree(tree, player.cur_room)
@@ -312,7 +316,7 @@ class Game(var view: ViewController<Int>? = null) {
 
     private fun generateTree(){
         tree.clear()
-        insertKeys(Random.nextInt(100, 200))
+        insertKeys(Random.nextInt(64, 129))
     }
 
     private fun addSubTree(){

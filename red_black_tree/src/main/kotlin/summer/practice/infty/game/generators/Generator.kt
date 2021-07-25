@@ -20,7 +20,7 @@ object Generator{
 
     fun generateItem(depth_level: Int, type: ItemType = ItemType.EMPTY) = item_fabric.generateItem(depth_level, type)
 
-    fun getRandomFromDepth(depth_level: Int) = getRatioFromDeep(depth_level) * Random.nextDouble(0.5, 2.5)
+    fun getRandomFromDepth(depth_level: Int) = getValueFromDeep(depth_level) * Random.nextDouble(0.5, 1.5)
 
     fun generateElement(red: Boolean? = null): Element{
         if(red == null){
@@ -70,9 +70,5 @@ object Generator{
         else -> Attributes.NONE
     }
 
-    private fun getRatioFromDeep(local_deep: Int): Double{
-        val base = 1.5
-        val ratio = 2.75
-        return ratio * base.pow(local_deep.toDouble())
-    }
+    private fun getValueFromDeep(depth_level: Int): Double = 6.0 + 1.3 * depth_level.toDouble().pow(2.5)
 }

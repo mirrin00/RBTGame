@@ -108,4 +108,9 @@ class RedBlackTreeGame<T: Comparable<T>>: RedBlackTree<T, Room>(){
     fun getRootKey(): T?{
         return root?.key
     }
+
+    override fun clear() {
+        super.clear()
+        root_depth = 0
+    }
 }
