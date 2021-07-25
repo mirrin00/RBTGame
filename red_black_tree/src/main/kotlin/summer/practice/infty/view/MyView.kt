@@ -10,6 +10,8 @@ import javafx.scene.input.MouseEvent
 import javafx.scene.layout.BorderPane
 import javafx.scene.layout.Region
 import javafx.scene.layout.StackPane
+import javafx.stage.Modality
+import javafx.stage.StageStyle
 import summer.practice.infty.ResourceLoader
 import summer.practice.infty.actions.Action
 import summer.practice.infty.controllers.InterfaceController
@@ -21,7 +23,7 @@ import tornadofx.clear
 
 class MyView: View("Red Black Tree Game") {
     override val root : BorderPane by fxml("/MyInterface.fxml")
-    var treeGroup = Group()
+    //var treeGroup = Group()
     val RBTmap = MyMap()
     val game = Game()
     val vcontrol = ViewController<Int>(this)
@@ -64,8 +66,11 @@ class MyView: View("Red Black Tree Game") {
     val inv5t : Tooltip by fxid("inv5t")
         //label:
     val health : Label by fxid("health")
+    val healtht: Tooltip by fxid("healtht")
     val money : Label by fxid("money")
+    val moneyt: Tooltip by fxid("moneyt")
     val magic : Label by fxid("magic")
+    val magict: Tooltip by fxid("magict")
     val attributes : Label by fxid("attributes")
     val textDescription : Label by fxid("textDescription")
 
@@ -75,6 +80,9 @@ class MyView: View("Red Black Tree Game") {
         val image = ResourceLoader.getImage("PLAYER")
         if(image != null) imagePlayer.setImage(image)
         game.view = vcontrol
+        mainPane.scaleX = 1.8
+        mainPane.scaleY = 1.8
+        currentStage?.setOnCloseRequest { RBTmap.close() }
     }
     fun startGame(){
         icontrol.start()
@@ -227,7 +235,7 @@ class MyView: View("Red Black Tree Game") {
 
 
     fun OpenTheMap(){
-        RBTmap.openWindow()
+        RBTmap.openWindow(owner = null)
     }
     fun updateTree(imageTree : Group){
         RBTmap.drawMap(imageTree)

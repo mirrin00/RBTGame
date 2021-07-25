@@ -164,10 +164,11 @@ class Game(var view: ViewController<Int>? = null) {
         room = tree.find(player.cur_room)!!
         if(!room.element.red && ((height_ratio * tree.height).toInt() <
            tree.getKeyDepth(player.cur_room))){
+            val old_root = player.cur_room
             addSubTree()
             player.cur_room = tree.getRootKey()!!
             tree.insert(player.cur_room, room)
-            view?.updateTree(tree)
+            view?.addSubTree(old_root, tree)
         }
         next()
         view?.update()
@@ -249,6 +250,7 @@ class Game(var view: ViewController<Int>? = null) {
         player.cur_room = tree.getRootKey() ?: 0
         room = tree.find(player.cur_room)!!
         cur_stage = Stages.WAY
+        view?.clearTree()
         view?.updateLocalTree(tree, player.cur_room)
         view?.updateTree(tree)
         view?.update()
@@ -317,7 +319,7 @@ class Game(var view: ViewController<Int>? = null) {
         if(updates == 0) return
         updates--
         tree.changeRoot(player.cur_room)
-        insertKeys(Random.nextInt(64, 129))
+        insertKeys(Random.nextInt(32, 65))
     }
 
     // <------------------------>

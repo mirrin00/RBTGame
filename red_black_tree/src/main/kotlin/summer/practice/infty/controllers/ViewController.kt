@@ -17,6 +17,7 @@ import summer.practice.infty.game.items.Item
 import summer.practice.infty.game.items.generateEmptyItem
 import summer.practice.infty.rbt.RedBlackTreeGame
 import summer.practice.infty.view.FinalWindow
+import tornadofx.osgi.addViewsWhen
 import tornadofx.usePrefHeight
 import tornadofx.usePrefWidth
 
@@ -37,17 +38,31 @@ class ViewController<T: Comparable<T>>(var gameWindow : MyView): Controller() {
         final.openWindow(modality = Modality.APPLICATION_MODAL, resizable = true)
     }
     fun updateTree(rbt : RedBlackTreeGame<T>){
-        drawableTree.changeTree(DrawableTree<T>(rbt, draggableNodes = true))
+        val pos = drawableTree.getRootPosition()
+        drawableTree.changeTree(DrawableTree<T>(rbt, startX = pos.first, startY = pos.second, draggableNodes = true))
+        gameWindow.updateTree(drawableTree.createDrawnTree())
+    }
+    fun addSubTree(key: T, rbt: RedBlackTreeGame<T>){
+        val posX = drawableTree.getNodePosition(key).first
+        val posY = drawableTree.getRootPosition().second
+        drawableTree.addSubTree(key, DrawableTree<T>(rbt, startX = posX,
+                                startY = posY + (rbt.height + 2) * drawableTree.gap, draggableNodes = true))
         gameWindow.updateTree(drawableTree.createDrawnTree())
     }
     fun updateLocalTree(rbt : RedBlackTreeGame<T>, key : T){
-        var partialTree = PartialTree<T>(rbt, key)
+        val partialTree = PartialTree<T>(rbt, key)
         gameWindow.updateLocalTree(partialTree.getDrawnTree())
+    }
+    fun clearTree(){
+        drawableTree = DrawableTree<T>()
     }
     fun update(){
         changeLabel(gameWindow.health, game.getHealth().toString())
         changeLabel(gameWindow.money, game.getCoins().toString())
         changeLabel(gameWindow.magic, game.getMagic().toString())
+        gameWindow.healtht.text = "Health: ${game.getHealth()}"
+        gameWindow.moneyt.text = "Coins: ${game.getCoins()}"
+        gameWindow.magict.text = "Magic: ${game.getMagic()}"
 
         changeLabel(gameWindow.attributes, game.getAttributes())
         changeLabel(gameWindow.textDescription, game.getDescription())
