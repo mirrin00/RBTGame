@@ -66,7 +66,7 @@ class Game(var view: ViewController<Int>? = null) {
                     left_right.first != null && left_right.second != null -> "left or right"
                     else -> ""
                 }
-                view?.updateLocalTree(tree, player.cur_room)
+                view?.updateTree(tree, player.cur_room)
                 Stages.CREATURE
             }
         }
@@ -170,7 +170,7 @@ class Game(var view: ViewController<Int>? = null) {
             addSubTree()
             player.cur_room = tree.getRootKey() ?: throw RuntimeException("There is no elements in tree")
             tree.insert(player.cur_room, room)
-            view?.addSubTree(old_root, tree)
+            view?.addSubTree(old_root, tree, player.cur_room)
         }
         next()
         view?.update()
@@ -255,8 +255,7 @@ class Game(var view: ViewController<Int>? = null) {
         room = tree.find(player.cur_room) ?: throw RuntimeException("Player in room that is not in tree")
         cur_stage = Stages.WAY
         view?.clearTree()
-        view?.updateLocalTree(tree, player.cur_room)
-        view?.updateTree(tree)
+        view?.updateTree(tree, player.cur_room)
         view?.update()
     }
 
@@ -304,8 +303,7 @@ class Game(var view: ViewController<Int>? = null) {
         tree.deleteRooms(*arr)
         adds = 0
         dels = 0
-        view?.updateTree(tree)
-        view?.updateLocalTree(tree, player.cur_room)
+        view?.updateTree(tree, player.cur_room)
     }
 
     private fun insertKeys(size: Int, key_min: Int = 0, key_max: Int = 10000){

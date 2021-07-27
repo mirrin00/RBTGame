@@ -37,22 +37,26 @@ class ViewController<T: Comparable<T>>(var gameWindow : MyView): Controller() {
         final.changelabel(str)
         final.openWindow(modality = Modality.APPLICATION_MODAL, resizable = true)
     }
-    fun updateTree(rbt : RedBlackTreeGame<T>){
+    fun updateTree(rbt : RedBlackTreeGame<T>, cur_key: T){
         val pos = drawableTree.getRootPosition()
-        drawableTree.changeTree(DrawableTree<T>(rbt, startX = pos.first, startY = pos.second, draggableNodes = true))
+        drawableTree.changeTree(DrawableTree<T>(rbt, startX = pos.first, startY = pos.second,
+                                                cur_key = cur_key, draggableNodes = true))
         gameWindow.updateTree(drawableTree.createDrawnTree())
+        val partialTree = PartialTree<T>(rbt, cur_key)
+        gameWindow.updateLocalTree(partialTree.getDrawnTree())
     }
-    fun addSubTree(key: T, rbt: RedBlackTreeGame<T>){
+    fun addSubTree(key: T, rbt: RedBlackTreeGame<T>, cur_key: T){
         val posX = drawableTree.getNodePosition(key).first
         val posY = drawableTree.getRootPosition().second
         drawableTree.addSubTree(key, DrawableTree<T>(rbt, startX = posX,
-                                startY = posY + (rbt.height + 2) * drawableTree.gap, draggableNodes = true))
+                                startY = posY + (rbt.height + 2) * drawableTree.gap,
+                                cur_key = cur_key, draggableNodes = true))
         gameWindow.updateTree(drawableTree.createDrawnTree())
     }
-    fun updateLocalTree(rbt : RedBlackTreeGame<T>, key : T){
+    /*fun updateLocalTree(rbt : RedBlackTreeGame<T>, key : T){
         val partialTree = PartialTree<T>(rbt, key)
         gameWindow.updateLocalTree(partialTree.getDrawnTree())
-    }
+    }*/
     fun clearTree(){
         drawableTree = DrawableTree<T>()
     }

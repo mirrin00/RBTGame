@@ -15,8 +15,9 @@ import summer.practice.infty.rbt.RedBlackTree
 class DrawableTree<T : Comparable<T>>(tree: RedBlackTree<T, Room> = RedBlackTree()
                                          , private val size: Double = 25.0
                                          , val gap: Double = 100.0
-                                         , startX: Double = 0.0
-                                         , startY: Double = 0.0
+                                         , private var startX: Double = 0.0
+                                         , private var startY: Double = 0.0
+                                         , private val cur_key: T? = null
                                          , private val draggableNodes: Boolean = false
                                             ) {
     private val iter = tree.iterator()
@@ -33,7 +34,7 @@ class DrawableTree<T : Comparable<T>>(tree: RedBlackTree<T, Room> = RedBlackTree
         val hasLeft = iter.hasLeftSon()
         val hasRight = iter.hasRightSon()
 
-        val node = DrawableNode(curX, curY, iter, parentLink = parent, draggable = draggableNodes)
+        val node = DrawableNode(curX, curY, iter, parentLink = parent, draggable = draggableNodes, cur_key = cur_key)
 
         val offset = 2.0.pow(curHeight - 1) * (size + 6)/ 2
 
@@ -185,6 +186,9 @@ class DrawableTree<T : Comparable<T>>(tree: RedBlackTree<T, Room> = RedBlackTree
             node.nodeShape.layoutX = oldNode.nodeShape.layoutX
             node.nodeShape.layoutY = oldNode.nodeShape.layoutY
 
+            if(node.nodeShape.layoutX == curX && node.nodeShape.layoutY == curY)
+                continue
+
             timeline{
 
                 keyframe(atime.seconds){
@@ -214,8 +218,8 @@ class DrawableTree<T : Comparable<T>>(tree: RedBlackTree<T, Room> = RedBlackTree
             val curX = node.nodeShape.layoutX
             val curY = node.nodeShape.layoutY
 
-            node.nodeShape.layoutX = offset
-            node.nodeShape.layoutY = (height) * gap
+            node.nodeShape.layoutX = startX + offset
+            node.nodeShape.layoutY = startY + (height) * gap
 
 
             timeline{
@@ -280,6 +284,8 @@ class DrawableTree<T : Comparable<T>>(tree: RedBlackTree<T, Room> = RedBlackTree
             }
         }
         root = getNode(newRoot)
+        startX = other.startX
+        startY = other.startY
         changeTree(other)
     }
 

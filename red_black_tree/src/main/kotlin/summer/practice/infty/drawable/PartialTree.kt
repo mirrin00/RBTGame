@@ -127,8 +127,8 @@ class PartialTree<T : Comparable<T>>(treeGame: RedBlackTreeGame<T>, curKey: T) {
         text.y = (size - 5.0)/2
         text.text = keyValue
         text.font = Font(size)
-        text.fill = Color.rgb(255,255,255,1.0)
-        text.stroke = Color.rgb(0,0,0,1.0)
+        text.fill = Color.rgb(255,255,255,0.5)
+        //text.stroke = Color.rgb(0,0,0,1.0)
         text.strokeWidth = 1.0/keyValue.length
         text.boundsType = TextBoundsType.LOGICAL
         return text
