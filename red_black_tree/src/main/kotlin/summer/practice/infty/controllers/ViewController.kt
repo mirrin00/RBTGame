@@ -49,14 +49,11 @@ class ViewController<T: Comparable<T>>(var gameWindow : MyView): Controller() {
         val posX = drawableTree.getNodePosition(key).first
         val posY = drawableTree.getRootPosition().second
         drawableTree.addSubTree(key, DrawableTree<T>(rbt, startX = posX,
-                                startY = posY + (rbt.height + 2) * drawableTree.gap,
+                                startY = posY + (drawableTree.height + 2) * drawableTree.gap,
                                 cur_key = cur_key, draggableNodes = true))
+        val p = drawableTree.getRootPosition()
         gameWindow.updateTree(drawableTree.createDrawnTree())
     }
-    /*fun updateLocalTree(rbt : RedBlackTreeGame<T>, key : T){
-        val partialTree = PartialTree<T>(rbt, key)
-        gameWindow.updateLocalTree(partialTree.getDrawnTree())
-    }*/
     fun clearTree(){
         drawableTree = DrawableTree<T>()
     }

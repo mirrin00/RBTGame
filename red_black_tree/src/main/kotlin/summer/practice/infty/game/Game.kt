@@ -33,7 +33,7 @@ class Game(var view: ViewController<Int>? = null) {
     private var way_description = ""
     private var description_action_before = ""
 
-    fun next(){
+    fun next(skip_view_tree_update: Boolean = false){
         cur_stage = when(cur_stage){
             Stages.CREATURE ->{
                 description_action_before = creature.win_description
@@ -66,7 +66,7 @@ class Game(var view: ViewController<Int>? = null) {
                     left_right.first != null && left_right.second != null -> "left or right"
                     else -> ""
                 }
-                view?.updateTree(tree, player.cur_room)
+                if(!skip_view_tree_update) view?.updateTree(tree, player.cur_room)
                 Stages.CREATURE
             }
         }
@@ -171,8 +171,10 @@ class Game(var view: ViewController<Int>? = null) {
             player.cur_room = tree.getRootKey() ?: throw RuntimeException("There is no elements in tree")
             tree.insert(player.cur_room, room)
             view?.addSubTree(old_root, tree, player.cur_room)
+            next(true)
+        }else {
+            next()
         }
-        next()
         view?.update()
     }
 
@@ -248,7 +250,7 @@ class Game(var view: ViewController<Int>? = null) {
         player.addItem(Generator.generateItem(1, ItemType.WEAPON))
         player.addItem(Generator.generateItem(1, ItemType.MAGIC))
         player.addItem(Generator.generateItem(1, ItemType.ARMOR))
-        player.addItem(Generator.generateItem(3, ItemType.HEALTH_POTION))
+        player.addItem(Generator.generateItem(4, ItemType.HEALTH_POTION))
         generateTree()
         updates = Random.nextInt(2,5)
         player.cur_room = tree.getRootKey() ?: throw RuntimeException("No root key in tree")

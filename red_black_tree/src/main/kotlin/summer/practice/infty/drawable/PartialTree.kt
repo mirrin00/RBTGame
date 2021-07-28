@@ -74,7 +74,8 @@ class PartialTree<T : Comparable<T>>(treeGame: RedBlackTreeGame<T>, curKey: T) {
                         }
 
                         strokeWidth = 3.0
-                        stroke = Color.BLACK
+                        stroke = if(roomsInfo.second!!.element.red) Color.RED
+                                 else Color.BLACK
                     }
 
                     if(keys.first != null) add(getTextForKey(keys.first!!))
@@ -107,7 +108,8 @@ class PartialTree<T : Comparable<T>>(treeGame: RedBlackTreeGame<T>, curKey: T) {
                         }
 
                         strokeWidth = 3.0
-                        stroke = Color.BLACK
+                        stroke = if(roomsInfo.third!!.element.red) Color.RED
+                                 else Color.BLACK
                     }
 
                     if(keys.second != null) add(getTextForKey(keys.second!!))

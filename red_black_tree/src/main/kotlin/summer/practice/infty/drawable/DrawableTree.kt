@@ -1,5 +1,8 @@
 package summer.practice.infty.drawable
 
+import javafx.animation.Animation
+import javafx.animation.KeyValue
+import javafx.animation.Timeline
 import summer.practice.infty.game.rooms.*
 
 import javafx.geometry.Point2D
@@ -21,7 +24,8 @@ class DrawableTree<T : Comparable<T>>(tree: RedBlackTree<T, Room> = RedBlackTree
                                          , private val draggableNodes: Boolean = false
                                             ) {
     private val iter = tree.iterator()
-    private var height = tree.height
+    var height = tree.height
+        private set
     private var root: DrawableNode<T>? = createNode(startX, startY, height)
     private val prevTreeGroup = Group()
 
@@ -182,16 +186,20 @@ class DrawableTree<T : Comparable<T>>(tree: RedBlackTree<T, Room> = RedBlackTree
             val curX = node.nodeShape.layoutX
             val curY = node.nodeShape.layoutY
 
+            if(oldNode.nodeShape.layoutX == curX && oldNode.nodeShape.layoutY == curY)
+                continue
 
             node.nodeShape.layoutX = oldNode.nodeShape.layoutX
             node.nodeShape.layoutY = oldNode.nodeShape.layoutY
 
-            if(node.nodeShape.layoutX == curX && node.nodeShape.layoutY == curY)
-                continue
 
             timeline{
 
                 keyframe(atime.seconds){
+
+                    node.parentLink?.hide()
+                    node.leftLink?.hide()
+                    node.rightLink?.hide()
 
                     keyvalue(node.nodeShape.layoutXProperty(), curX)
                     keyvalue(node.nodeShape.layoutYProperty(), curY)
@@ -211,7 +219,6 @@ class DrawableTree<T : Comparable<T>>(tree: RedBlackTree<T, Room> = RedBlackTree
 
             }
         }
-
         for(key in addedKeys) {
             node = getNode(key)!!
 
@@ -219,7 +226,7 @@ class DrawableTree<T : Comparable<T>>(tree: RedBlackTree<T, Room> = RedBlackTree
             val curY = node.nodeShape.layoutY
 
             node.nodeShape.layoutX = startX + offset
-            node.nodeShape.layoutY = startY + (height) * gap
+            node.nodeShape.layoutY = startY + (height + 1) * gap
 
 
             timeline{
@@ -250,8 +257,6 @@ class DrawableTree<T : Comparable<T>>(tree: RedBlackTree<T, Room> = RedBlackTree
 
     fun addSubTree(newRoot: T, other: DrawableTree<T>){
         val queue: Queue<DrawableNode<T>> = LinkedList()
-        val otherRootY = other.root?.nodeShape?.layoutY ?: return
-        val otherRootX = other.root?.nodeShape?.layoutX ?: return
         if(root != null) queue.add(root)
         while(!queue.isEmpty()){
             val curNode = queue.remove()
@@ -259,16 +264,16 @@ class DrawableTree<T : Comparable<T>>(tree: RedBlackTree<T, Room> = RedBlackTree
                 if(curNode?.leftNode?.key != newRoot){
                     queue.add(curNode.leftNode)
                 }else{
-                    curNode.leftLink?.endX = otherRootX
-                    curNode.leftLink?.endY = otherRootY
+                    curNode.leftLink?.endX = other.startX
+                    curNode.leftLink?.endY = other.startY
                 }
             }
             if(curNode.rightNode != null){
                 if(curNode?.rightNode?.key != newRoot){
                     queue.add(curNode.rightNode)
                 }else{
-                    curNode.rightLink?.endX = otherRootX
-                    curNode.rightLink?.endY = otherRootY
+                    curNode.rightLink?.endX = other.startX
+                    curNode.rightLink?.endY = other.startY
                 }
             }
             prevTreeGroup.apply {
@@ -294,7 +299,7 @@ class DrawableTree<T : Comparable<T>>(tree: RedBlackTree<T, Room> = RedBlackTree
         return Pair(node?.nodeShape?.layoutX ?: 0.0, node?.nodeShape?.layoutY ?: 0.0)
     }
 
-    fun getRootPosition() = Pair(root?.nodeShape?.layoutX ?: 0.0, root?.nodeShape?.layoutY ?: 0.0)
+    fun getRootPosition() = Pair(startX, startY)
 
     companion object{
         const val atime = 2 // Action time in seconds for keyframes

@@ -81,8 +81,8 @@ class RedBlackTreeGame<T: Comparable<T>>: RedBlackTree<T, Room>(){
     }
 
     fun getRandomKeyOnDepth(depth: Int): T?{
-        if(depth <= 0) return null
-        var cur_depth = 1
+        if(depth < 0) return null
+        var cur_depth = 0
         var cur = root
         while(cur != null){
             if(cur_depth == depth) return cur.key

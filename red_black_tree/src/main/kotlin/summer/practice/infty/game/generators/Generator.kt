@@ -70,5 +70,8 @@ object Generator{
         else -> Attributes.NONE
     }
 
-    private fun getValueFromDeep(depth_level: Int): Double = 6.0 + 1.3 * depth_level.toDouble().pow(2.5)
+    private fun getValueFromDeep(depth_level: Int): Double = when{
+        depth_level <= 3 -> 2.0 * (depth_level + 1)
+        else ->6.0 + 1.3 * depth_level.toDouble().pow(2.5)
+    }
 }
