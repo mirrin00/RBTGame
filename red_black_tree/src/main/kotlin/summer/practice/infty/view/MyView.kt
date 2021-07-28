@@ -232,14 +232,12 @@ class MyView: View("Red Black Tree Game") {
                 " with the Hellish-Marine reaction and the Heavenly-Frosty " +
                 "reaction, because you will take damage from your attack.\nIn " +
                 "your inventory, you can swap items by clicking on the primary " +
-                "mouse button. You can use items by clicking on the secondary " +
-                "mouse button. Items such as weapons, armor, a magic scroll and " +
-                "a mysterious amulet are placed in the active slot when used. " +
-                "You can also drop items from your inventory by clicking on them " +
-                "with the middle mouse button. If you are trading, this action " +
-                "will sell the item.\nThe map button opens the current tree " +
-                "map, which can change during your journey. Look there more " +
-                "often, it will help you reach your goal.\nGood luck!"
+                "mouse button. The context menu for interacting with the item " +
+                "pops up by clicking on the secondary mouse button. Quick use " +
+                "of items is available by clicking on the middle mouse button." +
+                "\nThe map button opens the current tree map, which can change " +
+                "during your journey. Look there more often, it will help you " +
+                "reach your goal.\nGood luck!"
         text.isWrapText = true
         text.isEditable = false
         rules.dialogPane.content = text

@@ -2,9 +2,42 @@
 
 A repository for summer practice on MO EVM
 
+## Requirements
+
+Java version >= 11
+
+## Build & Run
+
+### Build
+
+To build classes:
+```bash
+./gradlew build
+```
+To build JAR file:
+```bash
+./gradlew jar
+```
+
+### Run
+
+```bash
+./gradlew run
+```
+
+or
+
+```bash
+java -jar /path/to/jar/file
+```
+
+### Jar file
+
+The compiled JAR file is located in the ```jar``` folder
+
 ## Report
 
-File 9304_summer_practice is report. Raw files are in folder report.
+File 9304_summer_practice is report. Raw files are in folder ```report```.
 
 ## Team members and their roles
 
