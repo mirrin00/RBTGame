@@ -76,21 +76,23 @@ class Game(var view: ViewController<Int>? = null) {
     fun buy(index: Int){
         if(cur_stage != Stages.CREATURE || !game_active) return
         if(creature !is Trader || index >= 3 ||
-           player.getItemsCountInInventory() >= player.getInventoryCapacity()) return
+           player.getItemsCountInInventory() >= Player.INVENTORY_CAPACITY) return
         (creature as? Trader)?.buy(index, player)
         adds += 1
         view?.update()
     }
 
     fun sell(item_index: Int, active: Boolean = false){
+        if(!game_active || !isTrade()) return
+        if (active && item_index in 0 until player.getActiveCapacity()) player.soldActiveItem(item_index)
+        else if (item_index in 0 until Player.INVENTORY_CAPACITY) player.soldInventoryItem(item_index)
+        view?.update()
+    }
+
+    fun drop(item_index: Int, active: Boolean = false){
         if(!game_active) return
-        if(cur_stage == Stages.CREATURE && creature is Trader) {
-            if (active && item_index in 0 until player.getActiveCapacity()) player.soldActiveItem(item_index)
-            else if (item_index in 0 until player.getInventoryCapacity()) player.soldInventoryItem(item_index)
-        }else{
-            if (active && item_index in 0 until player.getActiveCapacity()) player.removeActiveItem(item_index)
-            else if (item_index in 0 until player.getInventoryCapacity()) player.removeInventoryItem(item_index)
-        }
+        if (active && item_index in 0 until player.getActiveCapacity()) player.removeActiveItem(item_index)
+        else if (item_index in 0 until Player.INVENTORY_CAPACITY) player.removeInventoryItem(item_index)
         view?.update()
     }
 
@@ -130,7 +132,7 @@ class Game(var view: ViewController<Int>? = null) {
             end()
         }else{
             for(i in 1..3){
-                if(player.getItemsCountInInventory() >= player.getInventoryCapacity()) break
+                if(player.getItemsCountInInventory() >= Player.INVENTORY_CAPACITY) break
                 player.addItem(Generator.generateItem(room.deep_level))
             }
             player.coins += (creature as? Bandit)?.coins ?: 0
@@ -365,6 +367,19 @@ class Game(var view: ViewController<Int>? = null) {
     fun getInventory() = player.getInventory()
 
     fun getActiveItems() = player.getActiveItems()
+
+    // <------------------------>
+    // Methods for InterfaceController
+
+    fun isEmptyItem(index: Int, active: Boolean) = if(active) player.getActiveItems().getOrNull(index)?.type == ItemType.EMPTY
+                                                   else player.getInventory().getOrNull(index)?.type == ItemType.EMPTY
+
+    fun isUsableItem(index: Int): Boolean{
+        val item = player.getInventory().getOrNull(index)
+        return (item?.type != ItemType.EMPTY && item?.type != ItemType.OTHER)
+    }
+
+    fun isTrade() = cur_stage == Stages.CREATURE && creature is Trader
 }
 
 private enum class Stages{

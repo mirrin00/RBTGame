@@ -241,8 +241,6 @@ class Player(val game: Game){
 
     fun getActiveItems() = active_items.copyOf()
 
-    fun getInventoryCapacity() = INVENTORY_CAPACITY
-
     fun getActiveCapacity() = active_items.size
 
     companion object{

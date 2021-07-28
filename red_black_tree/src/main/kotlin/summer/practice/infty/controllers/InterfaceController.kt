@@ -1,5 +1,6 @@
 package summer.practice.infty.controllers
 
+import javafx.beans.binding.BooleanExpression
 import summer.practice.infty.actions.Action
 import summer.practice.infty.view.MyView
 import tornadofx.Controller
@@ -22,13 +23,25 @@ class InterfaceController(gameWindow : MyView) : Controller(){
     fun use(i : Int){
         game.useItem(i)
     }
-    fun sold(i : Int, active : Boolean){
+    fun sell(i : Int, active : Boolean){
         game.sell(i, active)
+    }
+    fun drop(i : Int, active : Boolean){
+        game.drop(i, active)
     }
     fun act(a : Action){
         a.act(game)
     }
     fun start(){
         game.start()
+    }
+    fun isEmptyItem(i : Int, active : Boolean) : Boolean {
+        return game.isEmptyItem(i, active)
+    }
+    fun isUsableItem(i : Int) : Boolean {
+        return game.isUsableItem(i)
+    }
+    fun inTrade() : Boolean{
+        return game.isTrade()
     }
 }

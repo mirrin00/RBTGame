@@ -1,6 +1,5 @@
 package summer.practice.infty.view
 
-import javafx.geometry.Pos
 import javafx.scene.Group
 import javafx.scene.control.*
 import javafx.scene.control.Alert.AlertType
@@ -8,17 +7,13 @@ import javafx.scene.image.ImageView
 import javafx.scene.input.MouseButton
 import javafx.scene.input.MouseEvent
 import javafx.scene.layout.BorderPane
-import javafx.scene.layout.Region
 import javafx.scene.layout.StackPane
-import javafx.stage.Modality
-import javafx.stage.StageStyle
 import summer.practice.infty.ResourceLoader
 import summer.practice.infty.actions.Action
 import summer.practice.infty.controllers.InterfaceController
 import summer.practice.infty.controllers.ViewController
 import summer.practice.infty.game.Game
-import tornadofx.View
-import tornadofx.clear
+import tornadofx.*
 
 
 class MyView: View("Red Black Tree Game") {
@@ -30,6 +25,11 @@ class MyView: View("Red Black Tree Game") {
     val icontrol = InterfaceController(this)
     val mainPane : StackPane by fxid("stackpane")
     var actions = ArrayList<Action>()
+    var menu : ContextMenu? = null
+        set(value) {
+            field?.hide()
+            field = value
+        }
 
     //Button's:
         //actions 1-4
@@ -107,26 +107,30 @@ class MyView: View("Red Black Tree Game") {
 
     fun pickedActive1(i : MouseEvent){
         icontrol.resetPicked()
-        if(i.getButton() == MouseButton.MIDDLE) {
-            icontrol.sold(0, true)
+        if(i.getButton() == MouseButton.SECONDARY) {
+            menu = getMenu(0, true) ?: return
+            menu?.show(act1, i.screenX, i.screenY)
         }
     }
     fun pickedActive2(i : MouseEvent){
         icontrol.resetPicked()
-        if(i.getButton() == MouseButton.MIDDLE) {
-            icontrol.sold(1, true)
+        if(i.getButton() == MouseButton.SECONDARY) {
+            menu = getMenu(1, true) ?: return
+            menu?.show(act2, i.screenX, i.screenY)
         }
     }
     fun pickedActive3(i : MouseEvent){
         icontrol.resetPicked()
-        if(i.getButton() == MouseButton.MIDDLE) {
-            icontrol.sold(2, true)
+        if(i.getButton() == MouseButton.SECONDARY) {
+            menu = getMenu(2, true) ?: return
+            menu?.show(act3, i.screenX, i.screenY)
         }
     }
     fun pickedActive4(i : MouseEvent){
         icontrol.resetPicked()
-        if(i.getButton() == MouseButton.MIDDLE) {
-            icontrol.sold(3, true)
+        if(i.getButton() == MouseButton.SECONDARY) {
+            menu = getMenu(3, true) ?: return
+            menu?.show(act4, i.screenX, i.screenY)
         }
     }
     fun pickedInv0(i : MouseEvent){
@@ -134,11 +138,12 @@ class MyView: View("Red Black Tree Game") {
             icontrol.swapItems(0)
         }
         if(i.getButton() == MouseButton.SECONDARY) {
-            icontrol.use(0)
+            menu = getMenu(0, false) ?: return
+            menu?.show(inv0, i.screenX, i.screenY)
             icontrol.resetPicked()
         }
         if(i.getButton() == MouseButton.MIDDLE) {
-            icontrol.sold(0, false)
+            icontrol.use(0)
             icontrol.resetPicked()
         }
     }
@@ -147,11 +152,12 @@ class MyView: View("Red Black Tree Game") {
             icontrol.swapItems(1)
         }
         if(i.getButton() == MouseButton.SECONDARY) {
-            icontrol.use(1)
+            menu = getMenu(1, false) ?: return
+            menu?.show(inv1, i.screenX, i.screenY)
             icontrol.resetPicked()
         }
         if(i.getButton() == MouseButton.MIDDLE) {
-            icontrol.sold(1, false)
+            icontrol.use(1)
             icontrol.resetPicked()
         }
     }
@@ -160,11 +166,12 @@ class MyView: View("Red Black Tree Game") {
             icontrol.swapItems(2)
         }
         if(i.getButton() == MouseButton.SECONDARY) {
-            icontrol.use(2)
+            menu = getMenu(2, false) ?: return
+            menu?.show(inv2, i.screenX, i.screenY)
             icontrol.resetPicked()
         }
         if(i.getButton() == MouseButton.MIDDLE) {
-            icontrol.sold(2, false)
+            icontrol.use(2)
             icontrol.resetPicked()
         }
     }
@@ -173,11 +180,12 @@ class MyView: View("Red Black Tree Game") {
             icontrol.swapItems(3)
         }
         if(i.getButton() == MouseButton.SECONDARY) {
-            icontrol.use(3)
+            menu = getMenu(3, false) ?: return
+            menu?.show(inv3, i.screenX, i.screenY)
             icontrol.resetPicked()
         }
         if(i.getButton() == MouseButton.MIDDLE) {
-            icontrol.sold(3, false)
+            icontrol.use(3)
             icontrol.resetPicked()
         }
     }
@@ -186,11 +194,12 @@ class MyView: View("Red Black Tree Game") {
             icontrol.swapItems(4)
         }
         if(i.getButton() == MouseButton.SECONDARY) {
-            icontrol.use(4)
+            menu = getMenu(4, false) ?: return
+            menu?.show(inv4, i.screenX, i.screenY)
             icontrol.resetPicked()
         }
         if(i.getButton() == MouseButton.MIDDLE) {
-            icontrol.sold(4, false)
+            icontrol.use(4)
             icontrol.resetPicked()
         }
     }
@@ -199,11 +208,12 @@ class MyView: View("Red Black Tree Game") {
             icontrol.swapItems(5)
         }
         if(i.getButton() == MouseButton.SECONDARY) {
-            icontrol.use(5)
+            menu = getMenu(5, false) ?: return
+            menu?.show(inv5, i.screenX, i.screenY)
             icontrol.resetPicked()
         }
         if(i.getButton() == MouseButton.MIDDLE) {
-            icontrol.sold(5, false)
+            icontrol.use(5)
             icontrol.resetPicked()
         }
     }
@@ -243,5 +253,26 @@ class MyView: View("Red Black Tree Game") {
     fun updateLocalTree( imageTree: Group){
         mainPane.clear()
         mainPane.add(imageTree)
+    }
+    fun getMenu(i : Int, active : Boolean): ContextMenu?{
+        return if(icontrol.isEmptyItem(i, active)) null
+        else contextmenu {
+            item("use") {
+                isDisable = active || !icontrol.isUsableItem(i)
+                setOnAction {
+                    icontrol.use(i)
+                }
+            }
+            item("sell"){
+                isDisable = !icontrol.inTrade()
+                setOnAction {
+                    icontrol.sell(i, active)
+                }
+            }
+            item("drop").action {
+                icontrol.drop(i, active)
+            }
+            isAutoHide = true
+        }
     }
 }
