@@ -15,7 +15,10 @@ const val AMULET_INDEX = 3
 private const val armor_coef = 0.25
 
 class Player(val game: Game){
-    var coins: Int = Random.nextInt(0, 14)
+    var coins: Int = when(GameSettings.difficulty){
+        Difficulty.NORMAL -> Random.nextInt(0, 14)
+        Difficulty.HARD -> Random.nextInt(31, 94)
+    }
         set(value) {
             field = if(value < 0) 0
                     else value

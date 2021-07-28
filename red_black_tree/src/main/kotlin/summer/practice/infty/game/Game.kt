@@ -247,7 +247,8 @@ class Game(var view: ViewController<Int>? = null) {
         view?.update()
     }
 
-    fun start(){
+    fun start(difficulty: Difficulty){
+        GameSettings.difficulty = difficulty
         game_active = true
         player = Player(this)
         player.addItem(Generator.generateItem(1, ItemType.WEAPON))
@@ -255,7 +256,10 @@ class Game(var view: ViewController<Int>? = null) {
         player.addItem(Generator.generateItem(1, ItemType.ARMOR))
         player.addItem(Generator.generateItem(7, ItemType.HEALTH_POTION))
         generateTree()
-        updates = Random.nextInt(2,5)
+        updates = when(GameSettings.difficulty){
+            Difficulty.NORMAL -> Random.nextInt(2,5)
+            Difficulty.HARD -> Random.nextInt(2, 4)
+        }
         player.cur_room = tree.getRootKey() ?: throw RuntimeException("No root key in tree")
         room = tree.find(player.cur_room) ?: throw RuntimeException("Player in room that is not in tree")
         cur_stage = Stages.WAY
@@ -319,14 +323,20 @@ class Game(var view: ViewController<Int>? = null) {
 
     private fun generateTree(){
         tree.clear()
-        insertKeys(Random.nextInt(64, 129))
+        insertKeys(when(GameSettings.difficulty){
+            Difficulty.NORMAL -> Random.nextInt(64, 129)
+            Difficulty.HARD -> Random.nextInt(128, 255)
+        })
     }
 
     private fun addSubTree(){
         if(updates == 0) return
         updates--
         tree.changeRoot(player.cur_room)
-        insertKeys(Random.nextInt(32, 65))
+        insertKeys(when(GameSettings.difficulty){
+            Difficulty.NORMAL -> Random.nextInt(32, 65)
+            Difficulty.HARD -> Random.nextInt(64, 100)
+        })
     }
 
     // <------------------------>

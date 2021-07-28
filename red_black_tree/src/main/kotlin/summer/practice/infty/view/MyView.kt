@@ -84,8 +84,11 @@ class MyView: View("Red Black Tree Game") {
         mainPane.scaleY = 1.8
         currentStage?.setOnCloseRequest { RBTmap.close() }
     }
-    fun startGame(){
-        icontrol.start()
+    fun startGameNormal(){
+        icontrol.start(InterfaceController.DIFF_NORM)
+    }
+    fun startGameHard(){
+        icontrol.start(InterfaceController.DIFF_HARD)
     }
 
     fun pickedAction1(){

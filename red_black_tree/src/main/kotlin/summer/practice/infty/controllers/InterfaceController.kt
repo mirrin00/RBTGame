@@ -2,6 +2,7 @@ package summer.practice.infty.controllers
 
 import javafx.beans.binding.BooleanExpression
 import summer.practice.infty.actions.Action
+import summer.practice.infty.game.Difficulty
 import summer.practice.infty.view.MyView
 import tornadofx.Controller
 
@@ -32,8 +33,11 @@ class InterfaceController(gameWindow : MyView) : Controller(){
     fun act(a : Action){
         a.act(game)
     }
-    fun start(){
-        game.start()
+    fun start(d : Int){
+        game.start(when(d){
+            DIFF_HARD -> Difficulty.HARD
+            else -> Difficulty.NORMAL
+        })
     }
     fun isEmptyItem(i : Int, active : Boolean) : Boolean {
         return game.isEmptyItem(i, active)
@@ -43,5 +47,10 @@ class InterfaceController(gameWindow : MyView) : Controller(){
     }
     fun inTrade() : Boolean{
         return game.isTrade()
+    }
+
+    companion object{
+        const val DIFF_NORM = 0
+        const val DIFF_HARD = 1
     }
 }

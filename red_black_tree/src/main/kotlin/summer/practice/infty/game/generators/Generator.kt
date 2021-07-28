@@ -2,6 +2,7 @@ package summer.practice.infty.game.generators
 
 import summer.practice.infty.game.Attributes
 import summer.practice.infty.game.Element
+import summer.practice.infty.game.GameSettings
 import summer.practice.infty.game.items.ItemType
 import kotlin.math.pow
 import kotlin.random.Random
@@ -72,6 +73,6 @@ object Generator{
 
     private fun getValueFromDeep(depth_level: Int): Double = when{
         depth_level <= 3 -> 2.0 * (depth_level + 1)
-        else ->6.0 + 1.5 * (depth_level - 2).toDouble().pow(1.5)
+        else ->6.0 + GameSettings.getDepthFactor() * (depth_level - 2).toDouble().pow(GameSettings.getDepthPow())
     }
 }

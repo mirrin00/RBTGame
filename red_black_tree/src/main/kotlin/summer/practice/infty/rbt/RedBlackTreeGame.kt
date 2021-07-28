@@ -1,5 +1,7 @@
 package summer.practice.infty.rbt
 
+import summer.practice.infty.game.Difficulty
+import summer.practice.infty.game.GameSettings
 import summer.practice.infty.game.rooms.Room
 import summer.practice.infty.game.generators.Generator
 import summer.practice.infty.game.rooms.EmptyRoom
@@ -36,10 +38,21 @@ class RedBlackTreeGame<T: Comparable<T>>: RedBlackTree<T, Room>(){
 
     // Inserts set of Rooms
     fun insertRooms(vararg keys: T){
-        for(key in keys) super.insert(key, EmptyRoom())
-        for(key in keys){
-            val (node, deep) = getNodeAndDepth(key)
-            node?.data = Generator.generateRoom(root_depth + deep)
+        when(GameSettings.difficulty){
+            Difficulty.HARD -> {
+                for(key in keys){
+                    super.insert(key, EmptyRoom())
+                    val (node, deep) = getNodeAndDepth(key)
+                    node?.data = Generator.generateRoom(root_depth + deep)
+                }
+            }
+            else -> {
+                for(key in keys) super.insert(key, EmptyRoom())
+                for(key in keys){
+                    val (node, deep) = getNodeAndDepth(key)
+                    node?.data = Generator.generateRoom(root_depth + deep)
+                }
+            }
         }
         regenerateRooms(root)
     }

@@ -156,7 +156,12 @@
          <menus>
             <Menu mnemonicParsing="false" text="Game">
                <items>
-                  <MenuItem mnemonicParsing="false" onAction="#startGame" text="New Game" />
+                  <Menu mnemonicParsing="false" text="New Game">
+                     <items>
+                        <MenuItem mnemonicParsing="false" onAction="#startGameNormal" text="Normal" />
+                        <MenuItem mnemonicParsing="false" onAction="#startGameHard" text="Hard(unbalanced)" />
+                     </items>
+                  </Menu>
                </items>
             </Menu>
             <Menu mnemonicParsing="false" text="About">
