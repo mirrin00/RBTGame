@@ -25,7 +25,7 @@ internal class CreatureTest{
 
         dragon.attack(player)
 
-        assertEquals((1000000 - 10 * 100 * 0.2 * 0.5).toInt(), dragon.health)
-        assertEquals((100 - 50 * 1.5 + 100 * 0.2).toInt(), player.health)
+        assertEquals((1000000 - 10 * 100 * 0.25 * 0.5).toInt(), dragon.health)
+        assertEquals((100 - 50 * 1.5 + 100 * 0.25).toInt(), player.health)
     }
 }
