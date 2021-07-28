@@ -15,8 +15,8 @@ internal class GameItemFabric: ItemFabric{
     private fun generatePrice(depth_level: Int) = (Generator.getRandomFromDepth(depth_level) * Random.nextDouble(1.2, 3.0)).toInt()
 
     private fun generateHealthMagicIncrease(depth_level: Int, type: ItemType): Int = if(type != ItemType.AMULET) 0 else when((0..9).random()){
-        1, 5, 7 -> (Generator.getRandomFromDepth(depth_level) * Random.nextDouble(1.0, 2.0)).toInt()
-        0 -> -Random.nextInt(1, 20)
+        1, 5, 7 -> (Generator.getRandomFromDepth(depth_level) * Random.nextDouble(2.5, 4.0)).toInt()
+        0 -> -Random.nextInt(5, 20)
         else -> 0
     }
 

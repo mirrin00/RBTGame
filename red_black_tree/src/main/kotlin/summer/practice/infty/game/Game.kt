@@ -100,8 +100,8 @@ class Game(var view: ViewController<Int>? = null) {
         if(player.coins >= b.pay_cost){
             player.coins -= b.pay_cost
             adds += 2
-            description_action_before = "You bought off the Bandit."
             next()
+            description_action_before = "You bought off the Bandit."
         }
         view?.update()
     }
@@ -164,8 +164,8 @@ class Game(var view: ViewController<Int>? = null) {
                               else left_right.first!!
         }
         room = tree.find(player.cur_room) ?: throw RuntimeException("There is no next room by this key")
-        if(!room.element.red && ((height_ratio * tree.height).toInt() <
-           tree.getKeyDepth(player.cur_room))){
+        if(updates != 0 && !room.element.red &&
+           ((height_ratio * tree.height).toInt() <= tree.getKeyDepth(player.cur_room))){
             val old_root = player.cur_room
             addSubTree()
             player.cur_room = tree.getRootKey() ?: throw RuntimeException("There is no elements in tree")
@@ -183,7 +183,8 @@ class Game(var view: ViewController<Int>? = null) {
         player.cur_room = tree.getRandomKeyOnDepth(tree.getKeyDepth(player.cur_room))
                 ?: throw RuntimeException("Null key in teleport")
         room = tree.find(player.cur_room) ?: throw RuntimeException("Player in room that is not in tree")
-        cur_stage = Stages.WAY
+        //cur_stage = Stages.WAY
+        description_action_before = "You fell out of the portal onto the road."
         adds += 2
         dels += 4
     }
@@ -250,7 +251,7 @@ class Game(var view: ViewController<Int>? = null) {
         player.addItem(Generator.generateItem(1, ItemType.WEAPON))
         player.addItem(Generator.generateItem(1, ItemType.MAGIC))
         player.addItem(Generator.generateItem(1, ItemType.ARMOR))
-        player.addItem(Generator.generateItem(4, ItemType.HEALTH_POTION))
+        player.addItem(Generator.generateItem(7, ItemType.HEALTH_POTION))
         generateTree()
         updates = Random.nextInt(2,5)
         player.cur_room = tree.getRootKey() ?: throw RuntimeException("No root key in tree")
@@ -374,4 +375,4 @@ private enum class Stages{
 
 private const val add_mul = 5
 private const val del_mul = 2
-private const val height_ratio = 0.5
+private const val height_ratio = 0.65

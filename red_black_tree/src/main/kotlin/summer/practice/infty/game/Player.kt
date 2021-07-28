@@ -12,7 +12,7 @@ const val WEAPON_INDEX = 0
 const val ARMOR_INDEX = 1
 const val MAGIC_INDEX = 2
 const val AMULET_INDEX = 3
-private const val armor_coef = 0.2
+private const val armor_coef = 0.25
 
 class Player(val game: Game){
     var coins: Int = Random.nextInt(0, 14)
@@ -42,7 +42,7 @@ class Player(val game: Game){
         set(value){
             field = when{
                 value < 0 -> 0
-                value > max_health -> max_health
+                value > max_magic -> max_magic
                 else -> value
             }
         }
@@ -100,7 +100,7 @@ class Player(val game: Game){
         active_items[index] = inventory[item.inv_number].also{
             inventory[item.inv_number] = active_items[index]
         }
-        inventory[item.inv_number].inv_number = active_items[index].inv_number
+        inventory[item.inv_number].inv_number = item.inv_number
         recalculateAttributes()
     }
 
