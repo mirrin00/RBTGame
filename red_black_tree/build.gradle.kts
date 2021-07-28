@@ -6,7 +6,7 @@ plugins {
     application
 }
 group = "com.github"
-version = "1.1"
+version = "1.2"
 
 val tornadofx_version: String by rootProject
 
