@@ -7,6 +7,7 @@ import javafx.scene.image.Image
 import summer.practice.infty.view.MyView
 import tornadofx.Controller
 import javafx.scene.image.ImageView
+import javafx.stage.Modality
 import summer.practice.infty.ResourceLoader
 import summer.practice.infty.actions.Action
 import summer.practice.infty.drawable.DrawableTree
@@ -16,6 +17,7 @@ import summer.practice.infty.game.items.Item
 import summer.practice.infty.game.items.generateEmptyItem
 import summer.practice.infty.rbt.RedBlackTreeGame
 import summer.practice.infty.view.FinalWindow
+import tornadofx.osgi.addViewsWhen
 import tornadofx.usePrefHeight
 import tornadofx.usePrefWidth
 
@@ -28,25 +30,43 @@ class ViewController<T: Comparable<T>>(var gameWindow : MyView): Controller() {
     fun win(){
         val str: String = ("☆ Congratulations! You reached the leaf! ☆")
         final.changelabel(str)
-        final.openWindow()
+        final.openWindow(modality = Modality.APPLICATION_MODAL, resizable = true)
     }
     fun youDied(){
         val str: String = ("🕱 You died 🕱")
         final.changelabel(str)
-        final.openWindow()
+        final.openWindow(modality = Modality.APPLICATION_MODAL, resizable = true)
     }
-    fun updateTree(rbt : RedBlackTreeGame<T>){
-        drawableTree.changeTree(DrawableTree<T>(rbt, draggableNodes = true))
+    fun updateTree(rbt : RedBlackTreeGame<T>, cur_key: T){
+        val pos = drawableTree.getRootPosition()
+        drawableTree.changeTree(DrawableTree<T>(rbt, startX = pos.first, startY = pos.second,
+                                                cur_key = cur_key, draggableNodes = true))
         gameWindow.updateTree(drawableTree.createDrawnTree())
+        updateLocalTree(rbt, cur_key)
     }
-    fun updateLocalTree(rbt : RedBlackTreeGame<T>, key : T){
-        var partialTree = PartialTree<T>(rbt, key)
+    fun addSubTree(key: T, rbt: RedBlackTreeGame<T>, cur_key: T){
+        val posX = drawableTree.getNodePosition(key).first
+        val posY = drawableTree.getRootPosition().second
+        drawableTree.addSubTree(key, DrawableTree<T>(rbt, startX = posX,
+                                startY = posY + (drawableTree.height + 2) * drawableTree.gap,
+                                cur_key = cur_key, draggableNodes = true))
+        gameWindow.updateTree(drawableTree.createDrawnTree())
+        updateLocalTree(rbt, cur_key)
+    }
+    private fun updateLocalTree(rbt: RedBlackTreeGame<T>, cur_key: T){
+        val partialTree = PartialTree<T>(rbt, cur_key)
         gameWindow.updateLocalTree(partialTree.getDrawnTree())
+    }
+    fun clearTree(){
+        drawableTree = DrawableTree<T>()
     }
     fun update(){
         changeLabel(gameWindow.health, game.getHealth().toString())
         changeLabel(gameWindow.money, game.getCoins().toString())
         changeLabel(gameWindow.magic, game.getMagic().toString())
+        gameWindow.healtht.text = "Health: ${game.getHealth()}"
+        gameWindow.moneyt.text = "Coins: ${game.getCoins()}"
+        gameWindow.magict.text = "Magic: ${game.getMagic()}"
 
         changeLabel(gameWindow.attributes, game.getAttributes())
         changeLabel(gameWindow.textDescription, game.getDescription())

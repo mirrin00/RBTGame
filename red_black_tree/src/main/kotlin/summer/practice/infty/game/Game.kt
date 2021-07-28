@@ -13,6 +13,8 @@ import summer.practice.infty.game.items.ItemType
 import summer.practice.infty.game.rooms.EmptyRoom
 import summer.practice.infty.game.rooms.Room
 import summer.practice.infty.rbt.RedBlackTreeGame
+import kotlin.math.max
+import kotlin.math.min
 import kotlin.random.Random
 
 class Game(var view: ViewController<Int>? = null) {
@@ -22,16 +24,16 @@ class Game(var view: ViewController<Int>? = null) {
     var creature: Creature = EmptyCreature()
     var event: RoomEvent = EmptyEvent()
     private var game_active = false
-    private var is_last_room = false
     private var cur_stage = Stages.WAY
     private var adds = 0
     private var dels = 0
+    private var updates = 0
     private var creature_description = ""
     private var event_description = ""
     private var way_description = ""
     private var description_action_before = ""
 
-    fun next(){
+    fun next(skip_view_tree_update: Boolean = false){
         cur_stage = when(cur_stage){
             Stages.CREATURE ->{
                 description_action_before = creature.win_description
@@ -39,13 +41,13 @@ class Game(var view: ViewController<Int>? = null) {
                     Stages.EVENT
                 }else{
                     changeTree()
-                    if(is_last_room) win()
+                    if(isLastRoom()) win()
                     Stages.WAY
                 }
             }
             Stages.EVENT -> {
                 description_action_before = ""
-                if(is_last_room) win()
+                if(isLastRoom()) win()
                 Stages.WAY
             }
             Stages.WAY -> {
@@ -55,12 +57,8 @@ class Game(var view: ViewController<Int>? = null) {
                 creature_description = creature.description
                 event_description = event.description
                 val left_right = tree.getLeftRightKeys(player.cur_room)
-                if(left_right.first == null && left_right.second == null){
-                    way_description = "You win!"
-                    is_last_room = true
-                }else{
-                    way_description = "You can go "
-                }
+                way_description = if(left_right.first == null && left_right.second == null) "You win!"
+                                  else "You can go "
                 way_description += when{
                     left_right.first == null && left_right.second == null -> ""
                     left_right.first == null -> "right."
@@ -68,7 +66,7 @@ class Game(var view: ViewController<Int>? = null) {
                     left_right.first != null && left_right.second != null -> "left or right"
                     else -> ""
                 }
-                view?.updateLocalTree(tree, player.cur_room)
+                if(!skip_view_tree_update) view?.updateTree(tree, player.cur_room)
                 Stages.CREATURE
             }
         }
@@ -78,21 +76,23 @@ class Game(var view: ViewController<Int>? = null) {
     fun buy(index: Int){
         if(cur_stage != Stages.CREATURE || !game_active) return
         if(creature !is Trader || index >= 3 ||
-           player.getItemsCountInInventory() >= player.getInventoryCapacity()) return
+           player.getItemsCountInInventory() >= Player.INVENTORY_CAPACITY) return
         (creature as? Trader)?.buy(index, player)
         adds += 1
         view?.update()
     }
 
     fun sell(item_index: Int, active: Boolean = false){
+        if(!game_active || !isTrade()) return
+        if (active && item_index in 0 until player.getActiveCapacity()) player.soldActiveItem(item_index)
+        else if (item_index in 0 until Player.INVENTORY_CAPACITY) player.soldInventoryItem(item_index)
+        view?.update()
+    }
+
+    fun drop(item_index: Int, active: Boolean = false){
         if(!game_active) return
-        if(cur_stage == Stages.CREATURE && creature is Trader) {
-            if (active && item_index in 0 until player.getActiveCapacity()) player.soldActiveItem(item_index)
-            else if (item_index in 0 until player.getInventoryCapacity()) player.soldInventoryItem(item_index)
-        }else{
-            if (active && item_index in 0 until player.getActiveCapacity()) player.removeActiveItem(item_index)
-            else if (item_index in 0 until player.getInventoryCapacity()) player.removeInventoryItem(item_index)
-        }
+        if (active && item_index in 0 until player.getActiveCapacity()) player.removeActiveItem(item_index)
+        else if (item_index in 0 until Player.INVENTORY_CAPACITY) player.removeInventoryItem(item_index)
         view?.update()
     }
 
@@ -102,8 +102,8 @@ class Game(var view: ViewController<Int>? = null) {
         if(player.coins >= b.pay_cost){
             player.coins -= b.pay_cost
             adds += 2
-            description_action_before = "You bought off the Bandit."
             next()
+            description_action_before = "You bought off the Bandit."
         }
         view?.update()
     }
@@ -132,7 +132,7 @@ class Game(var view: ViewController<Int>? = null) {
             end()
         }else{
             for(i in 1..3){
-                if(player.getItemsCountInInventory() >= player.getInventoryCapacity()) break
+                if(player.getItemsCountInInventory() >= Player.INVENTORY_CAPACITY) break
                 player.addItem(Generator.generateItem(room.deep_level))
             }
             player.coins += (creature as? Bandit)?.coins ?: 0
@@ -157,14 +157,26 @@ class Game(var view: ViewController<Int>? = null) {
         val left_right = tree.getLeftRightKeys(player.cur_room)
         if(left_right.first == null && left_right.second == null) win()
         if(left){
+            // Use of !! is safe because case of two nulls was above
             player.cur_room = if(left_right.first != null) left_right.first!!
                               else left_right.second!!
         }else{
+            // Use of !! is safe because case of two nulls was above
             player.cur_room = if(left_right.second != null) left_right.second!!
                               else left_right.first!!
         }
-        room = tree.find(player.cur_room)!!
-        next()
+        room = tree.find(player.cur_room) ?: throw RuntimeException("There is no next room by this key")
+        if(updates != 0 && !room.element.red &&
+           ((height_ratio * tree.height).toInt() <= tree.getKeyDepth(player.cur_room))){
+            val old_root = player.cur_room
+            addSubTree()
+            player.cur_room = tree.getRootKey() ?: throw RuntimeException("There is no elements in tree")
+            tree.insert(player.cur_room, room)
+            view?.addSubTree(old_root, tree, player.cur_room)
+            next(true)
+        }else {
+            next()
+        }
         view?.update()
     }
 
@@ -172,8 +184,9 @@ class Game(var view: ViewController<Int>? = null) {
         if(!game_active) return
         player.cur_room = tree.getRandomKeyOnDepth(tree.getKeyDepth(player.cur_room))
                 ?: throw RuntimeException("Null key in teleport")
-        room = tree.find(player.cur_room)!!
-        cur_stage = Stages.WAY
+        room = tree.find(player.cur_room) ?: throw RuntimeException("Player in room that is not in tree")
+        //cur_stage = Stages.WAY
+        description_action_before = "You fell out of the portal onto the road."
         adds += 2
         dels += 4
     }
@@ -183,6 +196,7 @@ class Game(var view: ViewController<Int>? = null) {
         val keys = tree.getLeftRightKeys(player.cur_room)
         var next_creature: Creature?
         if(keys.first != null){
+            // Use of !! is safe because it is checked line above
             next_creature = tree.find(keys.first!!)?.creature
             val type = when{
                 (next_creature is Trader) -> "Trader"
@@ -195,6 +209,7 @@ class Game(var view: ViewController<Int>? = null) {
                                "equal to ${next_creature?.damage ?: 0}."
         }
         if(keys.second != null) {
+            // Use of !! is safe because it is checked line above
             next_creature = tree.find(keys.second!!)?.creature
             val type = when {
                 (next_creature is Trader) -> "Trader"
@@ -232,20 +247,24 @@ class Game(var view: ViewController<Int>? = null) {
         view?.update()
     }
 
-    fun start(){
+    fun start(difficulty: Difficulty){
+        GameSettings.difficulty = difficulty
         game_active = true
-        is_last_room = false
         player = Player(this)
-        player.addItem(Generator.generateItem(0, ItemType.WEAPON))
-        player.addItem(Generator.generateItem(0, ItemType.MAGIC))
-        player.addItem(Generator.generateItem(0, ItemType.ARMOR))
-        player.addItem(Generator.generateItem(0, ItemType.HEALTH_POTION))
-        generateMediumTree()
-        player.cur_room = tree.iterator().getKey()
-        room = tree.find(player.cur_room)!!
+        player.addItem(Generator.generateItem(1, ItemType.WEAPON))
+        player.addItem(Generator.generateItem(1, ItemType.MAGIC))
+        player.addItem(Generator.generateItem(1, ItemType.ARMOR))
+        player.addItem(Generator.generateItem(7, ItemType.HEALTH_POTION))
+        generateTree()
+        updates = when(GameSettings.difficulty){
+            Difficulty.NORMAL -> Random.nextInt(2,5)
+            Difficulty.HARD -> Random.nextInt(2, 4)
+        }
+        player.cur_room = tree.getRootKey() ?: throw RuntimeException("No root key in tree")
+        room = tree.find(player.cur_room) ?: throw RuntimeException("Player in room that is not in tree")
         cur_stage = Stages.WAY
-        view?.updateLocalTree(tree, player.cur_room)
-        view?.updateTree(tree)
+        view?.clearTree()
+        view?.updateTree(tree, player.cur_room)
         view?.update()
     }
 
@@ -253,6 +272,11 @@ class Game(var view: ViewController<Int>? = null) {
         player.reset()
         game_active = false
         view?.youDied()
+    }
+
+    private fun isLastRoom(): Boolean{
+        val left_right = tree.getLeftRightKeys(player.cur_room)
+        return (left_right.first == null && left_right.second == null)
     }
 
     private fun win(){
@@ -274,44 +298,45 @@ class Game(var view: ViewController<Int>? = null) {
     private fun changeTree(){
         val key_min = player.cur_room - 100
         val key_max = player.cur_room + 100
-        var arr = Array<Int>(adds * 5){
-            var key: Int
-            do{
-                key = Random.nextInt(key_min, key_max)
-            }while(key == player.cur_room)
-            key
-        }
-        tree.insertRooms(*arr)
-        arr = Array<Int>(dels * 3){
-            var key: Int
-            do{
-                key = Random.nextInt(key_min, key_max)
-            }while(key == player.cur_room)
-            key
+        insertKeys(adds * add_mul, key_min, key_max)
+        val keys = tree.getKeys()
+        keys.remove(player.cur_room)
+        val arr = Array<Int>(max(0, min(keys.size - 5, dels * del_mul))){0}
+        for (i in arr.indices) {
+            var index = Random.nextInt(0, keys.size)
+            while (arr.contains(keys[index])) {
+                index++
+                if(index == keys.size) index = 0
+            }
         }
         tree.deleteRooms(*arr)
         adds = 0
         dels = 0
-        view?.updateTree(tree)
-        view?.updateLocalTree(tree, player.cur_room)
+        view?.updateTree(tree, player.cur_room)
     }
 
-    private fun generateEasyTree(){
-        tree.clear()
-        val keys = Array<Int>(Random.nextInt(50, 80)){Random.nextInt(0, 1000)}
-        tree.insertRooms(*keys)
+    private fun insertKeys(size: Int, key_min: Int = 0, key_max: Int = 10000){
+        if(key_min >= key_max) return
+        val arr = Array<Int>(size){Random.nextInt(key_min, key_max)}
+        tree.insertRooms(*arr)
     }
 
-    private fun generateMediumTree(){
+    private fun generateTree(){
         tree.clear()
-        val keys = Array<Int>(Random.nextInt(120, 180)){Random.nextInt(0, 1000)}
-        tree.insertRooms(*keys)
+        insertKeys(when(GameSettings.difficulty){
+            Difficulty.NORMAL -> Random.nextInt(64, 129)
+            Difficulty.HARD -> Random.nextInt(128, 255)
+        })
     }
 
-    private fun generateHardTree(){
-        tree.clear()
-        val keys = Array<Int>(Random.nextInt(200, 300)){Random.nextInt(0, 1000)}
-        tree.insertRooms(*keys)
+    private fun addSubTree(){
+        if(updates == 0) return
+        updates--
+        tree.changeRoot(player.cur_room)
+        insertKeys(when(GameSettings.difficulty){
+            Difficulty.NORMAL -> Random.nextInt(32, 65)
+            Difficulty.HARD -> Random.nextInt(64, 100)
+        })
     }
 
     // <------------------------>
@@ -352,6 +377,19 @@ class Game(var view: ViewController<Int>? = null) {
     fun getInventory() = player.getInventory()
 
     fun getActiveItems() = player.getActiveItems()
+
+    // <------------------------>
+    // Methods for InterfaceController
+
+    fun isEmptyItem(index: Int, active: Boolean) = if(active) player.getActiveItems().getOrNull(index)?.type == ItemType.EMPTY
+                                                   else player.getInventory().getOrNull(index)?.type == ItemType.EMPTY
+
+    fun isUsableItem(index: Int): Boolean{
+        val item = player.getInventory().getOrNull(index)
+        return (item?.type != ItemType.EMPTY && item?.type != ItemType.OTHER)
+    }
+
+    fun isTrade() = cur_stage == Stages.CREATURE && creature is Trader
 }
 
 private enum class Stages{
@@ -359,3 +397,7 @@ private enum class Stages{
     EVENT,
     WAY
 }
+
+private const val add_mul = 5
+private const val del_mul = 2
+private const val height_ratio = 0.65

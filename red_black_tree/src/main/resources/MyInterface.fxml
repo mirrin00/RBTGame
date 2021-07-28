@@ -112,28 +112,37 @@
                      <HBox.margin>
                         <Insets bottom="9.0" left="9.0" top="9.0" />
                      </HBox.margin></Label>
-                  <Label fx:id="health" alignment="CENTER" prefHeight="30.0" prefWidth="45.0" style="-fx-border-color: #bf0d0d;" text="100">
+                  <Label fx:id="health" alignment="CENTER" prefHeight="27.0" prefWidth="52.0" style="-fx-border-color: #bf0d0d;" text="100">
                      <HBox.margin>
                         <Insets bottom="9.0" right="9.0" top="9.0" />
-                     </HBox.margin></Label>
+                     </HBox.margin>
+                     <tooltip>
+                        <Tooltip fx:id="healtht" text="Health: 100" />
+                     </tooltip></Label>
                   <Label alignment="CENTER" prefHeight="30.0" prefWidth="45.0" style="-fx-border-color: #bf0d0d;" text="💰">
                      <HBox.margin>
                         <Insets bottom="9.0" left="9.0" top="9.0" />
                      </HBox.margin>
                   </Label>
-                  <Label fx:id="money" alignment="CENTER" prefHeight="30.0" prefWidth="45.0" style="-fx-border-color: #bf0d0d;" text="5">
+                  <Label fx:id="money" alignment="CENTER" prefHeight="27.0" prefWidth="60.0" style="-fx-border-color: #bf0d0d;" text="5">
                      <HBox.margin>
                         <Insets bottom="9.0" right="9.0" top="9.0" />
-                     </HBox.margin></Label>
+                     </HBox.margin>
+                     <tooltip>
+                        <Tooltip fx:id="moneyt" text="Coins: 5" />
+                     </tooltip></Label>
                   <Label alignment="CENTER" prefHeight="30.0" prefWidth="45.0" style="-fx-border-color: #bf0d0d;" text="⚝">
                      <HBox.margin>
                         <Insets bottom="9.0" left="9.0" top="9.0" />
                      </HBox.margin>
                   </Label>
-                  <Label fx:id="magic" alignment="CENTER" prefHeight="30.0" prefWidth="45.0" style="-fx-border-color: #bf0d0d;" text="50">
+                  <Label fx:id="magic" alignment="CENTER" prefHeight="30.0" prefWidth="52.0" style="-fx-border-color: #bf0d0d;" text="50">
                      <HBox.margin>
                         <Insets bottom="9.0" right="9.0" top="9.0" />
-                     </HBox.margin></Label>
+                     </HBox.margin>
+                     <tooltip>
+                        <Tooltip fx:id="magict" text="Magic: 50" />
+                     </tooltip></Label>
                </children>
             </HBox>
             <Label fx:id="textDescription" alignment="CENTER" contentDisplay="CENTER" layoutX="10.0" layoutY="338.0" prefHeight="95.0" prefWidth="320.0" style="-fx-border-color: #bf0d0d; -fx-border-width: 3; -fx-border-radius: 10;" text="Description" textAlignment="CENTER" wrapText="true" />
@@ -147,7 +156,12 @@
          <menus>
             <Menu mnemonicParsing="false" text="Game">
                <items>
-                  <MenuItem mnemonicParsing="false" onAction="#startGame" text="New Game" />
+                  <Menu mnemonicParsing="false" text="New Game">
+                     <items>
+                        <MenuItem mnemonicParsing="false" onAction="#startGameNormal" text="Normal" />
+                        <MenuItem mnemonicParsing="false" onAction="#startGameHard" text="Hard(unbalanced)" />
+                     </items>
+                  </Menu>
                </items>
             </Menu>
             <Menu mnemonicParsing="false" text="About">

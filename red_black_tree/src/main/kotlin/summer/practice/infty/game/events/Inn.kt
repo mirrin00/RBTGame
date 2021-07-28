@@ -21,7 +21,7 @@ class Inn(override val k_count: Int,
 
     override fun canAct(player: Player) = (player.coins > cost) &&
                                           (min(player.magic, player.health) < max_regain) &&
-                                          (min(player.max_magic, player.max_health) >= max_regain)
+                                          (min(player.max_magic, player.max_health) < max_regain)
 
     override fun getUseDescription(): String = "You can regain your health and magic for $cost coins"
 

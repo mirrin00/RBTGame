@@ -12,10 +12,13 @@ const val WEAPON_INDEX = 0
 const val ARMOR_INDEX = 1
 const val MAGIC_INDEX = 2
 const val AMULET_INDEX = 3
-private const val armor_coef = 0.2
+private const val armor_coef = 0.25
 
 class Player(val game: Game){
-    var coins: Int = 0
+    var coins: Int = when(GameSettings.difficulty){
+        Difficulty.NORMAL -> Random.nextInt(0, 14)
+        Difficulty.HARD -> Random.nextInt(31, 94)
+    }
         set(value) {
             field = if(value < 0) 0
                     else value
@@ -42,7 +45,7 @@ class Player(val game: Game){
         set(value){
             field = when{
                 value < 0 -> 0
-                value > max_health -> max_health
+                value > max_magic -> max_magic
                 else -> value
             }
         }
@@ -100,7 +103,7 @@ class Player(val game: Game){
         active_items[index] = inventory[item.inv_number].also{
             inventory[item.inv_number] = active_items[index]
         }
-        inventory[item.inv_number].inv_number = active_items[index].inv_number
+        inventory[item.inv_number].inv_number = item.inv_number
         recalculateAttributes()
     }
 
@@ -114,8 +117,8 @@ class Player(val game: Game){
         inventory[index1] = inventory[index2].also{
             inventory[index2] = inventory[index1]
         }
-        inventory[index1].inv_number = index2
-        inventory[index2].inv_number = index1
+        inventory[index1].inv_number = index1
+        inventory[index2].inv_number = index2
     }
 
     fun removeInventoryItem(item: Item){
@@ -147,8 +150,8 @@ class Player(val game: Game){
     fun addItem(item: Item){
         for(i in inventory.indices){
             if(inventory[i].type == ItemType.EMPTY){
-                item.inv_number = i
                 inventory[i] = item
+                item.inv_number = i
                 return
             }
         }
@@ -240,8 +243,6 @@ class Player(val game: Game){
     fun getInventory() = inventory.copyOf()
 
     fun getActiveItems() = active_items.copyOf()
-
-    fun getInventoryCapacity() = INVENTORY_CAPACITY
 
     fun getActiveCapacity() = active_items.size
 

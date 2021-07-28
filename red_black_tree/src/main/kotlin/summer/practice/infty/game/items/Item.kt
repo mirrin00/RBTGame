@@ -3,6 +3,7 @@ package summer.practice.infty.game.items
 import summer.practice.infty.game.Attributes
 import summer.practice.infty.game.Element
 import summer.practice.infty.game.Player
+import kotlin.math.absoluteValue
 import kotlin.math.min
 
 class Item(val element: Element,
@@ -33,9 +34,10 @@ class Item(val element: Element,
         ItemType.WEAPON -> getDescription()
         ItemType.ARMOR -> getDescription()
         ItemType.MAGIC -> getDescription()
-        ItemType.AMULET -> "Element: $element\n$attr: $attr_value" +
-                        (if(health_increase != 0) "\nMax health: +$health_increase" else "") +
-                        (if(magic_increase != 0) "\nMax magic: +$magic_increase" else "")
+        ItemType.AMULET -> (if(attr != Attributes.NONE) "$attr: $attr_value\n" else "") +
+                        (if(health_increase != 0) "Max health: %+d\n".format(health_increase) else "") +
+                        (if(magic_increase != 0) "Max magic: %+d\n".format(magic_increase) else "") +
+                        "Price: $price"
         ItemType.HEALTH_POTION -> "Health restore: $basic_value\nPrice: $price"
         ItemType.MAGIC_POTION -> "Magic restore: $basic_value\nPrice: $price"
         ItemType.OTHER -> "Price: $price"

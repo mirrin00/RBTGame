@@ -2,8 +2,8 @@ package summer.practice.infty.rbt
 
 open class RedBlackTree<T: Comparable<T>, V>: Iterable<V?> {
     protected var root: Node<T, V>? = null // root of the tree
-    var height: Int = 0 // Height of the tree, not black!!!
-        private set
+    open var height: Int = 0 // Height of the tree, not black!!!
+        protected set
 
     // True - if node is red, otherwise - false
     private fun isRedNode(node: Node<T, V>?): Boolean{
@@ -27,7 +27,7 @@ open class RedBlackTree<T: Comparable<T>, V>: Iterable<V?> {
     }
 
     // Find and return the value with key
-    fun find(key: T): V?{
+    open fun find(key: T): V?{
         return findNode(key)?.data
     }
 
@@ -64,7 +64,7 @@ open class RedBlackTree<T: Comparable<T>, V>: Iterable<V?> {
         updateHeight()
     }
 
-    private fun updateHeight(){
+    protected fun updateHeight(){
         height = 0
         fun heightUpdate(node: Node<T, V>?, height: Int) {
             if (node == null) return
@@ -88,8 +88,21 @@ open class RedBlackTree<T: Comparable<T>, V>: Iterable<V?> {
         return values
     }
 
+    // Return ArrayList of keys in-order
+    fun getKeys(): ArrayList<T>{
+        val keys = ArrayList<T>()
+        fun inOrder(node: Node<T, V>?) {
+            if (node == null) return
+            inOrder(node.left)
+            keys.add(node.key)
+            inOrder(node.right)
+        }
+        inOrder(root)
+        return keys
+    }
+
     // Balance the tree after insert
-    private fun insertBalance(node: Node<T, V>?){
+    protected fun insertBalance(node: Node<T, V>?){
         if(node == null) return
         rotateInsert(node)
         recolor(node)
@@ -150,7 +163,7 @@ open class RedBlackTree<T: Comparable<T>, V>: Iterable<V?> {
     }
 
     // Deletes node from tree and call balance
-    private fun deleteNode(node: Node<T, V>?){
+    protected fun deleteNode(node: Node<T, V>?){
         if(node == null) return
         val left = node.left
         val right = node.right
@@ -244,7 +257,7 @@ open class RedBlackTree<T: Comparable<T>, V>: Iterable<V?> {
     }
 
     // Clears the tree
-    fun clear(){
+    open fun clear(){
         root = null
         height = 0
     }

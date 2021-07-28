@@ -1,5 +1,8 @@
 package summer.practice.infty.drawable
 
+import javafx.animation.Animation
+import javafx.animation.KeyValue
+import javafx.animation.Timeline
 import summer.practice.infty.game.rooms.*
 
 import javafx.geometry.Point2D
@@ -14,12 +17,17 @@ import summer.practice.infty.rbt.RedBlackTree
 
 class DrawableTree<T : Comparable<T>>(tree: RedBlackTree<T, Room> = RedBlackTree()
                                          , private val size: Double = 25.0
-                                         , private val gap: Double = 100.0
+                                         , val gap: Double = 100.0
+                                         , private var startX: Double = 0.0
+                                         , private var startY: Double = 0.0
+                                         , private val cur_key: T? = null
                                          , private val draggableNodes: Boolean = false
                                             ) {
     private val iter = tree.iterator()
-    private var height = tree.height
-    private var root: DrawableNode<T>? = createNode(0.0, 0.0, height)
+    var height = tree.height
+        private set
+    private var root: DrawableNode<T>? = createNode(startX, startY, height)
+    private val prevTreeGroup = Group()
 
     private fun createNode(curX: Double, curY: Double, curHeight: Int, parent: Line? = null): DrawableNode<T>?{
 
@@ -30,9 +38,9 @@ class DrawableTree<T : Comparable<T>>(tree: RedBlackTree<T, Room> = RedBlackTree
         val hasLeft = iter.hasLeftSon()
         val hasRight = iter.hasRightSon()
 
-        val node = DrawableNode(curX, curY, iter, parentLink = parent, draggable = draggableNodes)
+        val node = DrawableNode(curX, curY, iter, parentLink = parent, draggable = draggableNodes, cur_key = cur_key)
 
-        val offset = ((((curHeight + 1) * (curHeight) + (size*2) * 2.0.pow(curHeight)) / 2) / 2 )
+        val offset = 2.0.pow(curHeight - 1) * (size + 6)/ 2
 
         if(hasLeft){
             node.leftLink = Line(curX, curY, curX - offset, curY + gap)
@@ -53,6 +61,8 @@ class DrawableTree<T : Comparable<T>>(tree: RedBlackTree<T, Room> = RedBlackTree
     fun createDrawnTree(): Group{
         val treeGroup = Group()
         val queue: Queue<DrawableNode<T>> = LinkedList()
+
+        treeGroup.apply { add(prevTreeGroup) }
 
         if (root != null){
             queue.add(root)
@@ -106,11 +116,10 @@ class DrawableTree<T : Comparable<T>>(tree: RedBlackTree<T, Room> = RedBlackTree
                 return curNode
             }
 
-            if(curNode.leftNode != null && curNode.key > key){
+            if(curNode.leftNode != null)
                 queue.add(curNode.leftNode)
-            }else if(curNode.rightNode != null && curNode.key < key){
+            if(curNode.rightNode != null)
                 queue.add(curNode.rightNode)
-            }
 
         }
 
@@ -120,7 +129,7 @@ class DrawableTree<T : Comparable<T>>(tree: RedBlackTree<T, Room> = RedBlackTree
     fun moveNode(key: T, changeX: Double, changeY: Double){
         val node = getNode(key) ?: return
 
-        node.nodeShape.move(2.seconds, Point2D(node.nodeShape.translateX + changeX,
+        node.nodeShape.move(atime.seconds, Point2D(node.nodeShape.translateX + changeX,
                                                node.nodeShape.translateY + changeY))
 
     }
@@ -177,13 +186,20 @@ class DrawableTree<T : Comparable<T>>(tree: RedBlackTree<T, Room> = RedBlackTree
             val curX = node.nodeShape.layoutX
             val curY = node.nodeShape.layoutY
 
+            if(oldNode.nodeShape.layoutX == curX && oldNode.nodeShape.layoutY == curY)
+                continue
 
             node.nodeShape.layoutX = oldNode.nodeShape.layoutX
             node.nodeShape.layoutY = oldNode.nodeShape.layoutY
 
+
             timeline{
 
-                keyframe(2.seconds){
+                keyframe(atime.seconds){
+
+                    node.parentLink?.hide()
+                    node.leftLink?.hide()
+                    node.rightLink?.hide()
 
                     keyvalue(node.nodeShape.layoutXProperty(), curX)
                     keyvalue(node.nodeShape.layoutYProperty(), curY)
@@ -203,15 +219,14 @@ class DrawableTree<T : Comparable<T>>(tree: RedBlackTree<T, Room> = RedBlackTree
 
             }
         }
-
         for(key in addedKeys) {
             node = getNode(key)!!
 
             val curX = node.nodeShape.layoutX
             val curY = node.nodeShape.layoutY
 
-            node.nodeShape.layoutX = offset
-            node.nodeShape.layoutY = (height) * gap
+            node.nodeShape.layoutX = startX + offset
+            node.nodeShape.layoutY = startY + (height + 1) * gap
 
 
             timeline{
@@ -220,7 +235,7 @@ class DrawableTree<T : Comparable<T>>(tree: RedBlackTree<T, Room> = RedBlackTree
                 node.leftLink?.hide()
                 node.rightLink?.hide()
 
-                keyframe(2.seconds) {
+                keyframe(atime.seconds) {
 
                     keyvalue(node.nodeShape.layoutXProperty(), curX)
                     keyvalue(node.nodeShape.layoutYProperty(), curY)
@@ -238,5 +253,55 @@ class DrawableTree<T : Comparable<T>>(tree: RedBlackTree<T, Room> = RedBlackTree
             }
             offset += gap
         }
+    }
+
+    fun addSubTree(newRoot: T, other: DrawableTree<T>){
+        val queue: Queue<DrawableNode<T>> = LinkedList()
+        if(root != null) queue.add(root)
+        while(!queue.isEmpty()){
+            val curNode = queue.remove()
+            if(curNode.leftNode != null){
+                if(curNode?.leftNode?.key != newRoot){
+                    queue.add(curNode.leftNode)
+                }else{
+                    curNode.leftLink?.endX = other.startX
+                    curNode.leftLink?.endY = other.startY
+                }
+            }
+            if(curNode.rightNode != null){
+                if(curNode?.rightNode?.key != newRoot){
+                    queue.add(curNode.rightNode)
+                }else{
+                    curNode.rightLink?.endX = other.startX
+                    curNode.rightLink?.endY = other.startY
+                }
+            }
+            prevTreeGroup.apply {
+                if(curNode.leftLink != null) {
+                    add(curNode.leftLink!!)
+                }
+
+                if(curNode.rightLink != null) {
+                    add(curNode.rightLink!!)
+                }
+
+                add(curNode.nodeShape)
+            }
+        }
+        root = getNode(newRoot)
+        startX = other.startX
+        startY = other.startY
+        changeTree(other)
+    }
+
+    fun getNodePosition(key: T): Pair<Double, Double>{
+        val node = getNode(key)
+        return Pair(node?.nodeShape?.layoutX ?: 0.0, node?.nodeShape?.layoutY ?: 0.0)
+    }
+
+    fun getRootPosition() = Pair(startX, startY)
+
+    companion object{
+        const val atime = 2 // Action time in seconds for keyframes
     }
 }

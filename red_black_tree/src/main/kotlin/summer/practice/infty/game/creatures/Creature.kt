@@ -16,8 +16,7 @@ interface Creature {
     val win_description: String
 
     fun attack(player: Player){
-        player.health -= max(0, (damage * (if(getRatioFromElemets(element, player.getArmorElement()) == 0.0) 1.0
-                                              else 1.5) - player.getArmorAbsorption()).toInt())
+        player.health -= max(0, (damage * getRatioFromElemets(element, player.getArmorElement()) - player.getArmorAbsorption()).toInt())
         health -= (10 * player.getArmorAbsorption() * getHealthDamageOfElemnts(element, player.getArmorElement())).toInt()
     }
 

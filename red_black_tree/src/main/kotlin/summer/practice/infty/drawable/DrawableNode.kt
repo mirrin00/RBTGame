@@ -16,8 +16,9 @@ import tornadofx.*
 
 import summer.practice.infty.rbt.RedBlackTreeIterator
 
-class DrawableNode<T>(nodeX:Double = 0.0, nodeY:Double = 0.0, private val iter: RedBlackTreeIterator<T, Room>,
-                         var size: Double = 50.0, var parentLink: Line? = null, draggable: Boolean = false)
+class DrawableNode<T>(nodeX:Double = 0.0, nodeY:Double = 0.0, iter: RedBlackTreeIterator<T, Room>,
+                         size: Double = 50.0, var parentLink: Line? = null, draggable: Boolean = false,
+                         cur_key: T? = null)
 {
     //Values of node
     val key = iter.getKey()
@@ -33,8 +34,12 @@ class DrawableNode<T>(nodeX:Double = 0.0, nodeY:Double = 0.0, private val iter: 
     var textInNode = Text()
 
     //Color of node
-    private val color: Color = if (iter.isRed()) {Color.RED}
-                else {Color.BLACK}
+    private val color: Color = when{
+        key == cur_key -> Color.GREEN
+        iter.isSubRoot() -> Color.ORANGE
+        iter.isRed() -> Color.RED
+        else -> Color.BLACK
+    }
 
     init {
         val keyValue = iter.getKey().toString()
@@ -50,20 +55,20 @@ class DrawableNode<T>(nodeX:Double = 0.0, nodeY:Double = 0.0, private val iter: 
         }
 
         mainShape.radius = size/2
-        mainShape.strokeWidth = 3.0
+        mainShape.strokeWidth = 0.1 * size
         mainShape.stroke = color
 
-        var size = 35.0
+        var size = 0.8 * size
 
         size /= keyValue.length
 
 
-        textInNode.x = -10.0
+        textInNode.x = -size
         textInNode.y = (size - 5.0)/2
         textInNode.text = keyValue
         textInNode.font = Font(size)
-        textInNode.fill = Color.rgb(255,255,255,1.0)
-        textInNode.stroke = Color.rgb(0,0,0,1.0)
+        textInNode.fill = Color.rgb(255,255,255,0.5)
+        //textInNode.stroke = Color.rgb(0,0,0,1.0)
         textInNode.strokeWidth = 1.0/keyValue.length
         textInNode.boundsType = TextBoundsType.LOGICAL
 

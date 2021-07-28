@@ -1,5 +1,7 @@
 package summer.practice.infty.rbt
 
+import summer.practice.infty.game.Difficulty
+import summer.practice.infty.game.GameSettings
 import summer.practice.infty.game.rooms.Room
 import summer.practice.infty.game.generators.Generator
 import summer.practice.infty.game.rooms.EmptyRoom
@@ -8,6 +10,8 @@ import kotlin.random.Random
 
 // RBT extension for a game, where the V parameter is interface Room
 class RedBlackTreeGame<T: Comparable<T>>: RedBlackTree<T, Room>(){
+
+    private var root_depth = 0
 
     // Regenerates room for specific color(red or black)
     private fun regenerateRooms(node: Node<T, Room>?){
@@ -34,10 +38,21 @@ class RedBlackTreeGame<T: Comparable<T>>: RedBlackTree<T, Room>(){
 
     // Inserts set of Rooms
     fun insertRooms(vararg keys: T){
-        for(key in keys) super.insert(key, EmptyRoom())
-        for(key in keys){
-            val (node, deep) = getNodeAndDepth(key)
-            node?.data = Generator.generateRoom(deep)
+        when(GameSettings.difficulty){
+            Difficulty.HARD -> {
+                for(key in keys){
+                    super.insert(key, EmptyRoom())
+                    val (node, deep) = getNodeAndDepth(key)
+                    node?.data = Generator.generateRoom(root_depth + deep)
+                }
+            }
+            else -> {
+                for(key in keys) super.insert(key, EmptyRoom())
+                for(key in keys){
+                    val (node, deep) = getNodeAndDepth(key)
+                    node?.data = Generator.generateRoom(root_depth + deep)
+                }
+            }
         }
         regenerateRooms(root)
     }
@@ -79,8 +94,8 @@ class RedBlackTreeGame<T: Comparable<T>>: RedBlackTree<T, Room>(){
     }
 
     fun getRandomKeyOnDepth(depth: Int): T?{
-        if(depth <= 0) return null
-        var cur_depth = 1
+        if(depth < 0) return null
+        var cur_depth = 0
         var cur = root
         while(cur != null){
             if(cur_depth == depth) return cur.key
@@ -93,5 +108,22 @@ class RedBlackTreeGame<T: Comparable<T>>: RedBlackTree<T, Room>(){
             cur_depth++
         }
         return cur?.key
+    }
+
+    fun changeRoot(key: T){
+        val (node, depth) = getNodeAndDepth(key)
+        root_depth += depth
+        root = node
+        root?.parent = null
+        root?.is_sub_root = true
+    }
+
+    fun getRootKey(): T?{
+        return root?.key
+    }
+
+    override fun clear() {
+        super.clear()
+        root_depth = 0
     }
 }

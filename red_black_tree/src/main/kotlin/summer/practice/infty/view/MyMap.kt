@@ -1,6 +1,5 @@
 package summer.practice.infty.view
 
-//import summer.practice.infty.controllers.MyController
 import javafx.scene.Group
 import javafx.scene.control.ScrollPane
 import javafx.scene.control.TextField
@@ -12,25 +11,29 @@ import tornadofx.*
 class MyMap() : View("Map"){
 
     override val root : VBox by fxml("/MyMap.fxml")
-    val myController = DrawingController()
+    //val myController = DrawingController()
     val mainPane : StackPane by fxid("stackk")
     val scroll : ScrollPane by fxid("scroll")
     //val textinput : TextField by fxid("text")
-    var treeGroup = Group()
+    //var treeGroup = Group()
     init{
-        scroll.setMinSize(600.0, 750.0)
+        scroll.setMinSize(600.0, 600.0)
+        scroll.minWidthProperty().bind(root.widthProperty())
+        scroll.minHeightProperty().bind(root.heightProperty())
         mainPane.setMinSize(1000000.0, 1000000.0)
         mainPane.setOnScroll {
             if(mainPane.scaleX < 10 && it.deltaY > 0 || it.deltaY < 0) {
                 val movement = it.deltaY
-                var zoomFactor = 1.05
+                var zoomFactor = 1.25
 
                 if (movement < 0) {
-                    zoomFactor = 0.90
+                    zoomFactor = 0.80
                 }
 
                 mainPane.scaleX = mainPane.scaleX * zoomFactor
                 mainPane.scaleY = mainPane.scaleY * zoomFactor
+                scroll.hvalue = 0.5 + ((scroll.hvalue - 0.5) * zoomFactor)
+                scroll.vvalue = 0.5 + ((scroll.vvalue - 0.5) * zoomFactor)
             }
             it.consume()
         }
@@ -38,6 +41,10 @@ class MyMap() : View("Map"){
     fun drawMap(imageTree : Group){
         mainPane.clear()
         mainPane.add(imageTree)
+    }
+    fun centerCamera(){
+        scroll.hvalue = 0.5
+        scroll.vvalue = 0.5
     }
 
     /*

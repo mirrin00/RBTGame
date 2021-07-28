@@ -2,6 +2,7 @@ package summer.practice.infty.game.generators
 
 import summer.practice.infty.game.Attributes
 import summer.practice.infty.game.Element
+import summer.practice.infty.game.GameSettings
 import summer.practice.infty.game.items.ItemType
 import kotlin.math.pow
 import kotlin.random.Random
@@ -20,11 +21,11 @@ object Generator{
 
     fun generateItem(depth_level: Int, type: ItemType = ItemType.EMPTY) = item_fabric.generateItem(depth_level, type)
 
-    fun getRandomFromDepth(depth_level: Int) = getRatioFromDeep(depth_level) * Random.nextDouble(0.5, 2.5)
+    fun getRandomFromDepth(depth_level: Int) = getValueFromDeep(depth_level) * Random.nextDouble(0.5, 1.5)
 
     fun generateElement(red: Boolean? = null): Element{
         if(red == null){
-            return when((0..7).random()){
+            return when((0..6).random()){
                 0 -> Element.USUAL
                 1 -> Element.HELLISH
                 2 -> Element.MARINE
@@ -32,7 +33,6 @@ object Generator{
                 4 -> Element.SANDY
                 5 -> Element.UNDERGROUND
                 6 -> Element.HEAVENLY
-                7 -> Element.NONE
                 else -> Element.NONE
             }
         }else{
@@ -71,9 +71,8 @@ object Generator{
         else -> Attributes.NONE
     }
 
-    private fun getRatioFromDeep(local_deep: Int): Double{
-        val base = 1.5
-        val ratio = 2.75
-        return ratio * base.pow(local_deep.toDouble())
+    private fun getValueFromDeep(depth_level: Int): Double = when{
+        depth_level <= 3 -> 2.0 * (depth_level + 1)
+        else ->6.0 + GameSettings.getDepthFactor() * (depth_level - 2).toDouble().pow(GameSettings.getDepthPow())
     }
 }
