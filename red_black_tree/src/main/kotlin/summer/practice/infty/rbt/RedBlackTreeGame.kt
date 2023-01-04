@@ -63,6 +63,34 @@ class RedBlackTreeGame<T: Comparable<T>>: RedBlackTree<T, Room>(){
         regenerateRooms(root)
     }
 
+    fun getParentKey(key: T): T?{
+        val cur = getNodeAndDepth(key).first
+        return cur?.parent?.key
+    }
+
+    // Inserts one Room
+    fun insertOneRoom(key: T){
+        when(GameSettings.difficulty){
+            Difficulty.HARD -> {
+                super.insert(key, EmptyRoom())
+                val (node, deep) = getNodeAndDepth(key)
+                node?.data = Generator.generateRoom(root_depth + deep)
+            }
+            else -> {
+                super.insert(key, EmptyRoom())
+                val (node, deep) = getNodeAndDepth(key)
+                node?.data = Generator.generateRoom(root_depth + deep)
+            }
+        }
+        regenerateRooms(root)
+    }
+
+    // Deletes one Room
+    fun deleteOneRoom(key: T){
+        super.delete(key)
+        regenerateRooms(root)
+    }
+
     // Room insertion and rooms regeneration for color matching
     override fun insert(key: T, value: Room?) {
         super.insert(key, value)

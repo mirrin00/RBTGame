@@ -25,8 +25,8 @@ class Game(var view: ViewController<Int>? = null) {
     var event: RoomEvent = EmptyEvent()
     private var game_active = false
     private var cur_stage = Stages.WAY
-    private var adds = 0
-    private var dels = 0
+    private var add: Int? = null
+    private var del: Int? = null
     private var updates = 0
     private var creature_description = ""
     private var event_description = ""
@@ -78,7 +78,8 @@ class Game(var view: ViewController<Int>? = null) {
         if(creature !is Trader || index >= 3 ||
            player.getItemsCountInInventory() >= Player.INVENTORY_CAPACITY) return
         (creature as? Trader)?.buy(index, player)
-        adds += 1
+        val left_right = tree.getLeftRightKeys(player.cur_room)
+        add = (left_right.second?.plus(player.cur_room))?.div(2)
         view?.update()
     }
 
@@ -101,7 +102,7 @@ class Game(var view: ViewController<Int>? = null) {
         val b = creature as? Bandit ?: return
         if(player.coins >= b.pay_cost){
             player.coins -= b.pay_cost
-            adds += 2
+            del = tree.getParentKey(player.cur_room)
             next()
             description_action_before = "You bought off the Bandit."
         }
@@ -113,7 +114,7 @@ class Game(var view: ViewController<Int>? = null) {
         val b = creature as? Bandit ?: return
         b.in_battle = true
         player.in_fight = true
-        dels += 2
+        del = tree.getLeftRightKeys(player.cur_room).first
         view?.update()
     }
 
@@ -125,8 +126,12 @@ class Game(var view: ViewController<Int>? = null) {
             while(player.health <= 0 && player.hasHealthPotion())
                 player.useHealthPotion()
         }
-        adds += if(by_magic) 1 else 2
-        dels += if(by_magic) 2 else 1
+        if(by_magic){
+            del = tree.getLeftRightKeys(player.cur_room).second
+        }else{
+            val left_right = tree.getLeftRightKeys(player.cur_room)
+            add = (left_right.first?.plus(player.cur_room))?.div(2)
+        }
         player.in_fight = false
         if(player.health <= 0){
             end()
@@ -144,7 +149,10 @@ class Game(var view: ViewController<Int>? = null) {
     fun actEvent(){
         if(!game_active) return
         if(event.canAct(player)){
-            adds += 1
+            if(add == null){
+                val parent_key = tree.getParentKey(player.cur_room)
+                add = (parent_key?.plus(player.cur_room))?.div(2)
+            }
             changeTree()
             event.actWithPlayer(player)
             next()
@@ -187,8 +195,7 @@ class Game(var view: ViewController<Int>? = null) {
         room = tree.find(player.cur_room) ?: throw RuntimeException("Player in room that is not in tree")
         //cur_stage = Stages.WAY
         description_action_before = "You fell out of the portal onto the road."
-        adds += 2
-        dels += 4
+        del = tree.getParentKey(player.cur_room)
     }
 
     fun addNextCreatureDescription(){
@@ -285,39 +292,21 @@ class Game(var view: ViewController<Int>? = null) {
         view?.win()
     }
 
-    fun increaseNumberOfRoomAdds(inc: Int){
-        if(inc < 0) return
-        adds += inc
-    }
-
-    fun increaseNumberOfRoomDels(inc: Int){
-        if(inc < 0) return
-        dels += inc
-    }
-
     private fun changeTree(){
-        val key_min = player.cur_room - 100
-        val key_max = player.cur_room + 100
-        insertKeys(adds * add_mul, key_min, key_max)
-        val keys = tree.getKeys()
-        keys.remove(player.cur_room)
-        val arr = Array<Int>(max(0, min(keys.size - 5, dels * del_mul))){0}
-        for (i in arr.indices) {
-            var index = Random.nextInt(0, keys.size)
-            while (arr.contains(keys[index])) {
-                index++
-                if(index == keys.size) index = 0
-            }
+        if(add != null){
+            tree.insertOneRoom(add!!)
         }
-        tree.deleteRooms(*arr)
-        adds = 0
-        dels = 0
+        if(del != null){
+            tree.deleteOneRoom(del!!)
+        }
+        add = null
+        del = null
         view?.updateTree(tree, player.cur_room)
     }
 
     private fun insertKeys(size: Int, key_min: Int = 0, key_max: Int = 10000){
         if(key_min >= key_max) return
-        val arr = Array<Int>(size){Random.nextInt(key_min, key_max)}
+        val arr = Array(size){Random.nextInt(key_min, key_max)}
         tree.insertRooms(*arr)
     }
 
@@ -398,6 +387,4 @@ private enum class Stages{
     WAY
 }
 
-private const val add_mul = 5
-private const val del_mul = 2
 private const val height_ratio = 0.65
